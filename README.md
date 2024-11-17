@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BiteBot
 
 source venv/bin/activate
@@ -20,3 +21,6 @@ bitebot-backend/
 ├── .env                     # Environment variables
 ├── requirements.txt         # Python dependencies
 └── README.md
+=======
+# BiteBot
+>>>>>>> 20048c3 (Initial commit)
