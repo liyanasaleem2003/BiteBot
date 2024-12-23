@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # BiteBot
 
 source venv/bin/activate
@@ -24,4 +22,3 @@ bitebot-backend/
 └── README.md
 =======
 # BiteBot
->>>>>>> 20048c3 (Initial commit)
