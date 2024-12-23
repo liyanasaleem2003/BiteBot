@@ -1,10 +1,8 @@
 # BiteBot
 
-source venv/bin/activate 
+source venv/bin/activate
 pip install -r requirements.txt
-
 uvicorn main:app --reload
-
 hi this is a test to see if this updates both github and gitlab
 bitebot-backend/
 │
