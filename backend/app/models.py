@@ -8,5 +8,4 @@ class User(BaseModel):
     bmi: float
     height: float
     family_history: Optional[List[str]]
-    dietary_preferences: Optional[List[str]]
     goals: Optional[List[str]]

@@ -1,39 +1,51 @@
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel
-from app.database import users_collection
-from bcrypt import hashpw, gensalt, checkpw
+from fastapi import APIRouter, HTTPException, status
+from pydantic import BaseModel, EmailStr
+from app.database import user_profiles
+from werkzeug.security import generate_password_hash, check_password_hash
 
 router = APIRouter()
 
-class SignupRequest(BaseModel):
-    email: str
+class RegisterUser(BaseModel):
+    first_name: str
+    email: EmailStr
     password: str
-    age: int
-    bmi: float
-    height: float
-    family_history: list
-    dietary_preferences: list
-    goals: list
+    profile: dict  # Profile data from frontend (age, sex, height, etc.)
 
-class LoginRequest(BaseModel):
-    email: str
-    password: str
-
-@router.post("/signup")
-def signup(user: SignupRequest):
+@router.post("/register", status_code=status.HTTP_201_CREATED, tags=["Authentication"])
+async def register_user(user: RegisterUser):
     # Check if user already exists
-    if users_collection.find_one({"email": user.email}):
-        raise HTTPException(status_code=400, detail="User already exists")
-    # Hash password
-    hashed_password = hashpw(user.password.encode(), gensalt())
-    user_data = user.dict()
-    user_data["password"] = hashed_password
-    users_collection.insert_one(user_data)
-    return {"message": "User created successfully"}
+    if user_profiles.find_one({"email": user.email}):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with this email already exists"
+        )
 
-@router.post("/login")
-def login(credentials: LoginRequest):
-    user = users_collection.find_one({"email": credentials.email})
-    if not user or not checkpw(credentials.password.encode(), user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    return {"message": "Login successful", "email": credentials.email"}
+    # Hash the password
+    hashed_password = generate_password_hash(user.password)
+# Save user to database, including profile details
+    user_profiles.insert_one({
+        "first_name": user.first_name,
+        "email": user.email,
+        "password": hashed_password,
+        "profile": {
+            "age": user.profile.get("age", None),
+            "sex": user.profile.get("sex", None),
+            "height": user.profile.get("height", None),
+            "weight": user.profile.get("weight", None),
+            "activityLevel": user.profile.get("activityLevel", None),
+            "healthGoal": user.profile.get("healthGoal", None),
+        },
+    })
+
+    return {"message": "User registered successfully"}
+# Login route
+class Login(BaseModel):
+    email: str
+    password: str
+
+@router.post("/login", tags=["Authentication"])
+async def login_user(login: Login):
+    user = user_profiles.find_one({"email": login.email})
+    if not user or not check_password_hash(user["password"], login.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": "Login successful"}

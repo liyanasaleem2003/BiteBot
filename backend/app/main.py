@@ -1,7 +1,17 @@
 from fastapi import FastAPI
 from app.routes import auth, profile, chatbot, meal_plan, wellness
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with your frontend URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Include routes
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
