@@ -1331,7 +1331,7 @@
     "instructions": [
         "Step 1: Soak rice, urad dal, and fenugreek seeds for 4 hours.",
         "Step 2: Grind soaked ingredients into a smooth batter and mix with ragi flour. Ferment overnight.",
-        "Step 3: Add low-sodium salt to the batter, pour into idli molds, and steam for 10–12 minutes. Serve with chutney."
+        "Step 3: Add low-sodium salt to the batter, pour into idli molds, and steam for 10–12 minutes. Serve with your choice of chutney."
     ],
     "nutritional_info": {
         "calories": 120,
@@ -2105,7 +2105,7 @@
     "image_url": "url_to_image",
     "time_required": 45,
     "tags": {
-      "dietary_preferences": ["Vegetarian", "Gluten-Free"],
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
       "health_goal": [
         { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources", "Folate-Heavy"] },
         { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
@@ -2150,7 +2150,7 @@
     "image_url": "url_to_image",
     "time_required": 20,
     "tags": {
-      "dietary_preferences": ["Vegan", "Non-Vegetarian","Pescatarian", "Gluten-Free"],
+      "dietary_preferences": ["Vegan","Vegetarian","Non-Vegetarian","Pescatarian", "Gluten-Free"],
       "health_goal": [
         { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
         { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] }
@@ -2190,7 +2190,7 @@
     "image_url": "url_to_image",
     "time_required": 30,
     "tags": {
-      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
       "health_goal": [
         { "main": "Digestive Health", "sub": ["High-Fiber"] },
         { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
@@ -2234,11 +2234,11 @@
   ,
   {
     "recipe_id": "51",
-    "name": "Peshawari Khar (Banana Stem Curry)",
+    "name": "Banana Stem Curry)",
     "image_url": "url_to_image",
     "time_required": 40,
     "tags": {
-      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "dietary_preferences": ["Vegan","Vegetarian","Lactose-Free","Gluten-Free"],
       "health_goal": [
         { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
         { "main": "Digestive Health", "sub": ["High-Fiber"] }
@@ -2246,10 +2246,10 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "South Indian"
       }
     },
-    "introduction": "Khar is a unique banana stem curry from Peshawar. Packed with fiber and non-heme iron, it promotes digestion and cellular health, offering a nutrient-dense dinner option.",
+    "introduction": "Packed with fiber and non-heme iron, this banana stem curry promotes digestion and cellular health, offering a nutrient-dense dinner option.",
     "ingredients": [
       { "name": "Banana Stem", "quantity": "1 cup, sliced" },
       { "name": "Onion", "quantity": "1, finely chopped" },
@@ -2439,7 +2439,7 @@
     "instructions": [
       "Step 1: Combine all ingredients in a jar or bowl.",
       "Step 2: Mix well, cover, and refrigerate overnight.",
-      "Step 3: Serve chilled or warm with a sprinkle of nuts."
+      "Step 3: Serve chilled or warm with a sprinkle of nuts or blueberries."
     ],
     "nutritional_info": {
       "calories": 220,
@@ -2457,7 +2457,7 @@
     "image_url": "url_to_image",
     "time_required": 40,
     "tags": {
-      "dietary_preferences": ["Vegetarian", "Lactose-Free"],
+      "dietary_preferences": ["Vegetarian", "Vegan", "Lactose-Free"],
       "health_goal": [
         { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
         { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
@@ -2661,7 +2661,7 @@
         ],
         "instructions": [
             "Step 1: Spread avocado slices on the flatbread and drizzle with lemon juice.",
-            "Step 2: Top with smoked salmon and sprinkle with dill. Serve immediately."
+            "Step 2: Top with smoked salmon and sprinkle with dill. Serve immediately with optional red onions."
         ],
         "nutritional_info": {
             "calories": 250,
@@ -2690,7 +2690,7 @@
             ],
             "meal_type": ["Snacks/In-Between Meals","Dinner"],
             "cultural": {
-                "main": "Authentic",
+                "main": "Fusion",
                 "sub": "Pakistani"
             }
         },
@@ -2768,7 +2768,7 @@
     },
     {
         "recipe_id": "63",
-        "name": "Egg Keema on Toast",
+        "name": "Egg Keema Sandwich",
         "image_url": "url_to_image",
         "time_required": 20,
         "tags": {
@@ -2786,7 +2786,7 @@
                 "sub": null
             }
         },
-        "introduction": "Egg Keema on Toast combines spiced scrambled eggs with whole grain bread for a high-protein, fiber-rich breakfast. Rich in iron and folate for cellular health, and anti-inflammatory properties for immunity, it’s a perfect start to your day.",
+        "introduction": "Egg Keema Sandwich combines spiced scrambled eggs with whole grain bread for a high-protein, fiber-rich breakfast. Rich in iron and folate for cellular health, and anti-inflammatory properties for immunity, it’s a perfect start to your day.",
         "ingredients": [
             { "name": "Eggs", "quantity": "2, beaten" },
             { "name": "Onion", "quantity": "1 small, finely chopped" },
@@ -2799,7 +2799,7 @@
         "instructions": [
             "Step 1: Heat olive oil in a pan and sauté onion, tomato, and chilies.",
             "Step 2: Add eggs and scramble gently until cooked. Stir in coriander.",
-            "Step 3: Serve over toasted whole-grain bread."
+            "Step 3: Stuff inside toasted whole-grain bread."
         ],
         "nutritional_info": {
             "calories": 280,
