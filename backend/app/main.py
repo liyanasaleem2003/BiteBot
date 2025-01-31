@@ -1,23 +1,23 @@
 from fastapi import FastAPI
-from app.routes import profile, chatbot, meal_plan
+from app.routes import profile, chatbot, recipes, auth
 from fastapi.middleware.cors import CORSMiddleware
-
-from backend.app import wellness
-from backend.app.routes import auth
+from app import wellness
+from app.routes import auth
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace "*" with your frontend URL in production
+    allow_origins=["http://localhost:3000"],  # Replace with frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Serve static files (for images)
-app.mount("/recipes", StaticFiles(directory="app/recipes"), name="recipes")
+app.mount("/static/recipes", StaticFiles(directory="app/recipes"), name="static-recipes")
 
 # Include routes
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])

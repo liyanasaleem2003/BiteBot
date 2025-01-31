@@ -1,25 +1,21 @@
 from fastapi import APIRouter, HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 router = APIRouter()
-
+MONGO_URI = os.getenv("MONGO_URI")
 # MongoDB connection (adjust as per your setup)
-MONGO_URI = "mongodb://localhost:27017"
-client = AsyncIOMotorClient(MONGO_URI)
-db = client["bitebot"]  # Replace 'bitebot' with your database name
+client = MongoClient(MONGO_URI)
+db = client["BiteBotDB"]  # Replace 'bitebot' with your database name
 recipes_collection = db["recipes"]
-
 
 @router.get("/recipes")
 async def get_recipes():
-    """
-    Fetch all recipes from MongoDB.
-    """
-    try:
-        recipes = await recipes_collection.find().to_list(length=100)  # Limit to 100 recipes
-        return recipes
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    recipes = list(recipes_collection.find({}, {"_id": 0}))  # Exclude MongoDB's `_id` field
+    return recipes
+
 
 @router.post("/favorites")
 async def add_to_favorites(user_id: str, recipe_id: str):

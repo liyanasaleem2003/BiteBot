@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, EmailStr
-from backend.app.routes.database import user_profiles
+from app.routes.database import user_profiles
 from werkzeug.security import generate_password_hash, check_password_hash
 
 router = APIRouter()

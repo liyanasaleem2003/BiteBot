@@ -4,13 +4,9 @@ import os
 
 # Load environment variables
 load_dotenv()
-# MongoDB connection string
-MONGO_URI = os.getenv("MONGO_URI")  # Load from environment variables for security
-
-# Connect to MongoDB
+MONGO_URI = os.getenv("MONGO_URI")
+# MongoDB connection (adjust as per your setup)
 client = MongoClient(MONGO_URI)
 db = client["BiteBotDB"]
-
-# Collections
-user_profiles = db["user_profiles"]
 recipes = db["recipes"]
+print(list(recipes.find({})))
