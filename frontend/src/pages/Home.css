@@ -66,8 +66,8 @@ body {
     font-size: 3.2rem; /* Adjust size for the circle */
     line-height: 1.2;
     margin-bottom: 20px;
-    text-align: center;
-  }
+}
+
   
   .center-content .subtext {
     background: rgba(0, 0, 0, 0.5); /* Partially opaque background */
@@ -83,6 +83,8 @@ body {
   .center-content .subtext:hover {
     transform: translateY(-2px);
     background: rgba(0, 0, 0, 0.6);
+    text-shadow: 0 0 1px #ffffff, 0 0 0px #ffffff;
+    color: #ffffff; /* Optional: Change color slightly for emphasis */
   }
  /* Feature Buttons */
 .feature-buttons {
@@ -141,24 +143,37 @@ body {
     transition: transform 0.3s, background-color 0.3s;
   }
   
-  /* Button hover effect */
-  .button-card:hover {
-    transform: translateY(-5px);
-    background: rgba(0, 0, 0, 0.9);
-  }
-  
-  /* Button text styles */
-  .button-card h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #fff;
-  }
-  
-  .button-card p {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #ddd;
-  }
+ /* Button hover effect */
+.button-card:hover {
+  transform: translateY(-5px);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.button-card:hover h2 {
+  text-shadow: 0 0 1px #acdf8f, 0 0 0px #acdf8f;
+  color: #acdf8f; /* Optional: Change color slightly for emphasis */
+}
+
+.button-card:hover p {
+  text-shadow: 0 0 1px #ffffff, 0 0 0px #ffffff;
+  color: #ffffff; /* Optional: Change color slightly for emphasis */
+}
+
+/* Button text styles */
+.button-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #acdf8f; /* Default color */
+  transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.button-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ddd; /* Default color */
+  transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
   
   
   /* Footer */
