@@ -11,7 +11,7 @@
       ],
       "meal_type": "Breakfast",
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -44,7 +44,7 @@
   },
   {
     "recipe_id": "2",
-    "name": "Shorshe Dal (Bengali Mustard Lentils)",
+    "name": "Shorshe Dal",
     "image_url": "url_to_image",
     "time_required": 25,
     "tags": {
@@ -58,7 +58,7 @@
       "meal_type": "Lunch",
       "cultural": {
         "main": "Authentic",
-        "sub": "Bengali"
+        "sub": "Bengali 🇧🇩"
       }
     },
     "introduction": "Shorshe Dal is a traditional Bengali dish rich in non-heme iron from lentils and packed with folate. The mustard seeds add antioxidants and anti-inflammatory properties, making this dish perfect for promoting cellular health and digestion.",
@@ -105,7 +105,7 @@
         "meal_type": "Dinner",
         "cultural": {
             "main": "Authentic",
-            "sub": "Pakistani"
+            "sub": "Pakistani 🇵🇰"
         }
     },
     "introduction": "This healthier version of Lahori Chicken Karahi uses lean chicken breast and avocado oil to reduce saturated fat while retaining the traditional flavors. With collagen-boosting ingredients like tomatoes and lemon juice, it supports skin and joint health, making it a wholesome dinner option.",
@@ -152,7 +152,7 @@
       "meal_type": ["Snacks/In-Between Meals","Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Indian"
+        "sub": "Indian 🇮🇳"
       }
     },
     "introduction": "Mango Lassi is a refreshing Indian drink packed with antioxidants like beta-carotene and Vitamin C from mangoes. It also contains probiotics from yogurt, which support gut health and strengthen the immune system. A perfect mid-day snack for boosting energy and digestion.",
@@ -193,7 +193,7 @@
       "meal_type": "Lunch",
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Kerala Avial is a quintessential South Indian dish featuring a medley of vegetables cooked in a spiced coconut-yogurt base. This version emphasizes probiotic-rich yogurt for digestion, high-fiber vegetables for gut health, and calcium from coconut for supporting skin and joint health. Antioxidants from curry leaves and turmeric further boost immunity.",
@@ -241,7 +241,7 @@
       "meal_type": "Snacks/In-Between Meals",
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "Pakistani 🇵🇰"
       }
     },
     "introduction": "Lahori Chana Chaat is a tangy and spicy chickpea salad that’s packed with high-fiber legumes, making it excellent for digestion. Made without heavy oils, its low-sodium and low-saturated fat profile also makes it heart-healthy. A refreshing snack with a traditional Pakistani twist.",
@@ -283,7 +283,7 @@
       ],
       "meal_type": "Lunch",
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -327,7 +327,7 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "Bengali"
+        "sub": "Bengali 🇧🇩"
       }
     },
     "introduction": "Aloo Posto is a traditional Bengali dish made with potatoes and poppy seeds, known for their anti-inflammatory properties. A fiber-rich and immunity-boosting comfort dish that pairs well with steamed rice.",
@@ -369,7 +369,7 @@
       "meal_type": "Snacks/In-Between Meals",
       "cultural": {
         "main": "Authentic",
-        "sub": "Western Indian"
+        "sub": "Western Indian 🇮🇳"
       }
     },
     "introduction": "Gujarati Khandvi is a classic Western Indian snack made with gram flour and probiotic-rich yogurt. The addition of turmeric and yogurt promotes healthy digestion, while Vitamin C from grated coconut aids collagen production, benefiting skin and joint health. Tempered with mustard seeds, it also provides heart-friendly omega-3 fatty acids.",
@@ -413,7 +413,7 @@
       "meal_type": ["Dinner","Lunch"],
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Malabar Fish Curry is a traditional Kerala dish made with fresh fish and coconut milk. This Low-Sugar version skips rice, focusing on fiber-rich vegetables and omega-3-rich fish, perfect for heart health and immunity. **Coconut oil** is used for its authentic flavor and anti-inflammatory properties.",
@@ -461,7 +461,7 @@
         "meal_type": "Dinner",
         "cultural": {
             "main": "Authentic",
-            "sub": "North Indian"
+            "sub": "North Indian 🇮🇳"
         }
     },
     "introduction": "Baingan Bharta is a smoky, mashed eggplant dish rich in antioxidants from garlic and tomatoes. This version uses mustard oil for its anti-inflammatory properties and heart-healthy unsaturated fats. High in fiber, this dish aids digestion, supports blood sugar control, and is keto-friendly for a wholesome, low-saturated-fat dinner.",
@@ -508,7 +508,7 @@
         "meal_type": ["Snacks/In-Between Meals","Lunch","Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Pakistani"
+            "sub": "Pakistani 🇵🇰"
         }
     },
     "introduction": "Chicken Seekh Kebabs are flavorful skewers crafted with lean ground chicken and aromatic spices. High in protein and naturally low in carbs, they support muscle-building and heart health. Grilled with unsaturated fatty oils, these kebabs include heart-healthy fats and antioxidants, making them a nutritious snack or appetizer.",
@@ -544,11 +544,11 @@
 ,
 {
     "recipe_id": "13",
-    "name": "Spiced Tomato & Herb Chicken Pasta",
+    "name": "Tomato & Herb Chicken Pasta",
     "image_url": "url_to_image",
     "time_required": 30,
     "tags": {
-        "dietary_preferences": ["Non-Vegetarian"],
+        "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
         "health_goal": [
             { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
             { "main": "Digestive Health", "sub": ["High-Fiber"] },
@@ -556,7 +556,7 @@
         ],
         "meal_type": "Lunch",
         "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
         }
     },
@@ -604,7 +604,7 @@
       "meal_type": "Lunch",
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "Pakistani 🇵🇰"
       }
     },
     "introduction": "Sindhi Kadhi is a tangy and nutritious curry made with gram flour and a medley of vegetables. Rich in non-heme iron, fiber, and probiotics, it promotes digestion and supports immunity with turmeric's anti-inflammatory properties. Minimal mustard oil enhances its authentic flavor while adding heart-healthy benefits.",
@@ -648,7 +648,7 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Hyderabadi Dum Biryani is a fragrant, slow-cooked rice dish layered with marinated meat and aromatic spices. This healthier version uses brown basmati rice for added fiber and low-sodium salt to support heart health. The turmeric and cinnamon in the dish provide anti-inflammatory benefits, making it ideal for overall wellness.",
@@ -682,7 +682,7 @@
   },
 {
     "recipe_id": "16",
-    "name": "Shorshe Ilish (Hilsa in Mustard Gravy)",
+    "name": "Shorshe Ilish",
     "image_url": "url_to_image",
     "time_required": 35,
     "tags": {
@@ -695,7 +695,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Bengali"
+            "sub": "Bengali 🇧🇩"
         }
     },
     "introduction": "Shorshe Ilish is a classic Bengali dish that highlights Hilsa fish in a tangy mustard gravy. Hilsa is an excellent source of omega-3 fatty acids, which support heart health, while mustard seeds provide antioxidants and anti-inflammatory benefits. This version uses minimal mustard oil and turmeric for added anti-inflammatory properties, making it a nutrient-dense meal.",
@@ -737,7 +737,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Chettinad Pepper Chicken is a bold and spicy dish from Tamil Nadu, rich in aromatic spices and freshly ground black pepper. Known for its fiery flavor and anti-inflammatory benefits, this dish is protein-packed and perfect for muscle building.",
@@ -779,7 +779,7 @@
   },
   {
     "recipe_id": "18",
-    "name": "Kashmiri Yakhni (Mutton Yogurt Curry)",
+    "name": "Kashmiri Yakhni",
     "image_url": "url_to_image",
     "time_required": 60,
     "tags": {
@@ -794,7 +794,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "Kashmiri Yakhni is a traditional mutton curry simmered in a yogurt-based gravy. This version emphasizes a keto-friendly, low-saturated-fat profile by using olive oil and probiotic-rich yogurt. Lean goat meat, fennel, and ginger enhance immunity, digestion, and cellular health, making it a nutrient-packed, flavorful meal.",
@@ -827,7 +827,7 @@
   },
   {
     "recipe_id": "19",
-    "name": "Manipuri Eromba (Fermented Fish and Vegetable Mash)",
+    "name": "Manipuri Eromba",
     "image_url": "url_to_image",
     "time_required": 25,
     "tags": {
@@ -841,7 +841,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "North-Eastern Indian"
+            "sub": "North-Eastern Indian 🇮🇳"
         }
     },
     "introduction": "Manipuri Eromba is a traditional North-Eastern Indian dish combining fermented fish (Ngari) and boiled vegetables. Rich in probiotics for gut health, it provides vitamin B12 from the fish and anti-inflammatory properties from turmeric and chilies. Its nutrient profile supports immunity, digestion, and cellular health, making it a balanced, wholesome meal.",
@@ -890,7 +890,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Pakistani"
+            "sub": "Pakistani 🇵🇰"
         }
     },
     "introduction": "Peshawari Chapli Kebab is a protein-rich, keto-friendly minced meat patty that balances flavor and health. Prepared with **avocado oil** and spiced with coriander and cumin, it’s low in saturated fat and supports muscle growth, heart health, and blood sugar control. Pomegranate seeds add a touch of sweetness and antioxidants, enhancing immunity.",
@@ -937,7 +937,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Bengali"
+            "sub": "Bengali 🇧🇩"
         }
     },
     "introduction": "Shatkora Beef Curry is a Sylheti delicacy featuring slow-cooked beef and the unique tang of shatkora (wild citrus). This version uses lean beef and mustard oil for omega-3 benefits. With its keto-friendly, antioxidant-rich profile, it supports heart health, blood sugar control, and immunity while staying true to traditional flavors.",
@@ -970,7 +970,7 @@
 ,
   {
     "recipe_id": "22",
-    "name": "Kashmiri Haak Saag (Collard Greens Curry)",
+    "name": "Kashmiri Haak Saag",
     "image_url": "url_to_image",
     "time_required": 20,
     "tags": {
@@ -983,7 +983,7 @@
         "meal_type": ["Lunch","Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "North Indian"
+            "sub": "North Indian 🇮🇳"
         }
     },
     "introduction": "Haak Saag is a traditional Kashmiri delicacy made with nutrient-dense collard greens, a rich source of calcium and non-heme iron. These greens support joint health, cellular function, and immunity with their anti-inflammatory properties from turmeric and garlic.",
@@ -1013,7 +1013,7 @@
 ,
   {
     "recipe_id": "23",
-    "name": "Bengali Shukto (Vegetable Medley with Mustard Sauce)",
+    "name": "Bengali Shukto",
     "image_url": "url_to_image",
     "time_required": 40,
     "tags": {
@@ -1026,7 +1026,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Bengali"
+            "sub": "Bengali 🇧🇩"
         }
     },
     "introduction": "Shukto is a traditional Bengali dish featuring a mix of bitter and savory vegetables cooked in a mustard-based sauce. Drumsticks add a unique flavor and are rich in non-heme iron and folate, supporting cellular health. With their high fiber and vitamin C content, they also enhance digestion and immunity.",
@@ -1058,7 +1058,7 @@
 ,
 {
   "recipe_id": "24",
-  "name": "Lahori Murgh Cholay (Chicken and Chickpea Curry)",
+  "name": "Lahori Murgh Cholay",
   "image_url": "url_to_image",
   "time_required": 50,
   "tags": {
@@ -1071,7 +1071,7 @@
     "meal_type": ["Lunch", "Dinner"],
     "cultural": {
       "main": "Authentic",
-      "sub": "Pakistani"
+      "sub": "Pakistani 🇵🇰"
     }
   },
   "introduction": "Lahori Murgh Cholay is a hearty dish of chicken and chickpeas in a spiced gravy. This version uses lean chicken and minimal oil, making it high in protein for muscle building, fiber-rich for digestive health, and low in saturated fat for heart health. Chickpeas and chicken also provide essential heme iron, supporting cellular health.",
@@ -1125,7 +1125,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North-Eastern Indian"
+        "sub": "North-Eastern Indian 🇮🇳"
       }
     },
     "introduction": "Fish Tenga is a traditional Assamese tangy fish curry made with tomatoes and lemon, offering a light yet flavorful meal. This version uses air-frying to reduce saturated fat while preserving authentic flavors. Rich in omega-3 fatty acids, antioxidants, and anti-inflammatory ingredients, it supports heart health, boosts immunity, and enhances overall well-being.",
@@ -1178,7 +1178,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "Western Indian"
+            "sub": "Western Indian 🇮🇳"
         }
     },
     "introduction": "Undhiyu is a wholesome Gujarati curry made with a medley of seasonal vegetables. This version uses minimal oil and swaps traditional potatoes with sweet potatoes for added beta-carotene, promoting digestive health, boosting immunity, and supporting heart health with low-sodium and antioxidant-rich ingredients.",
@@ -1224,7 +1224,7 @@
         "meal_type": ["Lunch", "Dinner"],
         "cultural": {
             "main": "Authentic",
-            "sub": "North-Eastern Indian"
+            "sub": "North-Eastern Indian 🇮🇳"
         }
     },
     "introduction": "Aloo Pitika is a comforting Assamese mashed potato dish enhanced with the anti-inflammatory properties of mustard oil and green chilies. Rich in resistant starch from cooled potatoes, it supports gut health and aids digestion, while its simplicity makes it a perfect side dish.",
@@ -1253,7 +1253,7 @@
 },
   {
     "recipe_id": "28",
-    "name": "Dhakai Morog Polao (Bangladeshi Chicken Pilaf)",
+    "name": "Dhakai Morog Polao",
     "image_url": "url_to_image",
     "time_required": 60,
     "tags": {
@@ -1265,7 +1265,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Bengali"
+        "sub": "Bengali 🇧🇩"
       }
     },
     "introduction": "Dhakai Morog Polao is a rich Bangladeshi dish of spiced chicken cooked with brown basmati rice for higher fiber content. This version uses lean chicken and heart-healthy oils, making it a flavorful yet lower-fat, protein-rich choice.",
@@ -1303,7 +1303,7 @@
   },
   {
     "recipe_id": "29",
-    "name": "Ragi Idli (Steamed Finger Millet Cakes)",
+    "name": "Ragi Idli",
     "image_url": "url_to_image",
     "time_required": 20,
     "tags": {
@@ -1317,7 +1317,7 @@
         "meal_type": ["Breakfast", "Snacks/In-Between Meals"],
         "cultural": {
             "main": "Authentic",
-            "sub": "South Indian"
+            "sub": "South Indian 🇮🇳"
         }
     },
     "introduction": "Ragi Idli is a South Indian delicacy made with nutrient-rich finger millet. Packed with calcium for strong bones and fiber for digestion, it also supports heart health with its low-sodium and low-fat profile. Fermentation enhances nutrient absorption, adding folate for cardiovascular benefits, and fenugreek seeds provide anti-inflammatory properties.",
@@ -1357,7 +1357,7 @@
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Bengali"
+        "sub": "Bengali 🇧🇩"
       }
     },
     "introduction": "Mishti Doi is a traditional Bengali dessert made by fermenting milk and jaggery. Packed with probiotics, it supports gut health and boosts immunity while offering a natural sweetness.",
@@ -1395,7 +1395,7 @@
       ],
       "meal_type": ["Breakfast", "Desserts/Sweet Treats"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1423,7 +1423,7 @@
 },
   {
     "recipe_id": "32",
-    "name": "Besan Chilla (Savory Gram Flour Pancakes)",
+    "name": "Besan Chilla",
     "image_url": "url_to_image",
     "time_required": 15,
     "tags": {
@@ -1436,7 +1436,7 @@
       "meal_type": ["Breakfast"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "Besan Chilla is a North Indian savory pancake made with gram flour. Naturally low in saturated fat and high in fiber, it supports blood sugar control and heart health while providing plant-based protein with added cumin for flavor and digestion benefits.",
@@ -1466,7 +1466,7 @@
   },
   {
     "recipe_id": "33",
-    "name": "Gajar Ka Halwa (Carrot Halwa with Almond Milk)",
+    "name": "Gajar Ka Halwa",
     "image_url": "url_to_image",
     "time_required": 45,
     "tags": {
@@ -1479,7 +1479,7 @@
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "This healthier version of Gajar Ka Halwa uses almond milk and jaggery instead of condensed milk and sugar, reducing the saturated fat and refined sugar content. Carrots are rich in beta-carotene, a precursor to vitamin A, promoting skin health, while almonds offer anti-inflammatory properties that boost immunity.",
@@ -1522,7 +1522,7 @@
       ],
       "meal_type": ["Breakfast","Desserts/Sweet Treats","Snacks/In-Between Meals"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1561,7 +1561,7 @@
       ],
       "meal_type": ["Breakfast"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1597,7 +1597,7 @@
   },
   {
     "recipe_id": "36",
-    "name": "Date and Almond Energy Balls",
+    "name": "Date & Almond Energy Balls",
     "image_url": "url_to_image",
     "time_required": 15,
     "tags": {
@@ -1607,7 +1607,7 @@
       ],
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
-        "main": "Fusion"
+        "main": "Fusion 🥘"
       }
     },
     "introduction": "These Date and Almond Energy Balls are naturally sweetened and packed with energy-boosting nutrients. Almonds and dates make them a heart-healthy, on-the-go snack.",
@@ -1645,7 +1645,7 @@
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "These ladoos combine roasted almonds and jaggery, offering plant-based iron and natural sweetness without processed sugars. The inclusion of sesame seeds enhances iron absorption, while cardamom provides antioxidant benefits, making this dessert ideal for heart health and individuals prone to anemia.",
@@ -1672,7 +1672,7 @@
   },
   {
     "recipe_id": "38",
-    "name": "Dark Chocolate & Orange Mousse",
+    "name": "Dark Chocolate Orange Mousse",
     "image_url": "url_to_image",
     "time_required": 15,
     "tags": {
@@ -1684,7 +1684,7 @@
       ],
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1725,7 +1725,7 @@
       ],
       "meal_type": ["Breakfast", "Desserts/Sweet Treats","Snacks/In-Between Meals"],
       "cultural": {
-        "main": "Fusion"
+        "main": "Fusion 🥘"
       }
     },
     "introduction": "This vibrant smoothie pairs the iron-rich benefits of beetroot with vitamin C from oranges to enhance absorption. Spinach and chia seeds provide additional folate and omega-3s, making it excellent for red blood cell production, immunity, and digestive health.",
@@ -1766,7 +1766,7 @@
       ],
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1807,7 +1807,7 @@
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "This creamy Fenugreek and Almond Phirni uses jaggery for sweetness and fenugreek for blood sugar control. Almonds provide heart-healthy fats and support skin health.",
@@ -1836,7 +1836,7 @@
   },
   {
     "recipe_id": "42",
-    "name": "Spinach, Citrus, and Pineapple Immunity Smoothie",
+    "name": "Green Immunity Smoothie",
     "image_url": "url_to_image",
     "time_required": 5,
     "tags": {
@@ -1849,7 +1849,7 @@
       ],
       "meal_type": ["Breakfast", "Desserts/Sweet Treats", "Snacks/In-Between Meals"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -1890,7 +1890,7 @@
       "meal_type": ["Breakfast","Lunch"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "Bajra Khichdi is a North Indian classic crafted with pearl millet and lentils. This version replaces ghee with olive oil for a healthier fat alternative while maintaining its rich, nutty flavor. Packed with dietary fiber for digestion, non-heme iron for boosting cellular health, and low in sodium and saturated fat for heart health, it’s a perfect light breakfast or lunch.",
@@ -1922,7 +1922,7 @@
   
   {
     "recipe_id": "44",
-    "name": "Masala Moong Dal Cheela (Savory Lentil Pancakes)",
+    "name": "Masala Moong Dal Cheela",
     "image_url": "url_to_image",
     "time_required": 20,
     "tags": {
@@ -1936,7 +1936,7 @@
       "meal_type": ["Breakfast", "Snacks/In-Between Meals"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "Masala Moong Dal Cheela is a protein-packed North Indian pancake made with lentils, perfect for muscle-building and supporting digestion with its high fiber content. Using a non-stick pan eliminates the need for excessive oil, keeping it low in saturated fat and ideal for heart health. The slow-digesting lentils help regulate blood sugar levels, making it a great Low-Sugar option.",
@@ -1967,7 +1967,7 @@
   },
   {
     "recipe_id": "45",
-    "name": "Muri Ghonto (Bengali Fish Head and Lentil Stew)",
+    "name": "Muri Ghonto",
     "image_url": "url_to_image",
     "time_required": 45,
     "tags": {
@@ -1979,7 +1979,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Bengali"
+        "sub": "Bengali 🇧🇩"
       }
     },
     "introduction": "Muri Ghonto is a traditional Bengali dish made by cooking fish head with lentils and aromatic spices. This version air-fries the fish head instead of deep frying, reducing excess oil while preserving authentic flavors. Mustard oil adds to the rich, traditional taste, making this dish heart-healthy and full of nutrients.",
@@ -2029,7 +2029,7 @@
       ],
       "meal_type": ["Breakfast", "Snacks/In-Between Meals","Desserts/Sweet Treats"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -2070,7 +2070,7 @@
       ],
       "meal_type": ["Breakfast"],
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -2113,7 +2113,7 @@
       "meal_type": ["Lunch"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "Pakistani 🇵🇰"
       }
     },
     "introduction": "Sindhi Sai Bhaji is a nutrient-dense dish combining spinach and lentils, providing non-heme iron and folate essential for cellular health. The dish uses **rapeseed oil**, a heart-healthy alternative that adds omega-3s while maintaining traditional flavors. This wholesome lunch pairs well with brown rice or millet roti.",
@@ -2158,7 +2158,7 @@
       "meal_type": ["Desserts/Sweet Treats"],
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Ragi & Almond Ladoo is a calcium-rich South Indian dessert sweetened with dates. Ragi (finger millet) and almonds boost skin and joint health, while fiber supports blood sugar control.",
@@ -2186,7 +2186,7 @@
   },
   {
     "recipe_id": "50",
-    "name": "Kolhapuri Misal Pav (Maharashtrian Legume Curry)",
+    "name": "Kolhapuri Misal Pav",
     "image_url": "url_to_image",
     "time_required": 30,
     "tags": {
@@ -2198,7 +2198,7 @@
       "meal_type": "Lunch",
       "cultural": {
         "main": "Authentic",
-        "sub": "South-Western Indian"
+        "sub": "South-Western Indian 🇮🇳"
       }
     },
     "introduction": "Kolhapuri Misal Pav is a spicy Maharashtrian curry made with sprouted legumes. This version replaces heavy oils with cold-pressed coconut oil and uses freshly ground spices, enhancing its fiber content and anti-inflammatory properties for digestive and immune health.",
@@ -2246,7 +2246,7 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "South Indian"
+        "sub": "South Indian 🇮🇳"
       }
     },
     "introduction": "Packed with fiber and non-heme iron, this banana stem curry promotes digestion and cellular health, offering a nutrient-dense dinner option.",
@@ -2277,7 +2277,7 @@
   },
   {
     "recipe_id": "52",
-    "name": "Rajasthani Bajra Khichdi (Millet Porridge)",
+    "name": "Rajasthani Bajra Khichdi",
     "image_url": "url_to_image",
     "time_required": 30,
     "tags": {
@@ -2289,7 +2289,7 @@
       "meal_type": "Breakfast",
       "cultural": {
         "main": "Authentic",
-        "sub": "North-Western Indian"
+        "sub": "North-Western Indian 🇮🇳"
       }
     },
     "introduction": "This Bajra Khichdi uses pearl millet, a rich source of fiber and calcium, making it ideal for supporting blood sugar control and enhancing joint health. It’s a traditional North-Western Indian dish often enjoyed during colder months, now made with heart-healthy **rapeseed oil** for additional omega-3 benefits.",
@@ -2333,7 +2333,7 @@
       "meal_type": ["Lunch", "Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "Pakistani 🇵🇰"
       }
     },
     "introduction": "Balochi Sajji is a traditional Pakistani dish featuring whole roasted chicken. This version uses minimal seasoning to enhance the natural flavors, making it high in protein and heart-healthy with low sodium.",
@@ -2374,7 +2374,7 @@
       "meal_type": ["Lunch","Dinner"],
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "This reinvented Butter Chicken replaces butter with heart-healthy extra virgin olive oil and light coconut cream for a creamy texture, making it both lactose-free and healthier. Added garlic and ginger enhance flavor and immunity, while lean chicken thighs provide muscle-building protein. Using low-sodium salt ensures it’s heart-friendly.",
@@ -2422,7 +2422,7 @@
       ],
       "meal_type": "Breakfast",
       "cultural": {
-        "main": "Fusion",
+        "main": "Fusion 🥘",
         "sub": null
       }
     },
@@ -2465,7 +2465,7 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "North Indian"
+        "sub": "North Indian 🇮🇳"
       }
     },
     "introduction": "This Shahi Tofu recipe uses firm tofu and cashew cream for a rich, creamy texture. Rapeseed oil enhances the flavor while contributing heart-healthy omega-3 fatty acids. Packed with plant-based protein and anti-inflammatory spices, it’s perfect for a nutritious yet indulgent dinner.",
@@ -2512,7 +2512,7 @@
       "meal_type": "Dinner",
       "cultural": {
         "main": "Authentic",
-        "sub": "Pakistani"
+        "sub": "Pakistani 🇵🇰"
       }
     },
     "introduction": "This lactose-free chicken korma uses light coconut or cashew yogurt for a creamy texture, paired with turmeric, ginger, and spinach for added anti-inflammatory benefits. High in protein and iron, it’s a nutritious twist on a classic dish that supports muscle growth and immunity.",
@@ -2556,7 +2556,7 @@
         "meal_type": "Lunch",
         "cultural": {
             "main": "Authentic",
-            "sub": "South Indian"
+            "sub": "South Indian 🇮🇳"
         }
     },
     "introduction": "Kerala Fish Moilee is a fragrant coconut milk-based curry infused with turmeric and green chilies. Using olive oil and fresh fish, this heart-healthy dish is rich in omega-3 fatty acids and probiotics, supporting cardiovascular and digestive health.",
@@ -2588,7 +2588,7 @@
 },
 {
         "recipe_id": "59",
-        "name": "Masala Egg Bhurji (Spiced Scrambled Eggs)",
+        "name": "Masala Egg Bhurji",
         "image_url": "url_to_image",
         "time_required": 15,
         "tags": {
@@ -2603,7 +2603,7 @@
             "meal_type": ["Breakfast"],
             "cultural": {
                 "main": "Authentic",
-                "sub": "Indian"
+                "sub": "Indian 🇮🇳"
             }
         },
         "introduction": "Masala Egg Bhurji is a protein-packed Indian breakfast made with scrambled eggs and aromatic spices. High in protein and iron for muscle and cellular health, it also contains turmeric for its anti-inflammatory benefits, making it ideal for immunity, energy, and digestion.",
@@ -2633,7 +2633,7 @@
     },
     {
         "recipe_id": "60",
-        "name": "Smoked Salmon and Avocado Flatbread",
+        "name": "Smoked Salmon & Avocado Flatbread",
         "image_url": "url_to_image",
         "time_required": 10,
         "tags": {
@@ -2647,7 +2647,7 @@
             ],
             "meal_type": ["Breakfast","Snacks/In-Between Meals"],
             "cultural": {
-                "main": "Fusion",
+                "main": "Fusion 🥘",
                 "sub": null
             }
         },
@@ -2675,7 +2675,7 @@
     },
     {
         "recipe_id": "61",
-        "name": "Tuna Patties with Green Chutney",
+        "name": "Tuna Patties & Green Chutney",
         "image_url": "url_to_image",
         "time_required": 20,
         "tags": {
@@ -2690,8 +2690,8 @@
             ],
             "meal_type": ["Snacks/In-Between Meals","Dinner"],
             "cultural": {
-                "main": "Fusion",
-                "sub": "Pakistani"
+                "main": "Fusion 🥘",
+                "sub": "Pakistani 🇵🇰"
             }
         },
         "introduction": "Tuna Patties with Green Chutney are a protein-packed snack or light dinner enriched with omega-3 fats and fiber from oat flour. They also support iron absorption, better digestion, and immunity with the inclusion of coriander and probiotics in the chutney.",
@@ -2722,7 +2722,7 @@
     },
     {
         "recipe_id": "62",
-        "name": "Fish Cutlets with Mint Yogurt Dip",
+        "name": "Fish Cutlets & Mint Yogurt",
         "image_url": "url_to_image",
         "time_required": 25,
         "tags": {
@@ -2736,7 +2736,7 @@
             ],
             "meal_type": ["Snacks/In-Between Meals"],
             "cultural": {
-                "main": "Fusion",
+                "main": "Fusion 🥘",
                 "sub": null
             }
         },
@@ -2782,7 +2782,7 @@
             ],
             "meal_type": ["Breakfast"],
             "cultural": {
-                "main": "Fusion",
+                "main": "Fusion 🥘",
                 "sub": null
             }
         },
@@ -2826,7 +2826,7 @@
             ],
             "meal_type": ["Breakfast","Snacks/In-Between Meals"],
             "cultural": {
-                "main": "Fusion",
+                "main": "Fusion 🥘",
                 "sub": null
             }
         },
@@ -2868,7 +2868,7 @@
             "meal_type": ["Breakfast","Snacks/In-Between Meals"],
             "cultural": {
                 "main": "Authentic",
-                "sub": "South Indian"
+                "sub": "South Indian 🇮🇳"
             }
         },
         "introduction": "Seer Fish Lettuce Wraps bring the rich flavors of South India into a keto-friendly dish. Packed with omega-3 fatty acids, protein, and low-carb almond flour, this dish is perfect for muscle-building, heart health, and energy while keeping carbs to a minimum.",
@@ -2901,7 +2901,7 @@
     },
     {
         "recipe_id": "66",
-        "name": "Spiced Lentil and Sweet Potato Stew",
+        "name": "Lentil & Sweet Potato Stew",
         "image_url": "url_to_image",
         "time_required": 40,
         "tags": {
@@ -2914,7 +2914,7 @@
           ],
           "meal_type": ["Lunch","Dinner"],
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
           }
         },
@@ -2962,7 +2962,7 @@
           "meal_type": "Lunch",
           "cultural": {
             "main": "Authentic",
-            "sub": "Indian"
+            "sub": "Indian 🇮🇳"
           }
         },
         "introduction": "This aromatic curry features chickpeas as a rich source of plant-based protein, promoting muscle-building and energy-boosting. Coconut milk and turmeric enhance antioxidant and anti-inflammatory properties, supporting immunity. Gut-friendly probiotics in this dish aid digestive health, while folate-rich ingredients like chickpeas and tomatoes contribute to cellular health and iron levels.",
@@ -3008,7 +3008,7 @@
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
             "main": "Authentic",
-            "sub": "Indian"
+            "sub": "Indian 🇮🇳"
           }
         },
         "introduction": "A protein-packed take on a traditional Indian sweet, this laddu uses roasted chickpea flour for muscle-building benefits. It is sweetened with date paste, which supports blood sugar control, while desiccated coconut adds heart-healthy fats. With almonds providing additional protein and texture, it’s a delicious dessert for sustainable energy and improved cardiovascular health.",
@@ -3049,7 +3049,7 @@
           ],
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
           }
         },
@@ -3092,7 +3092,7 @@
           ],
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
           }
         },
@@ -3134,7 +3134,7 @@
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
             "main": "Authentic",
-            "sub": "Indian"
+            "sub": "Indian 🇮🇳"
           }
         },
         "introduction": "A unique take on kheer, this dessert uses protein-rich moong dal cooked in coconut milk, flavored with cinnamon and nutmeg, and sweetened with a small amount of date paste. Perfect for a nourishing treat.",
@@ -3148,7 +3148,7 @@
         "instructions": [
           "Step 1: Rinse moong dal and cook with water until soft.",
           "Step 2: Add coconut milk, date paste, cinnamon, and nutmeg. Simmer for 10 minutes.",
-          "Step 3: Serve warm, garnished with toasted coconut flakes."
+          "Step 3: Serve warm, garnished with toasted coconut flakes or cashews"
         ],
         "nutritional_info": {
           "calories": 200,
@@ -3174,8 +3174,8 @@
           ],
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
-            "main": "Fusion",
-            "sub": "Asian"
+            "main": "Fusion 🥘",
+            "sub": null
           }
         },
         "introduction": "Silken tofu provides high-quality protein for energy and muscle-building, while black sesame is rich in calcium for skin and joint health. This dessert also contains iron, making it a great option for preventing deficiencies. Sweetened lightly with maple syrup, it supports blood sugar control, offering a balanced and nutritious treat.",
@@ -3203,7 +3203,7 @@
       },
       {
         "recipe_id": "73",
-        "name": "Rosewater Almond Halva",
+        "name": "Rosewater Almond Halwa",
         "image_url": "url_to_image",
         "time_required": 30,
         "tags": {
@@ -3215,11 +3215,11 @@
           ],
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
-            "main": "Authentic",
-            "sub": "Middle Eastern"
+            "main": "Fusion 🥘",
+            "sub": null
           }
         },
-        "introduction": "This fragrant dessert blends almond flour for heart-healthy fats and iron-rich pistachios to support cellular health. Date paste adds natural sweetness while aiding blood sugar control, and rosewater brings anti-inflammatory benefits. This Middle Eastern-inspired halva is a perfect immunity-boosting and nutrient-packed dessert.",
+        "introduction": "This fragrant dessert blends almond flour for heart-healthy fats and iron-rich pistachios to support cellular health. Date paste adds natural sweetness while aiding blood sugar control, and rosewater brings anti-inflammatory benefits. This Middle Eastern-inspired halwa is a perfect immunity-boosting and nutrient-packed dessert.",
         "ingredients": [
           { "name": "Almond Flour", "quantity": "1 cup" },
           { "name": "Coconut Oil", "quantity": "2 tbsp" },
@@ -3244,7 +3244,7 @@
       },
       {
         "recipe_id": "74",
-        "name": "Amaranth and Coconut Porridge",
+        "name": "Amaranth & Coconut Porridge",
         "image_url": "url_to_image",
         "time_required": 30,
         "tags": {
@@ -3257,7 +3257,7 @@
           ],
           "meal_type": "Breakfast",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
           }
         },
@@ -3288,7 +3288,7 @@
       },
       {
         "recipe_id": "75",
-        "name": "Sesame and Beetroot Kebabs",
+        "name": "Sesame & Beetroot Kebabs",
         "image_url": "url_to_image",
         "time_required": 45,
         "tags": {
@@ -3301,7 +3301,7 @@
           ],
           "meal_type": "Snacks/In-Between Meals",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": "Middle Eastern"
           }
         },
@@ -3366,7 +3366,7 @@
           "Step 1: Heat olive oil in a pot and toast cumin seeds until aromatic.",
           "Step 2: Add garlic, ginger, and turmeric. Sauté for 2 minutes.",
           "Step 3: Stir in lentils, vegetable broth, and coconut milk. Simmer for 20 minutes.",
-          "Step 4: Add spinach and cook for 5 minutes. Serve hot."
+          "Step 4: Add spinach and cook for 5 minutes. Serve hot"
         ],
         "nutritional_info": {
           "calories": 280,
@@ -3380,7 +3380,7 @@
       },
       {
         "recipe_id": "77",
-        "name": "Baked Saffron Yogurt (Bhapa Doi)",
+        "name": "Bhapa Doi",
         "image_url": "url_to_image",
         "time_required": 60,
         "tags": {
@@ -3395,7 +3395,7 @@
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
             "main": "Authentic",
-            "sub": "Bengali"
+            "sub": "Bengali 🇧🇩"
           }
         },
         "introduction": "Bhapa Doi is a traditional Bengali steamed yogurt dessert. This healthier version uses Greek yogurt for a protein boost, contributing to muscle-building and energy. It is sweetened with honey for blood sugar control, while probiotics in yogurt improve digestive health.",
@@ -3427,7 +3427,7 @@
       },
       {
         "recipe_id": "78",
-        "name": "Steamed Coconut and Date Pudding",
+        "name": "Steamed Coconut Date Pudding",
         "image_url": "url_to_image",
         "time_required": 50,
         "tags": {
@@ -3439,7 +3439,7 @@
           ],
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": "South Asian"
           }
         },
@@ -3471,7 +3471,7 @@
       },
       {
         "recipe_id": "79",
-        "name": "Pakistani Rosewater Phirni",
+        "name": "Rosewater Phirni",
         "image_url": "url_to_image",
         "time_required": 60,
         "tags": {
@@ -3484,7 +3484,7 @@
           "meal_type": "Desserts/Sweet Treats",
           "cultural": {
             "main": "Authentic",
-            "sub": "Pakistani"
+            "sub": "Pakistani 🇵🇰"
           }
         },
         "introduction": "Phirni, a popular Pakistani dessert, is transformed into a healthier version by using brown rice flour and rosewater. Greek yogurt adds probiotics and protein, making it a heart-healthy and digestive-friendly treat. This dessert is lightly sweetened and naturally flavored with cardamom and rosewater.",
@@ -3528,7 +3528,7 @@
           "meal_type": "Snacks/In-Between Meals",
           "cultural": {
             "main": "Authentic",
-            "sub": ["Indian","Pakistani","Bengali"]
+            "sub": "South Asian"
           }
         },
         "introduction": "A healthier twist on the classic samosa, these baked vegetable samosas are filled with a spiced mix of potatoes, peas, and carrots, offering a low-fat, high-fiber snack option that promotes heart health and digestive wellness.",
@@ -3579,7 +3579,7 @@
           "meal_type": "Snacks/In-Between Meals",
           "cultural": {
             "main": "Authentic",
-            "sub": ["Indian","Pakistani","Bengali"]
+            "sub": "South Asian"
           }
         },
         "introduction": "Enjoy the crispy delight of pakoras without the excess oil. These air-fried vegetable pakoras are made with chickpea flour and assorted vegetables, providing a gluten-free, heart-healthy snack that's high in fiber for digestive health.",
@@ -3617,7 +3617,7 @@
       },
       {
         "recipe_id": "82",
-        "name": "Spiced Greek Yogurt Chia Parfait",
+        "name": "Spiced Greek Yogurt Parfait",
         "image_url": "url_to_image",
         "time_required": 10,
         "tags": {
@@ -3630,8 +3630,8 @@
         ],
         "meal_type": "Breakfast",
         "cultural": {
-          "main": "Fusion",
-          "sub": "South Asian"
+          "main": "Fusion 🥘",
+          "sub": null
         }
       },
       "introduction": "This spiced parfait combines Greek yogurt, chia seeds, and a drizzle of jaggery syrup, layered with fresh mango and pomegranate seeds. With probiotics for gut health, calcium for bone strength, and natural sweetness from jaggery, it’s a refreshing and nutritious breakfast option.",
@@ -3660,7 +3660,7 @@
       },
       {
         "recipe_id": "83",
-        "name": "Spinach and Masala Egg Scramble with Roti",
+        "name": "Spinach Egg Burji & Roti",
         "image_url": "url_to_image",
         "time_required": 15,
         "tags": {
@@ -3703,7 +3703,7 @@
       },
       {
         "recipe_id": "84",
-        "name": "Kefir and Cardamom Overnight Oats",
+        "name": "Kefir Overnight Oats",
         "image_url": "url_to_image",
         "time_required": 10,
         "tags": {
@@ -3715,7 +3715,7 @@
           ],
           "meal_type": "Breakfast",
           "cultural": {
-            "main": "Fusion",
+            "main": "Fusion 🥘",
             "sub": null
           }
         },
@@ -3745,7 +3745,7 @@
       },
       {
         "recipe_id": "85",
-        "name": "Mathi Puttu (Steamed Sardine Rice Cakes)",
+        "name": "Mathi Puttu",
         "image_url": "url_to_image",
         "time_required": 20,
         "tags": {
@@ -3757,10 +3757,10 @@
             "meal_type": ["Breakfast"],
             "cultural": {
                 "main": "Authentic",
-                "sub": "South Indian"
+                "sub": "South Indian 🇮🇳"
             }
         },
-        "introduction": "Sardine Puttu combines South Indian steamed rice cakes with omega-3-rich sardines. A nutritious and flavorful breakfast for muscle-building and heart health.",
+        "introduction": "Mathi Puttu combines South Indian steamed rice cakes with omega-3-rich sardines. A nutritious and flavorful breakfast for muscle-building and heart health.",
         "ingredients": [
             { "name": "Rice Flour", "quantity": "1 cup" },
             { "name": "Coconut", "quantity": "1/4 cup, grated" },
@@ -3799,7 +3799,7 @@
             ],
             "meal_type": ["Breakfast"],
             "cultural": {
-                "main": "Fusion",
+                "main": "Fusion 🥘",
                 "sub": null
             }
         },
@@ -3843,7 +3843,7 @@
             "meal_type": "Snacks/In-Between Meals",
             "cultural": {
                 "main": "Authentic",
-                "sub": "South Indian"
+                "sub": "South Indian 🇮🇳"
             }
         },
         "introduction": "Oven-Baked Banana Chips are a fiber-rich, potassium-packed snack that supports heart health and digestion. This version uses minimal oil and no added sugar, making it a healthier alternative to store-bought options.",
@@ -3883,7 +3883,7 @@
             ],
             "meal_type": "Snacks/In-Between Meals",
             "cultural": {
-                "main": "Authentic",
+                "main": "Fusion 🥘",
                 "sub": "Sri Lankan"
             }
         },
