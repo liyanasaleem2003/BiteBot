@@ -1,5 +1,12 @@
 import React from "react";
 
-export const Card = ({ children, className }) => (
-  <div className={`border rounded-lg shadow p-4 ${className}`}>{children}</div>
-);
+export const Card = ({ children, className = "", ...props }) => {
+  return (
+    <div
+      className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};

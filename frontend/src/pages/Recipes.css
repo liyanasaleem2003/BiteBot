@@ -1,58 +1,185 @@
-.recipe-page {
+/* Recipes Page */
+.recipes-page {
+  min-height: 100vh;
+  text-shadow: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background: url("../images/recipepage_background.webp") no-repeat center center fixed;
   background-size: cover;
-  min-height: 100vh;
-  color: white;
-  padding: 20px;
+  color: #fff;
+}
+
+/* Main Container for Sidebar + Recipe List */
+.container {
   display: flex;
+  align-items: flex-start;
+  padding: 30px;
+  gap: 5px; /* Increase space between sidebar and recipes */
 }
 
 
-.filter-recipes {
-  width: 25%;
-  background: rgba(0, 0, 0, 0.8);
+/* Increase Sidebar Width */
+.sidebar {
+  width: 27%; /* Increased from 29% */
+  min-width: 300px; /* Prevents it from getting too narrow */
+  height: 85vh;
+  background: rgba(9, 9, 9, 0.8);
+  padding: 20px 18px;
   border-radius: 10px;
-  padding: 20px;
-  color: white;
+  position: sticky; /* Sidebar stays fixed */
+  top: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Apply Scrolling Only to the Content */
+.sidebar-content {
+  flex-grow: 1;
+  overflow-y: auto; /* Enables scrolling inside sidebar */
+  max-height: calc(85vh - 48px); /* Ensures it does not exceed viewport */
+  padding-right: 5px; /* Avoids scrollbar cutting content */
+}
+
+/* Buttons for Filtering */
+.filter-group {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
+/* Default Button Style */
 .filter-button {
-  display: inline-block;
-  margin: 5px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
-  white-space: nowrap; /* Ensure button doesn't stretch */
-  text-align: center;
-  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s;
+  backdrop-filter: blur(5px);
 }
 
-
-.filter-button.selected {
-  background: green;
-  color: white;
-}
-
+/* Hover Effect */
 .filter-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  
 }
 
+/* Selected Filter Button */
+.filter-button.selected {
+  background: rgba(83, 196, 119, 0.3);
+  border-color: rgba(106, 201, 125, 0.6);
+  color: #acdf8f;
+  font-weight: bold;
+  transform: scale(1.03);
+}
+
+/* Ensure Sidebar Filters Show Completely */
+.sidebar .filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.recipe-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enables independent scrolling */
+  max-height: 85vh;
+  max-width: 73%;
+  width: 100%;
+  padding-bottom: 20px; /* Prevents last recipes from being cut off */
+}
+
+
+/* Increase Sidebar Heading Font Size */
+.sidebar h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+/* Style for Explore Text */
+.recipe-list h1 {
+  font-size: 20px; /* Bigger Text */
+  font-weight: bold;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.335); /* Translucent Black */
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 10px; /* Rounded Corners */
+  display: inline-block;
+  color: white;
+  width: fit-content;
+  margin: 0 auto 0; /* Centers it and adds spacing below */
+}
+
+
+/* Adjust Recipe Grid to Show 3 in a Row */
 .recipes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  width: 75%;
+  grid-template-columns: repeat(3, minmax(320px, 1fr)); /* 3 per row */
+  justify-content: center;
+  gap: 25px; /* Space between recipe cards */
+  width: 100%;
+  padding: 20px;
+  overflow: visible; /* Allow the grid to expand */
 }
 
-.recipe-card {
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-  color: white;
-  padding: 15px;
-  text-align: center;
+/* Medium Screens: Show 2 per row */
+@media (max-width: 1200px) {
+  .recipes-grid {
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+  }
 }
+
+/* Small Screens: Show 1 per row */
+@media (max-width: 768px) {
+  .recipes-grid {
+    grid-template-columns: repeat(1, minmax(320px, 1fr));
+  }
+}
+
+
+
+/* Scrollbar Customization for a Sleeker Look */
+.sidebar-content::-webkit-scrollbar, .recipes-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb, .recipes-grid::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.5);
+  border-radius: 10px;
+}
+
+.sidebar-content::-webkit-scrollbar-track, .recipes-grid::-webkit-scrollbar-track {
+  background: rgba(50, 50, 50, 0.2);
+}
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .recipes-grid {
+    grid-template-columns: repeat(2, 1fr); /* Show 2 per row on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .recipes-grid {
+    grid-template-columns: repeat(1, 1fr); /* Show 1 per row on small screens */
+  }
+}
+
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+  }

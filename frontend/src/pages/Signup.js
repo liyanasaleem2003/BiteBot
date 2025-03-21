@@ -92,7 +92,7 @@ const Signup = () => {
           <h1 className="title">BiteBot</h1>
           <p className="subheading">
             Your personal cultural nutrition guide. Discover personalized meal
-            plans and wellness advice that respect your heritage.
+            suggestions and wellness advice that respect your heritage.
           </p>
           <button
             className="get-started-button"
@@ -179,7 +179,9 @@ const Signup = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <button onClick={handleSubmit}>Create Account</button>
+            <button className="signup-button" onClick={handleSubmit}>
+              Create Account
+            </button>
             <p
               className="back-link"
               onClick={handleBackToWelcome}
@@ -207,7 +209,9 @@ const Signup = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <button>Log In</button>
+            <button className="signup-button">
+            Log In
+          </button>
             <p
               className="back-link"
               onClick={handleBackToWelcome}
@@ -288,9 +292,7 @@ const Signup = () => {
               <option value="lose">Lose Weight</option>
               <option value="gain">Gain Weight</option>
             </select>
-            <button
-              onClick={() => alert("Profile Completed!")}
-            >
+            <button className="signup-button" onClick={() => alert("Profile Completed!")}>
               Save Profile
             </button>
           </div>

@@ -103,7 +103,7 @@
     color: #4caf50;
   }
   
-  button {
+  .signup-button {
     width: 100%;
     margin: 10px 0;
     background: #4caf50;
@@ -115,9 +115,10 @@
     transition: background 0.3s;
   }
   
-  button:hover {
+  .signup-button:hover {
     background: #45a049;
   }
+  
   
   .back-link {
     font-size: 0.9rem;

@@ -1,0 +1,143 @@
+/* Increased Width for Title to Fit */
+/* Ensure Recipe Cards Have Fixed Width */
+.recipe-card {
+  width: flex;
+  height: 500px; /* Keep height unchanged */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(80, 80, 80, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.recipe-card:hover {
+  border-color: rgba(100, 100, 100, 0.8);
+}
+
+
+/* Image */
+.recipe-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Recipe Title */
+.recipe-title {
+  font-size: 17px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  margin-top: 12px; /* Increased space above title */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Recipe Info - Aligning Icons in One Row */
+.recipe-details {
+  display: flex;
+  justify-content: center; /* Evenly space items */
+  align-items: center;
+  color: rgba(200, 200, 200, 0.8);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* Aligning Time, Price, Chili, and Culture */
+.recipe-info {
+  display: flex;
+  gap: 7px; /* More spacing between items */
+  align-items: center;
+}
+
+/* Spice Level (Chili Icons) */
+.spice-level {
+  font-size: 18px;
+}
+
+/* Nutrition Information - Centrally Aligned */
+.nutrition-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 7px;
+  text-align: center;
+}
+
+.nutrition-left, .nutrition-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+/* Positioning Per Portion Info */
+.portion-info {
+  font-size: 14px;
+  color: rgba(200, 200, 200, 0.7);
+  font-style: italic;
+  text-align: right; /* Right aligned */
+  margin-top: 1px;
+}
+
+/* Cultural Style Badge */
+.cultural-style {
+  background: rgba(0, 150, 50, 0.2);
+  color: #00ff7f;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  transition: background 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+.cultural-style:hover {
+  background: rgba(0, 150, 50, 0.6);
+  color: white;
+}
+
+/* Health Benefit Badges - More Spacing */
+.recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Increased space between health benefits */
+  margin-top: 12px;
+}
+
+.health-badge {
+  background: rgba(0, 255, 127, 0.2);
+  color: #96bb5a;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  transition: background 0.3s ease-in-out;
+}
+
+.health-badge:hover {
+  background: rgba(0, 255, 127, 0.6);
+  color: white;
+}
+
+/* Favorite Heart Button */
+.favorite-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.favorite-button .heart {
+  width: 30px;
+  height: 30px;
+  fill: transparent;
+  transition: fill 0.2s;
+}
+
+.favorite-button .heart.filled {
+  fill: red;
+}
