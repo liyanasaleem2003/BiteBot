@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Home.css";
 import Navbar from "../components/ui/Navbar";
+import Footer from "../components/ui/Footer";
 
 function Home() {
   const navigate = useNavigate(); // Initialize navigation function
@@ -39,11 +40,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="footer">
-        <p>© 2023 BiteBot. All rights reserved.</p>
-        <a href="/">Privacy Policy</a> | <a href="/">Terms of Service</a>
-      </footer>
+      <Footer />
     </div>
   );
 }

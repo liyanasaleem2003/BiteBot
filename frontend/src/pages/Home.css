@@ -171,30 +171,4 @@
   color: #ddd; /* Default color */
   transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-
-  
-  
-  /* Footer */
-  .footer {
-    background: rgba(0, 0, 0, 0.9);
-    padding: 10px 20px;
-    font-size: 14px;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  .footer p {
-    margin: 0;
-  }
-  
-  .footer a {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 10px;
-  }
-  
-  .footer a:hover {
-    text-decoration: underline;
-  }
   

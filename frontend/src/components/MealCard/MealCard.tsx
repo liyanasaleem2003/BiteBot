@@ -58,13 +58,6 @@ interface MealCardProps {
 }
 
 export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCardProps) {
-  const [isExpanded, setIsExpanded] = useState(expanded);
-
-  const toggleExpansion = () => {
-    setIsExpanded(!isExpanded);
-    onToggle?.();
-  };
-
   const getHealthScoreClass = (score: number, type: "lowGood" | "highGood"): string => {
     if (type === "lowGood") {
       if (score <= 33) return "good";
@@ -110,15 +103,15 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={toggleExpansion} 
+          onClick={onToggle} 
           className="w-full mt-2 text-muted-foreground"
         >
-          {isExpanded ? "Hide Details" : "View Insights"}
-          <ChevronRight className={`ml-2 h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+          {expanded ? "Hide Details" : "View Insights"}
+          <ChevronRight className={`ml-2 h-4 w-4 transition-transform ${expanded ? 'rotate-90' : ''}`} />
         </Button>
       </div>
 
-      <div className={`meal-card-details ${isExpanded ? 'expanded' : 'collapsed'}`}>
+      <div className={`meal-card-details ${expanded ? 'expanded' : 'collapsed'}`}>
         <div className="meal-card-details-content">
           <div className="meal-card-section">
             <h4 className="meal-card-section-title">Nutrition</h4>

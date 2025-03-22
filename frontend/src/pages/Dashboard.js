@@ -176,7 +176,8 @@ export default function Dashboard() {
   const [newSupplementDose, setNewSupplementDose] = useState("");
   const [userSupplements, setUserSupplements] = useState(supplements);
   const [userMeals, setUserMeals] = useState(meals);
-  const [expandedMeal, setExpandedMeal] = useState(null);
+  const [expandedMealId, setExpandedMealId] = useState(null);
+  const [userFavoriteRecipes, setUserFavoriteRecipes] = useState(favoriteRecipes);
   
   const navigateDay = (direction) => {
     const newDate = new Date(currentDate);
@@ -221,6 +222,16 @@ export default function Dashboard() {
   const getDayLoggedStreak = () => {
     // This would be calculated based on user's history
     return 15;
+  };
+
+  const handleToggleMeal = (mealId) => {
+    setExpandedMealId(expandedMealId === mealId ? null : mealId);
+  };
+
+  const handleToggleFavorite = (recipeTitle) => {
+    setUserFavoriteRecipes(prevRecipes => 
+      prevRecipes.filter(recipe => recipe.title !== recipeTitle)
+    );
   };
 
   // Progress Circle Component
@@ -493,8 +504,8 @@ export default function Dashboard() {
                     key={meal.id} 
                     meal={meal} 
                     onDelete={handleDeleteMeal}
-                    expanded={expandedMeal === meal.id}
-                    onToggle={() => setExpandedMeal(expandedMeal === meal.id ? null : meal.id)}
+                    expanded={expandedMealId === meal.id}
+                    onToggle={() => handleToggleMeal(meal.id)}
                   />
                 ))}
               </div>
@@ -504,12 +515,12 @@ export default function Dashboard() {
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Saved Recipes</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {favoriteRecipes.map((recipe, index) => (
+                {userFavoriteRecipes.map((recipe, index) => (
                   <RecipeCard
-                    key={index}
+                    key={recipe.title}
                     {...recipe}
                     isFavorite={true}
-                    onFavoriteToggle={() => {}}
+                    onFavoriteToggle={() => handleToggleFavorite(recipe.title)}
                   />
                 ))}
               </div>
