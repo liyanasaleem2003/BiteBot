@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import wellness
 from app.routes import auth
 from fastapi.staticfiles import StaticFiles
-
+import os
 app = FastAPI()
 
 # Add CORS middleware
@@ -16,14 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files (for images)
-app.mount("/static/recipes", StaticFiles(directory="app/recipes"), name="static-recipes")
+recipes_path = os.path.abspath("app/recipes")
+
+app.mount("/recipes", StaticFiles(directory=recipes_path), name="recipes")
 
 # Include routes
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(profile.router, prefix="/profile", tags=["Profile"])
 app.include_router(chatbot.router, prefix="/chatbot", tags=["Chatbot"])
 app.include_router(recipes.router, prefix="/recipes", tags=["Recipes"])
+
 
 @app.get("/")
 def read_root():
