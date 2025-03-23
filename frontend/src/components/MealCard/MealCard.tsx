@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
+import React from "react";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import { ChevronRight, Trash2 } from "lucide-react";
 import "./MealCard.css";
 

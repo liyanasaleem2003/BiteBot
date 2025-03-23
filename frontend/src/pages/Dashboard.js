@@ -14,13 +14,13 @@ import "./Dashboard.css";
 
 // Placeholder data
 const macroData = [
-  { current: 2100, goal: 2800, label: "Calories", unit: "kcal", color: "var(--chart-1-hex)" },
-  { current: 110, goal: 140, label: "Protein", unit: "g", color: "var(--chart-2-hex)" },
-  { current: 230, goal: 300, label: "Carbs", unit: "g", color: "var(--chart-3-hex)" },
-  { current: 60, goal: 80, label: "Fats", unit: "g", color: "var(--chart-4-hex)" },
-  { current: 20, goal: 30, label: "Fiber", unit: "g", color: "var(--chart-5-hex)" },
-  { current: 45, goal: 50, label: "Sugar", unit: "g", color: "var(--destructive-hex)" },
-  { current: 1800, goal: 2300, label: "Sodium", unit: "mg", color: "#9d5e26" }
+  { current: 2100, goal: 2800, label: "Calories", unit: "kcal" },
+  { current: 110, goal: 140, label: "Protein", unit: "g" },
+  { current: 230, goal: 300, label: "Carbs", unit: "g" },
+  { current: 60, goal: 80, label: "Fats", unit: "g" },
+  { current: 20, goal: 30, label: "Fiber", unit: "g" },
+  { current: 45, goal: 50, label: "Sugar", unit: "g" },
+  { current: 1800, goal: 2300, label: "Sodium", unit: "mg" }
 ];
 
 const healthScores = [
@@ -235,34 +235,31 @@ export default function Dashboard() {
   };
 
   // Progress Circle Component
-  const ProgressCircle = ({ current, goal, label, unit, color }) => {
+  const ProgressCircle = ({ current, goal, label, unit }) => {
     const percentage = Math.min(Math.round((current / goal) * 100), 100);
     const radius = 40;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
-    const isExceeded = current > goal;
     
     return (
       <div className="flex flex-col items-center justify-center">
         <div className="relative w-[100px] h-[100px]">
-          {/* Background Circle */}
           <svg className="w-full h-full" viewBox="0 0 100 100">
             <circle
               cx="50"
               cy="50"
               r={radius}
+              stroke="rgba(255, 255, 255, 0.1)"
+              strokeWidth="12"
               fill="transparent"
-              stroke="hsl(var(--border))"
-              strokeWidth="8"
             />
-            {/* Progress Circle */}
             <circle
               cx="50"
               cy="50"
               r={radius}
+              stroke="#9d5e26"  // Orange color for all macronutrients
+              strokeWidth="12"
               fill="transparent"
-              stroke={isExceeded ? "var(--destructive-hex)" : color}
-              strokeWidth="8"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
@@ -270,15 +267,14 @@ export default function Dashboard() {
             />
           </svg>
           
-          {/* Text in the middle */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-xl font-bold">{current}</span>
-            <span className="text-xs text-muted-foreground">{unit}</span>
+            <span className="text-2xl font-bold">{current}</span>
+            <span className="text-xs text-zinc-400">{unit}</span>
           </div>
         </div>
         <div className="mt-2 text-center">
           <div className="text-sm font-medium">{label}</div>
-          <div className="text-xs text-muted-foreground">{goal} {unit}</div>
+          <div className="text-xs text-zinc-400">{goal} {unit}</div>
         </div>
       </div>
     );
@@ -325,6 +321,31 @@ export default function Dashboard() {
             className={`h-2 rounded-full ${barColor}`}
             style={{ width: `${score}%` }}
           ></div>
+        </div>
+      </div>
+    );
+  };
+
+  // Add this new component for the calories bar
+  const CaloriesBar = ({ current, goal }) => {
+    const percentage = Math.min((current / goal) * 100, 100);
+    
+    return (
+      <div className="w-full mb-6">
+        <div className="flex justify-between mb-2">
+          <div>
+            <h3 className="text-lg font-semibold">Calories</h3>
+            <p className="text-sm text-zinc-400">{current} / {goal} kcal</p>
+          </div>
+          <div className="text-right">
+            <p className="text-lg font-semibold">{Math.round(percentage)}%</p>
+          </div>
+        </div>
+        <div className="h-4 bg-black/30 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-[#9d5e26] rounded-full transition-all duration-300"
+            style={{ width: `${percentage}%` }}
+          />
         </div>
       </div>
     );
@@ -393,16 +414,22 @@ export default function Dashboard() {
             {/* Macronutrient Progress */}
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Daily Macronutrients</h2>
-              <div className="dashboard-macros-grid">
-                {macroData.slice(0, 3).map((macro, index) => (
-                  <ProgressCircle key={index} {...macro} />
-                ))}
+              
+              {/* Calories Bar at the top */}
+              <CaloriesBar current={2100} goal={2800} />
+              
+              {/* First row of macros */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <ProgressCircle current={110} goal={140} label="Protein" unit="g" />
+                <ProgressCircle current={230} goal={300} label="Carbs" unit="g" />
+                <ProgressCircle current={60} goal={80} label="Fats" unit="g" />
               </div>
-              <Separator className="my-6 bg-zinc-700" />
-              <div className="dashboard-macros-grid">
-                {macroData.slice(3).map((macro, index) => (
-                  <ProgressCircle key={index + 3} {...macro} />
-                ))}
+              
+              {/* Second row of macros */}
+              <div className="grid grid-cols-3 gap-4">
+                <ProgressCircle current={20} goal={30} label="Fiber" unit="g" />
+                <ProgressCircle current={45} goal={50} label="Sugar" unit="g" />
+                <ProgressCircle current={1800} goal={2300} label="Sodium" unit="mg" />
               </div>
             </Card>
 
@@ -412,13 +439,15 @@ export default function Dashboard() {
                 <h2 className="text-lg font-semibold text-white">Health Scores</h2>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button>
-                        <Info className="h-4 w-4 text-zinc-400" />
-                      </button>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-zinc-400 hover:text-zinc-300" />
                     </TooltipTrigger>
-                    <TooltipContent side="left" className="bg-black/90 border-zinc-700">
-                      <p className="max-w-xs text-sm text-zinc-300">These scores are calculated based on your food intake and provide a holistic view of your nutritional health.</p>
+                    <TooltipContent 
+                      side="left"
+                      align="center"
+                      className="bg-zinc-900 px-3 py-2 text-sm rounded-md border border-zinc-800 max-w-[250px]"
+                    >
+                      These scores are calculated based on your food intake and provide a holistic view of your nutritional health.
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -446,50 +475,54 @@ export default function Dashboard() {
             {/* Supplements Tracker */}
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Daily Supplements</h2>
-              <div className="dashboard-supplements-list">
+              <div className="space-y-2">
                 {userSupplements.map((supplement, index) => (
-                  <div key={index} className="dashboard-supplement-item">
-                    <Pill className="h-4 w-4 mr-2 text-zinc-400" />
-                    <span className="dashboard-supplement-name text-zinc-300">{supplement.name}</span>
-                    <span className="dashboard-supplement-dose text-zinc-500">{supplement.dose}</span>
+                  <div key={index} className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700">
+                    <Pill className="h-4 w-4 text-zinc-400" />
+                    <span className="ml-3 text-zinc-300">{supplement.name}</span>
+                    <span className="ml-auto text-sm text-zinc-500">{supplement.dose}</span>
                   </div>
                 ))}
-              </div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="w-full bg-black/30 border-zinc-700 text-zinc-300 hover:bg-black/50">
-                    <Plus className="h-4 w-4 mr-2" /> Add Supplement
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="bg-black/90 border-zinc-700">
-                  <div className="dashboard-add-supplement-form">
-                    <div className="space-y-2">
-                      <h3 className="font-medium text-white">Add New Supplement</h3>
-                      <div className="dashboard-supplement-inputs">
-                        <div className="col-span-2">
-                          <input 
-                            type="text" 
-                            value={newSupplementName}
-                            onChange={(e) => setNewSupplementName(e.target.value)}
-                            placeholder="Supplement name" 
-                            className="dashboard-supplement-input bg-black/30 border-zinc-700 text-white placeholder:text-zinc-500"
-                          />
-                        </div>
-                        <div>
-                          <input 
-                            type="text" 
-                            value={newSupplementDose}
-                            onChange={(e) => setNewSupplementDose(e.target.value)}
-                            placeholder="Dose" 
-                            className="dashboard-supplement-input bg-black/30 border-zinc-700 text-white placeholder:text-zinc-500"
-                          />
-                        </div>
+                
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:bg-black/40">
+                      <Plus className="h-4 w-4 text-zinc-400" />
+                      <span className="ml-3 text-zinc-300">Add Supplement</span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[320px] bg-black/95 border-zinc-700">
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-white">Add New Supplement</h3>
+                        <HelpCircle className="h-4 w-4 text-zinc-400" />
+                      </div>
+                      <div className="space-y-3">
+                        <input 
+                          type="text" 
+                          value={newSupplementName}
+                          onChange={(e) => setNewSupplementName(e.target.value)}
+                          placeholder="Supplement name" 
+                          className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
+                        />
+                        <input 
+                          type="text" 
+                          value={newSupplementDose}
+                          onChange={(e) => setNewSupplementDose(e.target.value)}
+                          placeholder="Dose (e.g., 1000mg, 2 tablets)" 
+                          className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
+                        />
+                        <button 
+                          onClick={handleAddSupplement} 
+                          className="w-full bg-[#D4E157] hover:bg-[#DCE775] text-black font-medium rounded-lg p-3"
+                        >
+                          Add Supplement
+                        </button>
                       </div>
                     </div>
-                    <Button onClick={handleAddSupplement} className="w-full mt-4">Add</Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </Card>
           </div>
 

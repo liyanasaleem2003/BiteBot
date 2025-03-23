@@ -15,6 +15,7 @@
   display: flex;
   align-items: flex-start;
   padding: 30px;
+  padding-top: 80px; /* Add padding to move content below navbar */
   gap: 5px; /* Increase space between sidebar and recipes */
 }
 
@@ -24,7 +25,9 @@
   width: 27%; /* Increased from 29% */
   min-width: 300px; /* Prevents it from getting too narrow */
   height: 85vh;
-  background: rgba(9, 9, 9, 0.8);
+  background: rgba(9, 9, 9, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 20px 18px;
   border-radius: 10px;
   position: sticky; /* Sidebar stays fixed */
@@ -32,6 +35,7 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Apply Scrolling Only to the Content */
@@ -91,13 +95,37 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Enables independent scrolling */
   max-height: 85vh;
   max-width: 73%;
   width: 100%;
-  padding-bottom: 20px; /* Prevents last recipes from being cut off */
+  padding: 20px;
+  background: rgba(9, 9, 9, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden; /* Change to hidden to prevent double scrollbars */
 }
 
+/* Header Content Container */
+.recipe-list-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Adjust Recipe Grid to Show 3 in a Row */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(320px, 1fr));
+  justify-content: center;
+  gap: 25px;
+  width: 100%;
+  padding: 20px;
+  padding-top: 0; /* Remove top padding since header has its own */
+  overflow-y: auto; /* Move scroll to grid container */
+  max-height: calc(85vh - 140px); /* Adjust height to account for header */
+}
 
 /* Increase Sidebar Heading Font Size */
 .sidebar h2 {
@@ -109,29 +137,59 @@
 
 /* Style for Explore Text */
 .recipe-list h1 {
-  font-size: 20px; /* Bigger Text */
+  font-size: 21px;
   font-weight: bold;
   text-align: center;
-  background: rgba(0, 0, 0, 0.335); /* Translucent Black */
-  backdrop-filter: blur(10px);
-  padding: 10px 20px;
-  border-radius: 10px; /* Rounded Corners */
-  display: inline-block;
+  padding: 4px 25px;
+  border-radius: 10px;
+  display: block;
   color: white;
   width: fit-content;
-  margin: 0 auto 0; /* Centers it and adds spacing below */
+  margin: -5px auto 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-
-/* Adjust Recipe Grid to Show 3 in a Row */
-.recipes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(320px, 1fr)); /* 3 per row */
-  justify-content: center;
-  gap: 25px; /* Space between recipe cards */
+/* Search Bar Container */
+.search-container {
   width: 100%;
-  padding: 20px;
-  overflow: visible; /* Allow the grid to expand */
+  max-width: 500px;
+  margin: 0 auto 15px; /* Reduced bottom margin */
+  position: relative;
+}
+
+/* Search Input */
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 14px; /* Adjusted padding to match filter buttons */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  font-size: 14px; /* Match filter button font size */
+  transition: all 0.3s ease;
+  height: 38px; /* Match filter button height */
+  line-height: 1;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.search-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Search Icon */
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
 }
 
 /* Medium Screens: Show 2 per row */
@@ -183,3 +241,23 @@
     max-width: 400px;
     margin-bottom: 20px;
   }
+
+/* Recipe Card Styling */
+.recipe-card {
+  width: flex;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 
+              0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5),
+              0 4px 10px rgba(0, 0, 0, 0.4);
+}

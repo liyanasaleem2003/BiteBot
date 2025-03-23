@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Clock, BarChart2, BookOpen, Utensils, Settings } from "lucide-react";
+import { Clock, BarChart2, BookOpen, Utensils, Settings, Home } from "lucide-react";
 import "./Navbar.css";
 import logo from "../../images/BiteBotLogolonger.png";
 
@@ -17,6 +17,12 @@ export default function Navbar() {
         <img src={logo} alt="BiteBot" className="logo" />
       </Link>
       <ul className="nav-links">
+        <li>
+          <Link to="/home" className={isActive("/home") ? "active" : ""}>
+            <Home className="icon" />
+            <span>Home</span>
+          </Link>
+        </li>
         <li>
           <Link to="/log-your-meal" className={isActive("/log-your-meal") ? "active" : ""}>
             <Clock className="icon" />
