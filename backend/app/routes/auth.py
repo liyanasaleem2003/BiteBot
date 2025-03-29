@@ -139,39 +139,86 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
 
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db = Depends(get_database)):
-    print(f"Login attempt for user: {form_data.email}")  # Debug log
-    
-    user = await db.user_profiles.find_one({"email": form_data.email})
-    if not user:
-        print(f"User not found: {form_data.email}")  # Debug log
+    """
+    Login endpoint that accepts email as username and password.
+    The OAuth2PasswordRequestForm uses 'username' field for the email address.
+    """
+    try:
+        print("=== Starting Login Process ===")
+        print(f"Received login request with username: {form_data.username}")
+        
+        # Debug: Print form data structure
+        print("Form data received:", {
+            "username": form_data.username,
+            "password": "[REDACTED]",
+            "grant_type": form_data.grant_type,
+            "client_id": form_data.client_id,
+            "client_secret": form_data.client_secret
+        })
+        
+        # Find user by email
+        user = await db.user_profiles.find_one({"email": form_data.username})
+        if not user:
+            print(f"User not found with email: {form_data.username}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        print(f"User found with ID: {user.get('_id')}")
+        
+        # Verify password
+        if not verify_password(form_data.password, user["password"]):
+            print(f"Invalid password for user: {form_data.username}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        print("Password verified successfully")
+        
+        # Update last login
+        try:
+            await db.user_profiles.update_one(
+                {"_id": user["_id"]},
+                {"$set": {"last_login": datetime.utcnow()}}
+            )
+            print("Last login timestamp updated")
+        except Exception as e:
+            print(f"Warning: Failed to update last_login: {str(e)}")
+            # Continue with login even if last_login update fails
+        
+        # Create access token
+        try:
+            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(
+                data={"sub": str(user["_id"])}, expires_delta=access_token_expires
+            )
+            print("Access token created successfully")
+        except Exception as e:
+            print(f"Error creating access token: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create access token",
+            )
+        
+        print("=== Login Process Completed Successfully ===")
+        return {"access_token": access_token, "token_type": "bearer"}
+        
+    except HTTPException as he:
+        print(f"HTTP Exception during login: {str(he)}")
+        raise he
+    except Exception as e:
+        print(f"Unexpected error during login: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}"
         )
-    
-    if not verify_password(form_data.password, user["password"]):
-        print(f"Invalid password for user: {form_data.email}")  # Debug log
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    # Update last login
-    await db.user_profiles.update_one(
-        {"_id": user["_id"]},
-        {"$set": {"last_login": datetime.utcnow()}}
-    )
-    
-    # Create access token
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": str(user["_id"])}, expires_delta=access_token_expires
-    )
-    
-    print(f"Login successful for user: {form_data.email}")  # Debug log
-    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_user)):
