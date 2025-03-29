@@ -1,22 +1,16 @@
-from fastapi import APIRouter, HTTPException, Query
-from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
+from fastapi import APIRouter, HTTPException, Query, Depends
+from app.routes.database import get_database
+from motor.motor_asyncio import AsyncIOMotorDatabase
 import logging
 
-load_dotenv()
 router = APIRouter()
 
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["BiteBotDB"]
-recipes_collection = db["recipes"]
-
 @router.get("", response_model=list)
-async def get_recipes():
+async def get_recipes(db: AsyncIOMotorDatabase = Depends(get_database)):
     try:
         # Sort by recipe_id (assuming recipe_id is a string and should be sorted numerically)
-        recipes = list(recipes_collection.find({}, {"_id": 0}).sort("recipe_id", 1))
+        recipes_cursor = db.recipes.find({}, {"_id": 0}).sort("recipe_id", 1)
+        recipes = await recipes_cursor.to_list(length=None)
 
         formatted_recipes = []
         for recipe in recipes:
