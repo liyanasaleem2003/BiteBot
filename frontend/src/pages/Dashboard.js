@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -6,10 +6,12 @@ import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
-import { CalendarIcon, ChevronLeft, ChevronRight, Edit, Flame, HelpCircle, Home, Info, Pill, Plus, Settings, Utensils, BookOpen, BarChart2, Trash2 } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Edit, Flame, HelpCircle, Home, Info, Pill, Plus, Settings, Utensils, BookOpen, BarChart2, Trash2, Heart, X } from "lucide-react";
 import { RecipeCard } from "../components/ui/RecipeCard";
 import { MealCard } from "../components/MealCard/MealCard.tsx";
 import Navbar from "../components/ui/Navbar";
+import Footer from "../components/ui/Footer";
+import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 import "./Dashboard.css";
 
 // Placeholder data
@@ -133,52 +135,163 @@ const meals = [
   }
 ];
 
-// Favorite recipes (reused from recipe page)
-const favoriteRecipes = [
-  {
-    title: "Masala Dosa with Coconut Chutney",
-    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&dpr=2&q=80",
-    timeInMinutes: 45,
-    spiceLevel: 2,
-    pricePerPortion: 3.50,
-    nutrition: {
-      calories: 350,
-      protein: 8,
-      carbs: 62,
-      fat: 8,
-      fiber: 4
-    },
-    healthBenefits: ["High-Fiber", "Low-Fat"],
-    culturalStyle: "South Indian"
-  },
-  {
-    title: "Quinoa Biryani Bowl",
-    image: "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&dpr=2&q=80",
-    timeInMinutes: 35,
-    spiceLevel: 2,
-    pricePerPortion: 4.20,
-    nutrition: {
-      calories: 420,
-      protein: 15,
-      carbs: 65,
-      fat: 12,
-      fiber: 8
-    },
-    healthBenefits: ["High-Protein", "Gluten-Free"],
-    culturalStyle: "Fusion"
-  }
-];
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showAddSupplement, setShowAddSupplement] = useState(false);
   const [newSupplementName, setNewSupplementName] = useState("");
   const [newSupplementDose, setNewSupplementDose] = useState("");
   const [userSupplements, setUserSupplements] = useState(supplements);
   const [userMeals, setUserMeals] = useState(meals);
   const [expandedMealId, setExpandedMealId] = useState(null);
-  const [userFavoriteRecipes, setUserFavoriteRecipes] = useState(favoriteRecipes);
+  const { favoriteRecipes, removeFavoriteRecipe } = useFavoriteRecipes();
   
+  // Add state for nutritional needs
+  const [nutritionalNeeds, setNutritionalNeeds] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user profile and nutritional needs
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.log('No token found, redirecting to signup');
+          navigate('/signup');
+          return;
+        }
+
+        console.log('Fetching user profile with token:', token);
+        const response = await fetch('http://127.0.0.1:8000/auth/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          console.log('Token expired or invalid, redirecting to signup');
+          localStorage.removeItem('token');
+          navigate('/signup');
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user profile');
+        }
+
+        const userData = await response.json();
+        console.log('Received user data:', userData);
+        
+        if (userData.profile && userData.profile.nutritional_needs) {
+          setNutritionalNeeds(userData.profile.nutritional_needs);
+          console.log('Set nutritional needs:', userData.profile.nutritional_needs);
+        } else {
+          console.log('No nutritional needs found in user data');
+          setNutritionalNeeds(null);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        setNutritionalNeeds(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [navigate]);
+
+  // Calculate total nutritional values from meals
+  const calculateTotalNutrition = () => {
+    const totals = {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      fiber: 0,
+      sugar: 0,
+      sodium: 0
+    };
+
+    userMeals.forEach(meal => {
+      if (meal.macros) {
+        totals.calories += meal.macros.calories || 0;
+        totals.protein += meal.macros.protein || 0;
+        totals.carbs += meal.macros.carbs || 0;
+        totals.fats += meal.macros.fats || 0;
+        totals.fiber += meal.macros.fiber || 0;
+        totals.sugar += meal.macros.sugar || 0;
+        totals.sodium += meal.macros.sodium || 0;
+      }
+    });
+
+    console.log("Calculated totals:", totals);
+    return totals;
+  };
+
+  // Get current nutritional values
+  const currentNutrition = calculateTotalNutrition();
+  const nutritionalGoals = nutritionalNeeds ? {
+    calories: nutritionalNeeds.calories.max,
+    protein: nutritionalNeeds.macros.protein.max,
+    carbs: nutritionalNeeds.macros.carbs.max,
+    fats: nutritionalNeeds.macros.fats.max,
+    fiber: nutritionalNeeds.other_nutrients.fiber.max,
+    sugar: nutritionalNeeds.other_nutrients.sugar.max,
+    sodium: nutritionalNeeds.other_nutrients.sodium.max
+  } : null;
+
+  // Fetch meals for the selected date
+  const fetchMeals = async (date) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, redirecting to signup");
+        navigate("/signup");
+        return;
+      }
+
+      const formattedDate = date.toISOString().split('T')[0];
+      console.log("Fetching meals for date:", formattedDate);
+      
+      const response = await fetch(`http://127.0.0.1:8000/nutrition/meals/${formattedDate}`, {
+        method: "GET",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.log("Token expired or invalid, redirecting to signup");
+          localStorage.removeItem("token");
+          navigate("/signup");
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Received meals data:", data);
+      setUserMeals(data.meals);
+    } catch (error) {
+      console.error("Error fetching meals:", error);
+      setUserMeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch meals when date changes
+  useEffect(() => {
+    fetchMeals(currentDate);
+  }, [currentDate]);
+
   const navigateDay = (direction) => {
     const newDate = new Date(currentDate);
     if (direction === 'prev') {
@@ -212,6 +325,7 @@ export default function Dashboard() {
       ]);
       setNewSupplementName("");
       setNewSupplementDose("");
+      setShowAddSupplement(false);
     }
   };
 
@@ -229,9 +343,7 @@ export default function Dashboard() {
   };
 
   const handleToggleFavorite = (recipeTitle) => {
-    setUserFavoriteRecipes(prevRecipes => 
-      prevRecipes.filter(recipe => recipe.title !== recipeTitle)
-    );
+    removeFavoriteRecipe(recipeTitle);
   };
 
   // Progress Circle Component
@@ -257,7 +369,7 @@ export default function Dashboard() {
               cx="50"
               cy="50"
               r={radius}
-              stroke="#9d5e26"  // Orange color for all macronutrients
+              stroke="#9d5e26"
               strokeWidth="12"
               fill="transparent"
               strokeDasharray={circumference}
@@ -299,17 +411,19 @@ export default function Dashboard() {
     return (
       <div className="group w-full">
         <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center">
+          <div className="health-score-label">
             <span className="text-sm">{label}</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className="ml-1.5">
-                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                  <button className="inline-flex items-center justify-center">
+                    <HelpCircle className="help-icon" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  <p className="text-sm">{info}</p>
+                <TooltipContent>
+                  <div className="meal-card-health-score-tooltip">
+                    {info}
+                  </div>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -350,6 +464,21 @@ export default function Dashboard() {
       </div>
     );
   };
+
+  // Add loading state display
+  if (loading) {
+    return (
+      <div className="dashboard-container">
+        <Navbar />
+        <div className="dashboard-content">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-white">Loading your profile...</div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
@@ -415,21 +544,64 @@ export default function Dashboard() {
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Daily Macronutrients</h2>
               
-              {/* Calories Bar at the top */}
-              <CaloriesBar current={2100} goal={2800} />
+              {/* Calories Bar */}
+              {nutritionalNeeds && (
+                <CaloriesBar 
+                  current={currentNutrition.calories} 
+                  goal={nutritionalNeeds.calories.max} 
+                />
+              )}
               
               {/* First row of macros */}
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <ProgressCircle current={110} goal={140} label="Protein" unit="g" />
-                <ProgressCircle current={230} goal={300} label="Carbs" unit="g" />
-                <ProgressCircle current={60} goal={80} label="Fats" unit="g" />
+                {nutritionalNeeds && (
+                  <>
+                    <ProgressCircle 
+                      current={currentNutrition.protein} 
+                      goal={nutritionalNeeds.macros.protein.max} 
+                      label="Protein" 
+                      unit={nutritionalNeeds.macros.protein.unit} 
+                    />
+                    <ProgressCircle 
+                      current={currentNutrition.carbs} 
+                      goal={nutritionalNeeds.macros.carbs.max} 
+                      label="Carbs" 
+                      unit={nutritionalNeeds.macros.carbs.unit} 
+                    />
+                    <ProgressCircle 
+                      current={currentNutrition.fats} 
+                      goal={nutritionalNeeds.macros.fats.max} 
+                      label="Fats" 
+                      unit={nutritionalNeeds.macros.fats.unit} 
+                    />
+                  </>
+                )}
               </div>
               
               {/* Second row of macros */}
               <div className="grid grid-cols-3 gap-4">
-                <ProgressCircle current={20} goal={30} label="Fiber" unit="g" />
-                <ProgressCircle current={45} goal={50} label="Sugar" unit="g" />
-                <ProgressCircle current={1800} goal={2300} label="Sodium" unit="mg" />
+                {nutritionalNeeds && (
+                  <>
+                    <ProgressCircle 
+                      current={currentNutrition.fiber} 
+                      goal={nutritionalNeeds.other_nutrients.fiber.max} 
+                      label="Fiber" 
+                      unit={nutritionalNeeds.other_nutrients.fiber.unit} 
+                    />
+                    <ProgressCircle 
+                      current={currentNutrition.sugar} 
+                      goal={nutritionalNeeds.other_nutrients.sugar.max} 
+                      label="Sugar" 
+                      unit={nutritionalNeeds.other_nutrients.sugar.unit} 
+                    />
+                    <ProgressCircle 
+                      current={currentNutrition.sodium} 
+                      goal={nutritionalNeeds.other_nutrients.sodium.max} 
+                      label="Sodium" 
+                      unit={nutritionalNeeds.other_nutrients.sodium.unit} 
+                    />
+                  </>
+                )}
               </div>
             </Card>
 
@@ -476,6 +648,50 @@ export default function Dashboard() {
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Daily Supplements</h2>
               <div className="space-y-2">
+                <button
+                  onClick={() => setShowAddSupplement(!showAddSupplement)}
+                  className="flex items-center w-full bg-black/30 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:bg-black/40"
+                >
+                  <Plus className="h-4 w-4 text-zinc-400" />
+                  <span className="ml-3 text-zinc-300">Add Supplement</span>
+                </button>
+
+                <div className={`supplement-form-container ${showAddSupplement ? 'show' : ''}`}>
+                  <div className={`supplement-form ${showAddSupplement ? 'show' : ''}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-white">Add New Supplement</h3>
+                      <button 
+                        onClick={() => setShowAddSupplement(false)}
+                        className="text-zinc-400 hover:text-zinc-300"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      <input 
+                        type="text" 
+                        value={newSupplementName}
+                        onChange={(e) => setNewSupplementName(e.target.value)}
+                        placeholder="Supplement name" 
+                        className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
+                      />
+                      <input 
+                        type="text" 
+                        value={newSupplementDose}
+                        onChange={(e) => setNewSupplementDose(e.target.value)}
+                        placeholder="Dose (e.g., 1000mg, 2 tablets)" 
+                        className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
+                      />
+                      <button 
+                        onClick={handleAddSupplement} 
+                        className="w-full bg-[#D4E157] hover:bg-[#DCE775] text-black font-medium rounded-lg p-3"
+                      >
+                        Add Supplement
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
                 {userSupplements.map((supplement, index) => (
                   <div key={index} className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700">
                     <Pill className="h-4 w-4 text-zinc-400" />
@@ -483,45 +699,6 @@ export default function Dashboard() {
                     <span className="ml-auto text-sm text-zinc-500">{supplement.dose}</span>
                   </div>
                 ))}
-                
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <div className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:bg-black/40">
-                      <Plus className="h-4 w-4 text-zinc-400" />
-                      <span className="ml-3 text-zinc-300">Add Supplement</span>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[320px] bg-black/95 border-zinc-700">
-                    <div className="p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-white">Add New Supplement</h3>
-                        <HelpCircle className="h-4 w-4 text-zinc-400" />
-                      </div>
-                      <div className="space-y-3">
-                        <input 
-                          type="text" 
-                          value={newSupplementName}
-                          onChange={(e) => setNewSupplementName(e.target.value)}
-                          placeholder="Supplement name" 
-                          className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
-                        />
-                        <input 
-                          type="text" 
-                          value={newSupplementDose}
-                          onChange={(e) => setNewSupplementDose(e.target.value)}
-                          placeholder="Dose (e.g., 1000mg, 2 tablets)" 
-                          className="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-white placeholder:text-zinc-500"
-                        />
-                        <button 
-                          onClick={handleAddSupplement} 
-                          className="w-full bg-[#D4E157] hover:bg-[#DCE775] text-black font-medium rounded-lg p-3"
-                        >
-                          Add Supplement
-                        </button>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
               </div>
             </Card>
           </div>
@@ -547,20 +724,31 @@ export default function Dashboard() {
             {/* Saved Recipes */}
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Saved Recipes</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {userFavoriteRecipes.map((recipe, index) => (
-                  <RecipeCard
-                    key={recipe.title}
-                    {...recipe}
-                    isFavorite={true}
-                    onFavoriteToggle={() => handleToggleFavorite(recipe.title)}
-                  />
-                ))}
+              <div className="saved-recipes-container">
+                {favoriteRecipes.length > 0 ? (
+                  <div className="saved-recipes-grid">
+                    {favoriteRecipes.map((recipe) => (
+                      <RecipeCard
+                        key={recipe.title}
+                        {...recipe}
+                        isFavorite={true}
+                        onFavoriteToggle={() => handleToggleFavorite(recipe.title)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-recipes-state">
+                    <Heart className="heart-icon" size={48} />
+                    <h3>No Saved Recipes Yet</h3>
+                    <p>Heart your favorite recipes from our wide variety of healthy South Asian dishes to see them here!</p>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

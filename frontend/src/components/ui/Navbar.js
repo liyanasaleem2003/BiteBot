@@ -48,9 +48,9 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to="/settings" className={isActive("/settings") ? "active" : ""}>
+          <Link to="/myprofile" className={isActive("/myprofile") ? "active" : ""}>
             <Settings className="icon" />
-            <span>Settings</span>
+            <span>My Profile</span>
           </Link>
         </li>
       </ul>

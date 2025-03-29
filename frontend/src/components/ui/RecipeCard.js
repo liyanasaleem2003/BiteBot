@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Heart, Clock, DollarSign, ArrowRight, X } from "lucide-react";
 import "./RecipeCard.css";
 
@@ -31,6 +31,16 @@ export function RecipeCard({
   tags 
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+
+  // Handle favorite toggle with popup
+  const handleFavoriteClick = () => {
+    onFavoriteToggle();
+    setPopupMessage(isFavorite ? "Removed from saved recipes" : "Added to saved recipes!");
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000); // Hide popup after 2 seconds
+  };
 
   return (
     <>
@@ -50,9 +60,14 @@ export function RecipeCard({
               View Recipe <ArrowRight size={16} />
             </button>
           </div>
-          <button className="favorite-button" onClick={onFavoriteToggle}>
+          <button className="favorite-button" onClick={handleFavoriteClick}>
             <Heart className={`heart ${isFavorite ? "filled" : ""}`} />
           </button>
+          {showPopup && (
+            <div className="favorite-popup">
+              {popupMessage}
+            </div>
+          )}
         </div>
 
         <div className="recipe-content">

@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Home.css";
 import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
 
-function Home() {
+const Home = () => {
   const navigate = useNavigate(); // Initialize navigation function
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/signup');
+    }
+  }, [navigate]);
 
   return (
     <div className="home-container">

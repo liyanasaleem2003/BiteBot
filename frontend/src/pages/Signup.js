@@ -21,15 +21,15 @@ import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 
 // Health issues for multi-select
 const healthIssueOptions = [
-  { id: "diabetes", label: "Diabetes" },
-  { id: "heart-disease", label: "Heart Disease" },
-  { id: "hypertension", label: "Hypertension" },
-  { id: "cholesterol", label: "High Cholesterol" },
-  { id: "thyroid", label: "Thyroid Issues" },
-  { id: "digestive", label: "Digestive Issues" },
-  { id: "respiratory", label: "Respiratory Conditions" },
-  { id: "arthritis", label: "Arthritis" },
-  { id: "none", label: "None of the above" },
+  { id: "diabetes", label: "Type 2 Diabetes / Prediabetes" },
+  { id: "hypertension", label: "Hypertension (High Blood Pressure)" },
+  { id: "cholesterol", label: "High Cholesterol (Hyperlipidemia)" },
+  { id: "anemia", label: "Iron-Deficiency Anemia" },
+  { id: "vitaminD", label: "Vitamin D Deficiency / Osteoporosis" },
+  { id: "lactose_intolerance", label: "Lactose Intolerance" },
+  { id: "acidReflux", label: "Acid Reflux / GERD" },
+  { id: "ibs", label: "IBS / Digestive Issues" },
+  { id: "arthritis", label: "Joint Pain / Arthritis" }
 ];
 
 // Foods to avoid options
@@ -41,21 +41,65 @@ const foodsToAvoidOptions = [
   { id: "soy", label: "Soy" },
   { id: "eggs", label: "Eggs" },
   { id: "fish", label: "Fish" },
-  { id: "red-meat", label: "Red Meat" },
-  { id: "processed-foods", label: "Processed Foods" },
-  { id: "sugar", label: "Refined Sugar" },
+  { id: "red-meat", label: "Red Meat" }
 ];
 
-// Micronutrient tracking options
+// Micronutrient tracking options with recommendations
 const micronutrientOptions = [
-  { id: "iron", label: "Iron" },
-  { id: "calcium", label: "Calcium" },
-  { id: "omega3", label: "Omega-3" },
-  { id: "vitaminD", label: "Vitamin D" },
-  { id: "vitaminB12", label: "Vitamin B12" },
-  { id: "magnesium", label: "Magnesium" },
-  { id: "potassium", label: "Potassium" },
-  { id: "zinc", label: "Zinc" },
+  { 
+    id: "iron", 
+    label: "Iron",
+    recommendations: ["Iron-Deficiency Anemia"],
+    description: "Essential for red blood cell production and oxygen transport"
+  },
+  { 
+    id: "vitaminB12", 
+    label: "Vitamin B12",
+    recommendations: ["Iron-Deficiency Anemia", "Vegetarian"],
+    description: "Crucial for nerve function and red blood cell formation"
+  },
+  { 
+    id: "folate", 
+    label: "Folate (B9)",
+    recommendations: ["Iron-Deficiency Anemia"],
+    description: "Important for cell division and DNA synthesis"
+  },
+  { 
+    id: "vitaminD", 
+    label: "Vitamin D",
+    recommendations: ["Vitamin D Deficiency / Osteoporosis"],
+    description: "Helps calcium absorption and bone health"
+  },
+  { 
+    id: "calcium", 
+    label: "Calcium",
+    recommendations: ["Vitamin D Deficiency / Osteoporosis", "Lactose Intolerance"],
+    description: "Essential for bone strength and muscle function"
+  },
+  { 
+    id: "omega3", 
+    label: "Omega-3",
+    recommendations: ["High Cholesterol (Hyperlipidemia)", "Joint Pain / Arthritis"],
+    description: "Supports heart health and reduces inflammation"
+  },
+  { 
+    id: "potassium", 
+    label: "Potassium",
+    recommendations: ["Hypertension (High Blood Pressure)"],
+    description: "Helps regulate blood pressure and fluid balance"
+  },
+  { 
+    id: "magnesium", 
+    label: "Magnesium",
+    recommendations: ["Hypertension (High Blood Pressure)", "Vitamin D Deficiency / Osteoporosis"],
+    description: "Supports bone health and blood pressure regulation"
+  },
+  { 
+    id: "zinc", 
+    label: "Zinc",
+    recommendations: ["IBS / Digestive Issues"],
+    description: "Important for immune function and digestive health"
+  }
 ];
 
 // Health goals options
@@ -72,12 +116,81 @@ const healthGoalOptions = [
 // Dietary preference options
 const dietaryOptions = ["Vegetarian", "Non-Vegetarian", "Vegan", "Pescatarian", "Lactose-Free", "Gluten-Free"];
 
+// Activity level options
+const activityLevelOptions = [
+  { id: "sedentary", label: "Sedentary (little or no exercise)" },
+  { id: "light", label: "Lightly active (light exercise/sports 1-3 days/week)" },
+  { id: "moderate", label: "Moderately active (moderate exercise/sports 3-5 days/week)" },
+  { id: "very", label: "Very active (hard exercise/sports 6-7 days/week)" },
+  { id: "extra", label: "Extra active (very hard exercise/sports & physical job or training twice per day)" }
+];
+
+// Health condition recommendations with detailed messages
+const healthConditionRecommendations = {
+  "diabetes": {
+    title: "Type 2 Diabetes / Prediabetes",
+    nutrients: ["potassium", "magnesium", "omega3"],
+    message: "These nutrients help manage blood sugar levels and support heart health. Consider tracking these to optimize your diet!",
+    details: "Potassium and magnesium help with insulin sensitivity, while omega-3 supports cardiovascular health which is important for diabetes management."
+  },
+  "anemia": {
+    title: "Iron-Deficiency Anemia",
+    nutrients: ["iron", "vitaminB12", "folate"],
+    message: "People with anemia often have low iron and B12 levels. Consider tracking these to optimize your diet!",
+    details: "Iron is essential for red blood cell production, while B12 and folate support healthy blood formation."
+  },
+  "hypertension": {
+    title: "Hypertension (High Blood Pressure)",
+    nutrients: ["potassium", "magnesium", "omega3"],
+    message: "Potassium and Magnesium help regulate blood pressure. Omega-3 supports heart health. Consider tracking these!",
+    details: "These nutrients work together to maintain healthy blood pressure levels and cardiovascular function."
+  },
+  "vitaminD": {
+    title: "Vitamin D Deficiency / Osteoporosis",
+    nutrients: ["vitaminD", "calcium", "magnesium"],
+    message: "Vitamin D helps your body absorb calcium for strong bones. Magnesium supports bone density!",
+    details: "This combination of nutrients is crucial for maintaining strong bones and preventing bone loss."
+  },
+  "cholesterol": {
+    title: "High Cholesterol (Hyperlipidemia)",
+    nutrients: ["omega3", "potassium", "magnesium"],
+    message: "Omega-3 fatty acids help manage cholesterol levels. Potassium and magnesium support heart health!",
+    details: "These nutrients work together to maintain healthy cholesterol levels and cardiovascular function."
+  },
+  "lactose_intolerance": {
+    title: "Lactose Intolerance",
+    nutrients: ["calcium", "vitaminD", "magnesium"],
+    message: "Since dairy is limited, focus on calcium-rich alternatives and supporting nutrients!",
+    details: "These nutrients help maintain bone health without relying on dairy sources."
+  },
+  "acidReflux": {
+    title: "Acid Reflux / GERD",
+    nutrients: ["magnesium", "zinc", "vitaminB12"],
+    message: "These nutrients support digestive health and help maintain proper stomach acid levels!",
+    details: "Magnesium helps relax the esophageal sphincter, while zinc and B12 support digestive function."
+  },
+  "ibs": {
+    title: "IBS / Digestive Issues",
+    nutrients: ["zinc", "magnesium", "vitaminB12"],
+    message: "These nutrients support digestive health and help maintain gut function!",
+    details: "Zinc supports gut lining health, while magnesium helps with muscle relaxation and B12 supports nerve function."
+  },
+  "arthritis": {
+    title: "Joint Pain / Arthritis",
+    nutrients: ["omega3", "vitaminD", "magnesium"],
+    message: "Omega-3 reduces inflammation, while Vitamin D and Magnesium support joint health!",
+    details: "These nutrients work together to reduce inflammation and maintain joint function."
+  }
+};
+
 const Signup = () => {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState("welcome");
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   
   // Signup form data
   const [signupForm, setSignupForm] = useState({
@@ -93,7 +206,9 @@ const Signup = () => {
     mealsPerDay: "3",
     foodsToAvoid: [],
     micronutrients: [],
-    healthGoals: []
+    healthGoals: [],
+    sex: "",
+    activity_level: ""
   });
 
   // Login form data
@@ -179,24 +294,35 @@ const Signup = () => {
   // Handle login submission
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     try {
-      const response = await fetch("http://127.0.0.1:8000/auth/login", {
-        method: "POST",
+      const formData = new URLSearchParams();
+      formData.append('username', loginForm.email);
+      formData.append('password', loginForm.password);
+
+      const response = await fetch('http://127.0.0.1:8000/auth/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(loginForm),
+        body: formData.toString(),
       });
 
-      if (response.ok) {
-        navigate("/dashboard");
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
-        alert(`Error: ${errorData.detail}`);
+        throw new Error(errorData.detail || 'Login failed');
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
+
+      const data = await response.json();
+      // Store token with Bearer prefix
+      localStorage.setItem('token', `Bearer ${data.access_token}`);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -212,45 +338,112 @@ const Signup = () => {
   // Handle final signup submission
   const handleSignupComplete = async (e) => {
     e.preventDefault();
-    if (signupForm.password !== signupForm.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-  
+    console.log("Starting registration process...");
+    
     try {
-      const response = await fetch("http://127.0.0.1:8000/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          first_name: signupForm.name,
-          email: signupForm.email,
-          password: signupForm.password,
-          profile: {
-            dob: signupForm.dob,
-            height: signupForm.height,
-            weight: signupForm.weight,
-            healthIssues: signupForm.healthIssues,
-            dietaryPreference: signupForm.dietaryPreference,
-            mealsPerDay: signupForm.mealsPerDay,
-            foodsToAvoid: signupForm.foodsToAvoid,
-            micronutrients: signupForm.micronutrients,
-            healthGoals: signupForm.healthGoals,
-          },
-        }),
-      });
-  
-      if (response.ok) {
-        alert("Signup Successful!");
-        navigate("/dashboard");
-      } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.detail}`);
-      }
+        // Validate password match
+        if (signupForm.password !== signupForm.confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(signupForm.email)) {
+            alert("Please enter a valid email address");
+            return;
+        }
+
+        // Validate password length
+        if (signupForm.password.length < 8) {
+            alert("Password must be at least 8 characters long");
+            return;
+        }
+
+        // Calculate age from date of birth
+        const today = new Date();
+        const birthDate = new Date(signupForm.dob);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        // Validate all required fields
+        if (!signupForm.name || !signupForm.email || !signupForm.password || !signupForm.dob || !signupForm.height || !signupForm.weight || !signupForm.sex || !signupForm.activity_level) {
+            alert("Please fill in all required fields");
+            return;
+        }
+
+        // Format user data according to backend model
+        const userData = {
+            email: signupForm.email,
+            first_name: signupForm.name,
+            password: signupForm.password,
+            profile: {
+                date_of_birth: signupForm.dob,
+                age: age,
+                sex: signupForm.sex,
+                height: {
+                    value: parseFloat(signupForm.height),
+                    unit: "cm"
+                },
+                weight: {
+                    value: parseFloat(signupForm.weight),
+                    unit: "kg"
+                },
+                activity_level: signupForm.activity_level,
+                personal_health_history: signupForm.healthIssues || [],
+                family_health_history: signupForm.familyHealthIssues || [],
+                priority_micronutrients: signupForm.micronutrients || [],
+                dietary_preferences: signupForm.dietaryPreference || [],
+                meals_per_day: Number(signupForm.mealsPerDay),
+                foods_to_avoid: signupForm.foodsToAvoid || [],
+                health_goals: signupForm.healthGoals || []
+            }
+        };
+
+        console.log("Sending registration request with data:", userData);
+
+        const response = await fetch('http://127.0.0.1:8000/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || 'Registration failed');
+        }
+
+        console.log("Registration successful:", data);
+        
+        // After successful registration, log in the user
+        const loginResponse = await fetch('http://127.0.0.1:8000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                username: signupForm.email,
+                password: signupForm.password,
+            }),
+        });
+
+        if (!loginResponse.ok) {
+            throw new Error('Registration successful but login failed');
+        }
+
+        const loginData = await loginResponse.json();
+        localStorage.setItem('token', `Bearer ${loginData.access_token}`);
+        navigate('/dashboard');
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
+        console.error("Registration error:", error);
+        alert(error.message || "Registration failed. Please try again.");
     }
   };
 
@@ -467,6 +660,24 @@ const Signup = () => {
                       required
                     />
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="sex">Sex</Label>
+                    <Select 
+                      value={signupForm.sex}
+                      onValueChange={(value) => handleSelectChange(value, "sex")}
+                    >
+                      <SelectTrigger className="select-trigger" id="sex">
+                        <SelectValue placeholder="Select your sex" />
+                      </SelectTrigger>
+                      <SelectContent className="select-content">
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="height">Height (cm)</Label>
@@ -497,6 +708,25 @@ const Signup = () => {
                       max="500"
                     />
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="activity_level">Activity Level</Label>
+                    <Select 
+                      value={signupForm.activity_level}
+                      onValueChange={(value) => handleSelectChange(value, "activity_level")}
+                    >
+                      <SelectTrigger className="select-trigger" id="activity_level">
+                        <SelectValue placeholder="Select your activity level" />
+                      </SelectTrigger>
+                      <SelectContent className="select-content">
+                        {activityLevelOptions.map((option) => (
+                          <SelectItem key={option.id} value={option.id}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
                   <div className="flex justify-between mt-6">
                     <Button
@@ -520,6 +750,303 @@ const Signup = () => {
               {currentStep === 3 && (
                 <div className="scrollable-signup-container">
                   <form className="space-y-4">
+                    {/* Personal Health History */}
+                    <div className="health-section">
+                      <h3>Personal Health History</h3>
+                      <p className="text-xs text-muted-foreground mb-2">Select up to 3 conditions that apply to you</p>
+                      <div className="health-history-grid">
+                        {healthIssueOptions.map((option) => (
+                          <div key={option.id} className="health-history-item">
+                            <Checkbox 
+                              id={`personal-${option.id}`}
+                              checked={signupForm.healthIssues.includes(option.id)}
+                              onCheckedChange={() => {
+                                if (signupForm.healthIssues.includes(option.id)) {
+                                  handleCheckboxChange(option.id, "healthIssues");
+                                } else if (signupForm.healthIssues.length < 3) {
+                                  handleCheckboxChange(option.id, "healthIssues");
+                                }
+                              }}
+                              disabled={signupForm.healthIssues.length >= 3 && !signupForm.healthIssues.includes(option.id)}
+                            />
+                            <Label htmlFor={`personal-${option.id}`}>
+                              {option.label}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4">
+                        <Label htmlFor="other-condition">Other (please specify)</Label>
+                        <Input
+                          id="other-condition"
+                          placeholder="Enter other health conditions"
+                          value={signupForm.otherHealthIssues || ""}
+                          onChange={(e) => setSignupForm(prev => ({
+                            ...prev,
+                            otherHealthIssues: e.target.value
+                          }))}
+                        />
+                      </div>
+                      <div className="mt-2">
+                        <div className="health-history-item">
+                          <Checkbox 
+                            id="personal-none"
+                            checked={signupForm.healthIssues.includes("none")}
+                            onCheckedChange={() => {
+                              if (signupForm.healthIssues.includes("none")) {
+                                handleCheckboxChange("none", "healthIssues");
+                              } else {
+                                // If selecting "none", clear all other selections
+                                setSignupForm(prev => ({
+                                  ...prev,
+                                  healthIssues: ["none"]
+                                }));
+                              }
+                            }}
+                          />
+                          <Label htmlFor="personal-none">
+                            None of the above
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Family Health History */}
+                    <div className="health-section">
+                      <h3>Family Health History</h3>
+                      <p className="text-xs text-muted-foreground mb-2">Select up to 3 conditions that run in your family</p>
+                      <div className="health-history-grid">
+                        {healthIssueOptions
+                          .filter(option => option.id !== "acidReflux") // Remove acid reflux from family history
+                          .map((option) => (
+                            <div key={option.id} className="health-history-item">
+                              <Checkbox 
+                                id={`family-${option.id}`}
+                                checked={signupForm.familyHealthIssues?.includes(option.id)}
+                                onCheckedChange={() => {
+                                  if (signupForm.familyHealthIssues?.includes(option.id)) {
+                                    handleCheckboxChange(option.id, "familyHealthIssues");
+                                  } else if (!signupForm.familyHealthIssues || signupForm.familyHealthIssues.length < 3) {
+                                    handleCheckboxChange(option.id, "familyHealthIssues");
+                                  }
+                                }}
+                                disabled={signupForm.familyHealthIssues?.length >= 3 && !signupForm.familyHealthIssues.includes(option.id)}
+                              />
+                              <Label htmlFor={`family-${option.id}`}>
+                                {option.label}
+                              </Label>
+                            </div>
+                          ))}
+                      </div>
+                      <div className="mt-4">
+                        <Label htmlFor="family-other-condition">Other (please specify)</Label>
+                        <Input
+                          id="family-other-condition"
+                          placeholder="Enter other family health conditions"
+                          value={signupForm.otherFamilyHealthIssues || ""}
+                          onChange={(e) => setSignupForm(prev => ({
+                            ...prev,
+                            otherFamilyHealthIssues: e.target.value
+                          }))}
+                        />
+                      </div>
+                      <div className="mt-2">
+                        <div className="health-history-item">
+                          <Checkbox 
+                            id="family-none"
+                            checked={signupForm.familyHealthIssues?.includes("none")}
+                            onCheckedChange={() => {
+                              if (signupForm.familyHealthIssues?.includes("none")) {
+                                handleCheckboxChange("none", "familyHealthIssues");
+                              } else {
+                                // If selecting "none", clear all other selections
+                                setSignupForm(prev => ({
+                                  ...prev,
+                                  familyHealthIssues: ["none"]
+                                }));
+                              }
+                            }}
+                          />
+                          <Label htmlFor="family-none">
+                            None of the above
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Micronutrient Selection */}
+                    <div className="space-y-2">
+                      <Label>Priority Micronutrients to Track</Label>
+                      <p className="text-xs text-muted-foreground mb-2">Select up to 3 micronutrients to track based on your health conditions</p>
+                      
+                      {/* Smart Recommendations based on health conditions */}
+                      {(signupForm.healthIssues.length > 0 || signupForm.familyHealthIssues?.length > 0) && (
+                        <div className="recommendations-box mb-4">
+                          <h4 className="text-sm font-medium mb-2">Smart Recommendations</h4>
+                          {/* Personal Health History Recommendations */}
+                          {signupForm.healthIssues.map(issueId => {
+                            const recommendation = healthConditionRecommendations[issueId];
+                            if (recommendation) {
+                              return (
+                                <div key={`personal-${issueId}`} className="recommendation-item">
+                                  <div className="recommendation-header">
+                                    <span className="recommendation-icon">👤</span>
+                                    <h5 className="recommendation-title">{recommendation.title} (Personal)</h5>
+                                  </div>
+                                  <div className="recommendation-content">
+                                    <div className="recommendation-nutrients">
+                                      <span className="recommendation-icon">🔹</span>
+                                      <span>Suggested Micronutrients: </span>
+                                      {recommendation.nutrients.map(nutrientId => {
+                                        const nutrient = micronutrientOptions.find(n => n.id === nutrientId);
+                                        return nutrient ? nutrient.label : '';
+                                      }).join(", ")}
+                                    </div>
+                                    <div className="recommendation-message">
+                                      <span className="recommendation-icon">✏️</span>
+                                      <span>{recommendation.message}</span>
+                                    </div>
+                                    <div className="recommendation-details">
+                                      {recommendation.details}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+
+                          {/* Family Health History Recommendations */}
+                          {signupForm.familyHealthIssues?.map(issueId => {
+                            // Skip if this condition is already recommended from personal health history
+                            if (signupForm.healthIssues.includes(issueId)) {
+                              return null;
+                            }
+
+                            const recommendation = healthConditionRecommendations[issueId];
+                            if (recommendation) {
+                              return (
+                                <div key={`family-${issueId}`} className="recommendation-item">
+                                  <div className="recommendation-header">
+                                    <span className="recommendation-icon">👨‍👩‍👧‍👦</span>
+                                    <h5 className="recommendation-title">{recommendation.title} (Family History)</h5>
+                                  </div>
+                                  <div className="recommendation-content">
+                                    <div className="recommendation-nutrients">
+                                      <span className="recommendation-icon">🔹</span>
+                                      <span>Suggested Micronutrients: </span>
+                                      {recommendation.nutrients.map(nutrientId => {
+                                        const nutrient = micronutrientOptions.find(n => n.id === nutrientId);
+                                        return nutrient ? nutrient.label : '';
+                                      }).join(", ")}
+                                    </div>
+                                    <div className="recommendation-message">
+                                      <span className="recommendation-icon">✏️</span>
+                                      <span>{recommendation.message}</span>
+                                    </div>
+                                    <div className="recommendation-details">
+                                      {recommendation.details}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      )}
+
+                      <Select 
+                        value={signupForm.micronutrients[0] || ""}
+                        onValueChange={(value) => {
+                          const newNutrients = [value];
+                          if (signupForm.micronutrients[1]) newNutrients.push(signupForm.micronutrients[1]);
+                          if (signupForm.micronutrients[2]) newNutrients.push(signupForm.micronutrients[2]);
+                          setSignupForm(prev => ({
+                            ...prev,
+                            micronutrients: newNutrients
+                          }));
+                        }}
+                      >
+                        <SelectTrigger className="select-trigger">
+                          <SelectValue>
+                            {signupForm.micronutrients[0] 
+                              ? micronutrientOptions.find(n => n.id === signupForm.micronutrients[0])?.label 
+                              : "Select first micronutrient"}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className="select-content">
+                          {micronutrientOptions.map((nutrient) => (
+                            <SelectItem className="select-item" key={nutrient.id} value={nutrient.id}>
+                              {nutrient.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {/* Second Micronutrient - Only show if first is selected */}
+                      {signupForm.micronutrients[0] && (
+                        <Select 
+                          value={signupForm.micronutrients[1] || ""}
+                          onValueChange={(value) => {
+                            const newNutrients = [signupForm.micronutrients[0], value];
+                            if (signupForm.micronutrients[2]) newNutrients.push(signupForm.micronutrients[2]);
+                            setSignupForm(prev => ({
+                              ...prev,
+                              micronutrients: newNutrients
+                            }));
+                          }}
+                        >
+                          <SelectTrigger className="select-trigger">
+                            <SelectValue>
+                              {signupForm.micronutrients[1] 
+                                ? micronutrientOptions.find(n => n.id === signupForm.micronutrients[1])?.label 
+                                : "Select second micronutrient"}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="select-content">
+                            {micronutrientOptions
+                              .filter(nutrient => !signupForm.micronutrients.includes(nutrient.id))
+                              .map((nutrient) => (
+                                <SelectItem className="select-item" key={nutrient.id} value={nutrient.id}>
+                                  {nutrient.label}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+
+                      {/* Third Micronutrient - Only show if second is selected */}
+                      {signupForm.micronutrients[1] && (
+                        <Select 
+                          value={signupForm.micronutrients[2] || ""}
+                          onValueChange={(value) => {
+                            setSignupForm(prev => ({
+                              ...prev,
+                              micronutrients: [prev.micronutrients[0], prev.micronutrients[1], value]
+                            }));
+                          }}
+                        >
+                          <SelectTrigger className="select-trigger">
+                            <SelectValue>
+                              {signupForm.micronutrients[2] 
+                                ? micronutrientOptions.find(n => n.id === signupForm.micronutrients[2])?.label 
+                                : "Select third micronutrient"}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="select-content">
+                            {micronutrientOptions
+                              .filter(nutrient => !signupForm.micronutrients.includes(nutrient.id))
+                              .map((nutrient) => (
+                                <SelectItem className="select-item" key={nutrient.id} value={nutrient.id}>
+                                  {nutrient.label}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+
                     {/* Dietary Preference */}
                     <div className="space-y-2">
                       <Label>Dietary Preference (Max 2)</Label>
@@ -550,23 +1077,6 @@ const Signup = () => {
                       </div>
                     </div>
 
-                    {/* Foods to Avoid */}
-                    <div className="space-y-2">
-                      <Label>Foods to Avoid</Label>
-                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                      <div className="grid">
-                        {foodsToAvoidOptions.map((option) => (
-                          <div 
-                            key={option.id} 
-                            className={`filter-button ${signupForm.foodsToAvoid.includes(option.id) ? 'selected' : ''}`}
-                            onClick={() => handleCheckboxChange(option.id, "foodsToAvoid")}
-                          >
-                            {option.label}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
                     {/* Meals Per Day */}
                     <div className="space-y-2">
                       <Label htmlFor="meals-per-day">Meals Per Day</Label>
@@ -574,72 +1084,21 @@ const Signup = () => {
                         value={signupForm.mealsPerDay}
                         onValueChange={(value) => handleSelectChange(value, "mealsPerDay")}
                       >
-                        <SelectTrigger id="meals-per-day">
-                          <SelectValue placeholder="Select number of meals" />
+                        <SelectTrigger className="select-trigger" id="meals-per-day">
+                          <SelectValue>
+                            {signupForm.mealsPerDay 
+                              ? `${signupForm.mealsPerDay} ${signupForm.mealsPerDay === "1" ? "meal" : "meals"}`
+                              : "Select number of meals"}
+                          </SelectValue>
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="select-content">
                           {[1, 2, 3, 4, 5, 6].map((num) => (
-                            <SelectItem key={num} value={num.toString()}>
+                            <SelectItem className="select-item" key={num} value={num.toString()}>
                               {num} {num === 1 ? "meal" : "meals"}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
-
-                    {/* Micronutrient Tracking */}
-                    <div className="space-y-2">
-                      <Label>Priority Micronutrients to Track</Label>
-                      <p className="text-xs text-muted-foreground mb-2">Select nutrients you want to track</p>
-                      <div className="grid">
-                        {micronutrientOptions.map((option) => (
-                          <div 
-                            key={option.id} 
-                            className={`filter-button ${signupForm.micronutrients.includes(option.id) ? 'selected' : ''}`}
-                            onClick={() => handleCheckboxChange(option.id, "micronutrients")}
-                          >
-                            {option.label}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Personal Health History */}
-                    <div className="health-section">
-                      <h3>Personal Health History</h3>
-                      <div className="health-history-grid">
-                        {healthIssueOptions.map((option) => (
-                          <div key={option.id} className="health-history-item">
-                            <Checkbox 
-                              id={`personal-${option.id}`}
-                              checked={signupForm.healthIssues.includes(option.id)}
-                              onCheckedChange={() => handleCheckboxChange(option.id, "healthIssues")}
-                            />
-                            <Label htmlFor={`personal-${option.id}`}>
-                              {option.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Family Health History */}
-                    <div className="health-section">
-                      <h3>Family Health History</h3>
-                      <div className="health-history-grid">
-                        {healthIssueOptions.map((option) => (
-                          <div key={option.id} className="health-history-item">
-                            <Checkbox 
-                              id={`family-${option.id}`}
-                              checked={signupForm.familyHealthIssues?.includes(option.id)}
-                              onCheckedChange={() => handleCheckboxChange(option.id, "familyHealthIssues")}
-                            />
-                            <Label htmlFor={`family-${option.id}`}>
-                              {option.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                     
                     <div className="flex justify-between mt-6">
@@ -672,20 +1131,21 @@ const Signup = () => {
                         : `${3 - signupForm.healthGoals.length} more goal${3 - signupForm.healthGoals.length !== 1 ? "s" : ""} can be selected`}
                     </p>
                     
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 gap-1">
                       {healthGoalOptions.map((goal) => {
                         const isSelected = signupForm.healthGoals.includes(goal.id);
                         return (
                           <div 
                             key={goal.id}
-                            className={`p-3 rounded-lg border ${isSelected ? 'border-primary bg-primary/10' : 'border-border'} transition-colors cursor-pointer`}
-                            onClick={() => handleHealthGoalChange(goal.id)}
+                            className={`py-1 px-2 rounded-md ${isSelected ? 'bg-primary/10' : ''} transition-colors`}
                           >
                             <div className="flex items-center space-x-2">
                               <Checkbox 
                                 id={`goal-${goal.id}`}
                                 checked={isSelected}
+                                onCheckedChange={() => handleHealthGoalChange(goal.id)}
                                 disabled={signupForm.healthGoals.length >= 3 && !isSelected}
+                                className="h-3 w-3"
                               />
                               <Label htmlFor={`goal-${goal.id}`} className="text-sm font-medium">
                                 {goal.label}

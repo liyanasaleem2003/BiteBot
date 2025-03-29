@@ -1,23 +1,49 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Recipes from "./pages/Recipes";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/MyProfile";
+import PrivateRoute from "./components/PrivateRoute";
+import { FavoriteRecipesProvider } from "./context/FavoriteRecipesContext";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Route Definitions */}
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/recipes" element={<Recipes />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </Router>
+    <FavoriteRecipesProvider>
+      <Router>
+        <Routes>
+          {/* Route Definitions */}
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/myprofile" 
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/recipes" 
+            element={
+              <PrivateRoute>
+                <Recipes />
+              </PrivateRoute>
+            } 
+          />
+        </Routes>
+      </Router>
+    </FavoriteRecipesProvider>
   );
 }
 

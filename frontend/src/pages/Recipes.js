@@ -3,6 +3,7 @@ import { RecipeCard } from "../components/ui/RecipeCard";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/ui/Navbar";
 import { Search } from "lucide-react";
+import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 import "./Recipes.css";
 
 // Filter Categories
@@ -54,8 +55,8 @@ export default function Recipes() {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [favorites, setFavorites] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const { isFavorite, addFavoriteRecipe, removeFavoriteRecipe } = useFavoriteRecipes();
 
   // Filter states
   const [selectedDietary, setSelectedDietary] = useState(new Set());
@@ -66,71 +67,26 @@ export default function Recipes() {
 
   // Fetch Recipes from Backend
   useEffect(() => {
-    fetch("http://localhost:8000/recipes")
-      .then((response) => {
+    const fetchRecipes = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch("http://127.0.0.1:8000/recipes", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          // Add this detailed logging
-          console.log("First few recipes full data:", data.slice(0, 3).map(recipe => ({
-            title: recipe.title,
-            tags: recipe.tags,
-            dietaryPreference: recipe.dietaryPreference,  // Check if it's here
-            dietary: recipe.dietary,  // Or here
-            healthBenefits: recipe.healthBenefits,
-            fullObject: recipe
-          })));
 
-          // Also log all unique dietary values in the database
-          const allDietary = new Set();
-          data.forEach(recipe => {
-            if (recipe.tags?.dietary) {
-              recipe.tags.dietary.forEach(d => allDietary.add(d));
-            }
-            if (recipe.dietaryPreference) {
-              recipe.dietaryPreference.forEach(d => allDietary.add(d));
-            }
-          });
-          console.log("All dietary values in database:", Array.from(allDietary));
-          
-          // Log all unique health benefits
-          const allHealthBenefits = new Set();
-          data.forEach(recipe => {
-            (recipe.healthBenefits || []).forEach(benefit => {
-              allHealthBenefits.add(benefit);
-            });
-          });
-          console.log("All available health benefits in database:", 
-            Array.from(allHealthBenefits).sort());
-          
-          // Also log a few sample recipes with their benefits
-          console.log("Sample recipes with benefits:", 
-            data.slice(0, 5).map(recipe => ({
-              title: recipe.title,
-              benefits: recipe.healthBenefits
-            }))
-          );
-          
-          // Log sample of dietary and health data
-          console.log("Sample recipe data:", data.slice(0, 3).map(recipe => ({
-            title: recipe.title,
-            dietary: recipe.dietaryPreference,
-            healthBenefits: recipe.healthBenefits,
-            rawTags: recipe.tags
-          })));
-          
-          // Log detailed structure of first few recipes
-          console.log("First 3 recipes data structure:", data.slice(0, 3).map(recipe => ({
-            title: recipe.title,
-            rawTags: recipe.tags,
-            dietary: recipe.tags?.dietary,
-            fullObject: recipe
-          })));
-          
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          console.log("Received recipes data:", data);
           setRecipes(data);
           setFilteredRecipes(data);
         } else {
@@ -138,13 +94,17 @@ export default function Recipes() {
           setRecipes([]);
           setFilteredRecipes([]);
         }
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching recipes:", error);
         setError(error.message);
+        setRecipes([]);
+        setFilteredRecipes([]);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchRecipes();
   }, []);
 
   // Combined filter and search effect
@@ -332,15 +292,13 @@ export default function Recipes() {
     setSelectedPreferences(newSet);
   };
 
-  // Toggle Favorite Function
-  const toggleFavorite = (title) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(title)) {
-      newFavorites.delete(title);
+  // Updated Toggle Favorite Function
+  const toggleFavorite = (recipe) => {
+    if (isFavorite(recipe.title)) {
+      removeFavoriteRecipe(recipe.title);
     } else {
-      newFavorites.add(title);
+      addFavoriteRecipe(recipe);
     }
-    setFavorites(newFavorites);
   };
 
   if (loading) return <div>Loading recipes...</div>;
@@ -453,8 +411,8 @@ export default function Recipes() {
                 culturalStyle={recipe.tags?.cultural?.main === "Fusion 🥘" ? 
                   "Fusion 🥘" : 
                   recipe.tags?.cultural?.sub || ''}
-                isFavorite={favorites.has(recipe.title)} 
-                onFavoriteToggle={() => toggleFavorite(recipe.title)} 
+                isFavorite={isFavorite(recipe.title)} 
+                onFavoriteToggle={() => toggleFavorite(recipe)} 
               />
             ))}
           </div>
