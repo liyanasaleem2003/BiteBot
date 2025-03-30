@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { ChevronDown, Trash2, HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { API_BASE_URL } from '../../config';
 import "./MealCard.css";
 
 // Types
@@ -103,12 +104,32 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
     return key.split(/(?=[A-Z])/).join(' ').charAt(0).toUpperCase() + key.slice(1);
   };
 
+  // Helper function to get the full image URL
+  const getImageUrl = (imagePath: string): string => {
+    if (!imagePath || imagePath.trim() === '') {
+      return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
+    }
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    return `${API_BASE_URL}${imagePath}`;
+  };
+
   return (
     <div className="meal-card">
       <div className="meal-card-header">
         <div className="meal-card-content">
           <div className="meal-card-image">
-            <img src={meal.image} alt={meal.name} />
+            <img 
+              src={getImageUrl(meal.image)}
+              alt={meal.name}
+              className="w-full h-full object-cover rounded-lg"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/placeholder-meal.jpg";
+                console.error("Failed to load image:", meal.image);
+              }}
+            />
           </div>
           <div className="meal-card-info">
             <div className="meal-card-header-row">
@@ -257,7 +278,7 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <span className="text-sm text-zinc-400">{value}%</span>
+                    <span className="text-sm text-zinc-400">{Math.round(value)}%</span>
                   </div>
                   <div className="meal-card-health-score-bar">
                     <div 

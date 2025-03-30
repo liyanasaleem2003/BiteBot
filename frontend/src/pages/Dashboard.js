@@ -13,6 +13,8 @@ import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
 import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 import "./Dashboard.css";
+import { API_BASE_URL } from '../config';
+import { micronutrientOptions } from "../data/profileOptions";
 
 // Placeholder data
 const macroData = [
@@ -43,9 +45,9 @@ const supplements = [
 const meals = [
   {
     id: "meal1",
-    name: "Masala Oats Breakfast",
+    name: "Masala Oats with Vegetables Breakfast",
     time: "8:30 AM",
-    image: "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",
+    image: "https://kiipfit.com/wp-content/uploads/2015/04/masala-oatmeal-5-2.0-1024x1024.jpg",
     tags: ["High-Fiber", "Low-Sodium", "Plant-Based"],
     macros: {
       calories: 320,
@@ -66,9 +68,9 @@ const meals = [
   },
   {
     id: "meal2",
-    name: "Tandoori Paneer Wrap",
+    name: "Tandoori Paneer Wrap Lunch",
     time: "1:15 PM",
-    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&dpr=2&q=80",
+    image: "https://ministryofcurry.com/wp-content/uploads/2019/10/paneer-kathi-rolls-1-1-850x1133.jpg",
     tags: ["High-Protein", "Balanced-Meal", "Vegetarian"],
     macros: {
       calories: 580,
@@ -89,9 +91,9 @@ const meals = [
   },
   {
     id: "meal3",
-    name: "Apple & Nut Butter Snack",
+    name: "Apple & Peanut Butter Snack",
     time: "4:00 PM",
-    image: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=800&dpr=2&q=80",
+    image: "https://i0.wp.com/images-prod.healthline.com/hlcmsresource/images/AN_images/apple-and-peanut-butter-1296x728-feature.jpg?w=1155&h=1528",
     tags: ["Quick-Energy", "Heart-Healthy", "Low-Sodium"],
     macros: {
       calories: 210,
@@ -112,9 +114,9 @@ const meals = [
   },
   {
     id: "meal4",
-    name: "Lentil Vegetable Curry & Rice",
+    name: "Lentil Vegetable Curry & Rice Dinner",
     time: "7:30 PM",
-    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&dpr=2&q=80",
+    image: "https://cookingforpeanuts.com/wp-content/uploads/2021/09/15-Minute-Lentil-Veggie-Curry-1.jpg",
     tags: ["Protein-Rich", "Plant-Based", "Iron-Rich"],
     macros: {
       calories: 620,
@@ -144,57 +146,57 @@ export default function Dashboard() {
   const [userSupplements, setUserSupplements] = useState(supplements);
   const [userMeals, setUserMeals] = useState(meals);
   const [expandedMealId, setExpandedMealId] = useState(null);
+  const [lastFetchedDate, setLastFetchedDate] = useState(null);
+  const [error, setError] = useState(null);
   const { favoriteRecipes, removeFavoriteRecipe } = useFavoriteRecipes();
   
-  // Add state for nutritional needs
+  // Add state for user profile and nutritional needs
+  const [userProfile, setUserProfile] = useState(null);
   const [nutritionalNeeds, setNutritionalNeeds] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Fetch user profile and nutritional needs
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) {
-          console.log('No token found, redirecting to signup');
-          navigate('/signup');
+          console.log("No token found");
+          navigate("/signup");
           return;
         }
 
-        console.log('Fetching user profile with token:', token);
-        const response = await fetch('http://127.0.0.1:8000/auth/me', {
-          method: 'GET',
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
           headers: {
-            'Authorization': token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           }
         });
 
-        if (response.status === 401) {
-          console.log('Token expired or invalid, redirecting to signup');
-          localStorage.removeItem('token');
-          navigate('/signup');
-          return;
-        }
+        console.log("Profile response status:", response.status); // Debug log
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch user profile');
-        }
-
-        const userData = await response.json();
-        console.log('Received user data:', userData);
-        
-        if (userData.profile && userData.profile.nutritional_needs) {
-          setNutritionalNeeds(userData.profile.nutritional_needs);
-          console.log('Set nutritional needs:', userData.profile.nutritional_needs);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Profile data:", data); // Debug log
+          setUserProfile(data);
+          if (data.profile?.nutritional_needs) {
+            console.log("Nutritional needs:", data.profile.nutritional_needs); // Debug log
+            setNutritionalNeeds(data.profile.nutritional_needs);
+          } else {
+            console.log("No nutritional needs found in profile data"); // Debug log
+          }
+        } else if (response.status === 401) {
+          console.log("Unauthorized - clearing token"); // Debug log
+          localStorage.removeItem("token");
+          navigate("/signup");
         } else {
-          console.log('No nutritional needs found in user data');
-          setNutritionalNeeds(null);
+          throw new Error("Failed to fetch profile");
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
-        setNutritionalNeeds(null);
+        console.error("Error fetching profile:", error);
+        localStorage.removeItem("token"); // Clear token on error
+        navigate("/signup");
       } finally {
         setLoading(false);
       }
@@ -203,8 +205,71 @@ export default function Dashboard() {
     fetchUserProfile();
   }, [navigate]);
 
-  // Calculate total nutritional values from meals
+  // Fetch meals for the selected date
+  const fetchMeals = async (date) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Format the date as YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
+
+      const response = await fetch(`${API_BASE_URL}/nutrition/meals/${formattedDate}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Backend error details:', errorData);
+        
+        // Handle specific error cases
+        if (response.status === 401) {
+          // Token expired or invalid
+          localStorage.removeItem('token');
+          window.location.href = '/signup';
+          return;
+        }
+        
+        if (response.status === 500 && errorData.detail?.includes('Database connection error')) {
+          // Database connection error - retry with exponential backoff
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+          return fetchMeals(date); // Retry once
+        }
+        
+        throw new Error(`Failed to fetch meals: ${response.status} - ${errorData.detail || 'Unknown error'}`);
+      }
+
+      const data = await response.json();
+      // Only update meals if we have data from the backend, otherwise keep the placeholder meals
+      if (data.meals && data.meals.length > 0) {
+        setUserMeals(data.meals);
+      }
+      setLastFetchedDate(formattedDate);
+      return data;
+    } catch (error) {
+      console.error('Backend fetch error:', error);
+      // Show user-friendly error message
+      setError('Unable to load meals. Please try refreshing the page.');
+      return [];
+    }
+  };
+
+  // Fetch meals when date changes or component mounts
+  useEffect(() => {
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    if (formattedDate !== lastFetchedDate) {
+      fetchMeals(currentDate);
+    }
+  }, [currentDate, lastFetchedDate]);
+
+  // Calculate total nutritional values from meals with better error handling
   const calculateTotalNutrition = () => {
+    console.log("Calculating totals from meals:", userMeals);
     const totals = {
       calories: 0,
       protein: 0,
@@ -215,23 +280,30 @@ export default function Dashboard() {
       sodium: 0
     };
 
+    if (!Array.isArray(userMeals)) {
+      console.error("userMeals is not an array:", userMeals);
+      return totals;
+    }
+
     userMeals.forEach(meal => {
-      if (meal.macros) {
-        totals.calories += meal.macros.calories || 0;
-        totals.protein += meal.macros.protein || 0;
-        totals.carbs += meal.macros.carbs || 0;
-        totals.fats += meal.macros.fats || 0;
-        totals.fiber += meal.macros.fiber || 0;
-        totals.sugar += meal.macros.sugar || 0;
-        totals.sodium += meal.macros.sodium || 0;
+      if (meal && meal.macros) {
+        Object.keys(totals).forEach(key => {
+          const value = Number(meal.macros[key]) || 0;
+          totals[key] += value;
+        });
       }
+    });
+
+    // Round all values to 1 decimal place for consistency
+    Object.keys(totals).forEach(key => {
+      totals[key] = Math.round(totals[key] * 10) / 10;
     });
 
     console.log("Calculated totals:", totals);
     return totals;
   };
 
-  // Get current nutritional values
+  // Get current nutritional values and goals
   const currentNutrition = calculateTotalNutrition();
   const nutritionalGoals = nutritionalNeeds ? {
     calories: nutritionalNeeds.calories.max,
@@ -243,54 +315,88 @@ export default function Dashboard() {
     sodium: nutritionalNeeds.other_nutrients.sodium.max
   } : null;
 
-  // Fetch meals for the selected date
-  const fetchMeals = async (date) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found, redirecting to signup");
-        navigate("/signup");
-        return;
-      }
-
-      const formattedDate = date.toISOString().split('T')[0];
-      console.log("Fetching meals for date:", formattedDate);
-      
-      const response = await fetch(`http://127.0.0.1:8000/nutrition/meals/${formattedDate}`, {
-        method: "GET",
-        headers: {
-          "Authorization": token,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          console.log("Token expired or invalid, redirecting to signup");
-          localStorage.removeItem("token");
-          navigate("/signup");
-          return;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Received meals data:", data);
-      setUserMeals(data.meals);
-    } catch (error) {
-      console.error("Error fetching meals:", error);
-      setUserMeals([]);
-    } finally {
-      setLoading(false);
+  // Add this function to get the unit for a nutrient
+  const getNutrientUnit = (nutrientType) => {
+    if (!nutritionalNeeds) return '';
+    
+    if (nutrientType === 'calories') return 'kcal';
+    if (nutrientType in nutritionalNeeds.macros) {
+      return nutritionalNeeds.macros[nutrientType].unit;
     }
+    if (nutrientType in nutritionalNeeds.other_nutrients) {
+      return nutritionalNeeds.other_nutrients[nutrientType].unit;
+    }
+    return '';
   };
 
-  // Fetch meals when date changes
-  useEffect(() => {
-    fetchMeals(currentDate);
-  }, [currentDate]);
+  // Add this function to get the goal for a nutrient
+  const getNutrientGoal = (nutrientType) => {
+    if (!nutritionalNeeds) return 0;
+    
+    if (nutrientType === 'calories') {
+      return nutritionalNeeds.calories.max;
+    }
+    if (nutrientType in nutritionalNeeds.macros) {
+      return nutritionalNeeds.macros[nutrientType].max;
+    }
+    if (nutrientType in nutritionalNeeds.other_nutrients) {
+      return nutritionalNeeds.other_nutrients[nutrientType].max;
+    }
+    return 0;
+  };
+
+  // Progress Circle Component with error handling
+  const ProgressCircle = ({ current, nutrientType, label }) => {
+    const goal = getNutrientGoal(nutrientType);
+    const unit = getNutrientUnit(nutrientType);
+    
+    // Ensure we have valid numbers
+    const currentValue = Number(current) || 0;
+    const goalValue = Number(goal) || 1; // Prevent division by zero
+    
+    const percentage = Math.min(Math.round((currentValue / goalValue) * 100), 100);
+    const radius = 40;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (percentage / 100) * circumference;
+    
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <div className="relative w-[100px] h-[100px]">
+          <svg className="w-full h-full" viewBox="0 0 100 100">
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke="rgba(255, 255, 255, 0.1)"
+              strokeWidth="12"
+              fill="transparent"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke="#9d5e26"
+              strokeWidth="12"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              transform="rotate(-90 50 50)"
+            />
+          </svg>
+          
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-2xl font-bold">{currentValue}</span>
+            <span className="text-xs text-zinc-400">{unit}</span>
+          </div>
+        </div>
+        <div className="mt-2 text-center">
+          <div className="text-sm font-medium">{label}</div>
+          <div className="text-xs text-zinc-400">{goalValue} {unit}</div>
+        </div>
+      </div>
+    );
+  };
 
   const navigateDay = (direction) => {
     const newDate = new Date(currentDate);
@@ -344,52 +450,6 @@ export default function Dashboard() {
 
   const handleToggleFavorite = (recipeTitle) => {
     removeFavoriteRecipe(recipeTitle);
-  };
-
-  // Progress Circle Component
-  const ProgressCircle = ({ current, goal, label, unit }) => {
-    const percentage = Math.min(Math.round((current / goal) * 100), 100);
-    const radius = 40;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
-    
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <div className="relative w-[100px] h-[100px]">
-          <svg className="w-full h-full" viewBox="0 0 100 100">
-            <circle
-              cx="50"
-              cy="50"
-              r={radius}
-              stroke="rgba(255, 255, 255, 0.1)"
-              strokeWidth="12"
-              fill="transparent"
-            />
-            <circle
-              cx="50"
-              cy="50"
-              r={radius}
-              stroke="#9d5e26"
-              strokeWidth="12"
-              fill="transparent"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              transform="rotate(-90 50 50)"
-            />
-          </svg>
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-2xl font-bold">{current}</span>
-            <span className="text-xs text-zinc-400">{unit}</span>
-          </div>
-        </div>
-        <div className="mt-2 text-center">
-          <div className="text-sm font-medium">{label}</div>
-          <div className="text-xs text-zinc-400">{goal} {unit}</div>
-        </div>
-      </div>
-    );
   };
 
   // Health Score Bar Component
@@ -465,6 +525,12 @@ export default function Dashboard() {
     );
   };
 
+  // Add this function to get the label for a micronutrient ID
+  const getMicronutrientLabel = (id) => {
+    const nutrient = micronutrientOptions.find(n => n.id === id);
+    return nutrient ? nutrient.label : id;
+  };
+
   // Add loading state display
   if (loading) {
     return (
@@ -496,20 +562,64 @@ export default function Dashboard() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             
-            <Popover>
+            <Popover open={showCalendar} onOpenChange={setShowCalendar}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="min-w-[200px] justify-center text-sm font-normal h-8 bg-black/50 border-zinc-700 text-white hover:bg-black/70"
+                  className="date-button"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {getDateString(currentDate)}
                   {isToday(currentDate) && " (Today)"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-black/90 border-zinc-700" align="center">
-                <div className="p-3">
-                  <p className="text-sm text-center text-zinc-400">Calendar will be implemented here</p>
+              <PopoverContent className="popover-content" align="center">
+                <div className="calendar-container">
+                  <div className="calendar">
+                    <div className="calendar-header">
+                      <button onClick={() => navigateDay('prev')} className="calendar-nav-button">
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <span className="calendar-month">
+                        {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <button onClick={() => navigateDay('next')} className="calendar-nav-button">
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="calendar-grid">
+                      <div className="calendar-weekdays">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                          <div key={day} className="calendar-weekday">{day}</div>
+                        ))}
+                      </div>
+                      <div className="calendar-days">
+                        {Array.from({ length: 42 }, (_, i) => {
+                          const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                          date.setDate(date.getDate() - date.getDay() + i);
+                          const isCurrentMonth = date.getMonth() === currentDate.getMonth();
+                          const isToday = date.toDateString() === new Date().toDateString();
+                          const isSelected = date.toDateString() === currentDate.toDateString();
+                          
+                          return (
+                            <button
+                              key={i}
+                              className={`calendar-day ${!isCurrentMonth ? 'calendar-day-other-month' : ''} 
+                                        ${isToday ? 'calendar-day-today' : ''} 
+                                        ${isSelected ? 'calendar-day-selected' : ''}`}
+                              onClick={() => {
+                                setCurrentDate(date);
+                                setLastFetchedDate(null); // Force a refresh of meals
+                                setShowCalendar(false); // Hide calendar after selection
+                              }}
+                            >
+                              {date.getDate()}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
@@ -525,6 +635,15 @@ export default function Dashboard() {
             </Button>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-900/50 border border-red-700 rounded-lg">
+            <div className="flex items-center text-red-200">
+              <Info className="h-5 w-5 mr-2" />
+              <p>{error}</p>
+            </div>
+          </div>
+        )}
 
         <div className="dashboard-grid">
           {/* Left Section - Dashboard UI */}
@@ -558,21 +677,18 @@ export default function Dashboard() {
                   <>
                     <ProgressCircle 
                       current={currentNutrition.protein} 
-                      goal={nutritionalNeeds.macros.protein.max} 
+                      nutrientType="protein"
                       label="Protein" 
-                      unit={nutritionalNeeds.macros.protein.unit} 
                     />
                     <ProgressCircle 
                       current={currentNutrition.carbs} 
-                      goal={nutritionalNeeds.macros.carbs.max} 
+                      nutrientType="carbs"
                       label="Carbs" 
-                      unit={nutritionalNeeds.macros.carbs.unit} 
                     />
                     <ProgressCircle 
                       current={currentNutrition.fats} 
-                      goal={nutritionalNeeds.macros.fats.max} 
+                      nutrientType="fats"
                       label="Fats" 
-                      unit={nutritionalNeeds.macros.fats.unit} 
                     />
                   </>
                 )}
@@ -584,21 +700,18 @@ export default function Dashboard() {
                   <>
                     <ProgressCircle 
                       current={currentNutrition.fiber} 
-                      goal={nutritionalNeeds.other_nutrients.fiber.max} 
+                      nutrientType="fiber"
                       label="Fiber" 
-                      unit={nutritionalNeeds.other_nutrients.fiber.unit} 
                     />
                     <ProgressCircle 
                       current={currentNutrition.sugar} 
-                      goal={nutritionalNeeds.other_nutrients.sugar.max} 
+                      nutrientType="sugar"
                       label="Sugar" 
-                      unit={nutritionalNeeds.other_nutrients.sugar.unit} 
                     />
                     <ProgressCircle 
                       current={currentNutrition.sodium} 
-                      goal={nutritionalNeeds.other_nutrients.sodium.max} 
+                      nutrientType="sodium"
                       label="Sodium" 
-                      unit={nutritionalNeeds.other_nutrients.sodium.unit} 
                     />
                   </>
                 )}
@@ -632,14 +745,25 @@ export default function Dashboard() {
               <div className="mt-4 p-3 bg-black/30 rounded-lg border border-zinc-700">
                 <div className="flex justify-between items-center">
                   <h3 className="text-sm font-medium text-white">Micronutrient Focus</h3>
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-zinc-400 hover:text-white">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 px-2 text-zinc-400 hover:text-white"
+                    onClick={() => navigate('/myprofile')}
+                  >
                     <Edit className="h-3.5 w-3.5" />
                   </Button>
                 </div>
                 <div className="mt-2 text-sm">
-                  <Badge variant="outline" className="mr-1 bg-black/30 border-zinc-700 text-zinc-300">Iron</Badge>
-                  <Badge variant="outline" className="mr-1 bg-black/30 border-zinc-700 text-zinc-300">Calcium</Badge>
-                  <Badge variant="outline" className="mr-1 bg-black/30 border-zinc-700 text-zinc-300">Omega 3</Badge>
+                  {userProfile?.profile?.priority_micronutrients?.map((nutrientId) => (
+                    <Badge 
+                      key={nutrientId} 
+                      variant="outline" 
+                      className="mr-1 bg-black/30 border-zinc-700 text-zinc-300"
+                    >
+                      {getMicronutrientLabel(nutrientId)}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </Card>

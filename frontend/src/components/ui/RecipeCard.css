@@ -322,12 +322,40 @@
 }
 
 .ingredients-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: bold;
-  color: #acdf8f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ingredients-header h3 {
+  margin: 0;
+  color: #bbd959;
+}
+
+.add-to-shopping-list-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #a2c705;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.add-to-shopping-list-button:hover {
+  background: #8ab004;
+  transform: translateY(-2px);
+}
+
+.add-to-shopping-list-button .icon {
+  width: 18px;
+  height: 18px;
 }
 
 .ingredient-row {

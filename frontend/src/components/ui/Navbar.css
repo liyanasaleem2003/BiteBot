@@ -42,7 +42,7 @@
     text-decoration: none;
     font-size: 16px;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .nav-links li a:hover {
@@ -50,11 +50,12 @@
 }
 
 .nav-links li a.active {
-    color: #22C55E; /* BiteBot green color */
+    color: #a2c705;
+    font-weight: bold;
 }
 
 .nav-links li a.active .icon {
-    color: #22C55E;
+    color: #a2c705;
 }
 
 /* Icons */

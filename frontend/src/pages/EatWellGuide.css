@@ -1,0 +1,525 @@
+.eatwell-container {
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('../images/recipepage_background.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  padding-top: 40px;
+  box-sizing: border-box;
+}
+
+.eatwell-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 2rem;
+}
+
+.eatwell-header {
+  display: none; /* Hide the old header */
+}
+
+.eatwell-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  padding: 0.75rem 2rem;
+  margin-bottom: 1rem;
+  margin-top: 0.25rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 8px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(30, 30, 30, 0.7) 0%,
+    rgba(15, 15, 15, 0.8) 100%
+  );
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.eatwell-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.guide-container {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  margin-top: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pie-chart-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+}
+
+.pie-chart-container:hover {
+  transform: scale(1.05);
+}
+
+.pie-chart-title {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.pie-chart-section {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 8px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  
+  background: linear-gradient(
+    145deg,
+    rgba(30, 30, 30, 0.7) 0%,
+    rgba(15, 15, 15, 0.8) 100%
+  );
+}
+
+/* Adjust the PieChart size */
+.pie-chart-section .recharts-wrapper {
+  margin: -20px 0;
+}
+
+/* Add these new styles for enhanced hover effects */
+.recharts-sector {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.recharts-sector:hover {
+  transform: scale(1.02);
+}
+
+.section-hover-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.section-hover-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.section-hover-info p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.pie-tooltip {
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-width: 150px;
+  transform-origin: center;
+  animation: tooltipAppear 0.2s ease-out;
+}
+
+@keyframes tooltipAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pie-tooltip h3 {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.pie-tooltip p {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pie-tooltip p.text-sm {
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.pie-chart-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  fill: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.pie-chart-label:hover {
+  fill-opacity: 1;
+}
+
+/* Update the colors to be more translucent */
+.foodSections {
+  --fruits-veg: rgba(123, 198, 123, 0.75);
+  --carbs: rgba(249, 199, 79, 0.75);
+  --proteins: rgba(240, 140, 140, 0.75);
+  --dairy: rgba(144, 202, 249, 0.75);
+  --oils: rgba(255, 183, 77, 0.75);
+}
+
+.tabs-container {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.tabs-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgb(63, 63, 70);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.tab-button.active {
+  background: rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-content {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+}
+
+.section-details {
+  margin-bottom: 1.5rem;
+}
+
+.tips-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.tips-content li {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.tips-content li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #F9C74F;
+}
+
+.section-content h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.section-content h4 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.section-content p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.recommendations-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.recommendations-list li {
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.recommendations-list li:before {
+  content: "•";
+  position: absolute;
+  left: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.swaps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.swap-item {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 15px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.swap-instead {
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.swap-enjoy {
+  color: rgba(255, 255, 255, 1);
+  font-weight: 500;
+}
+
+/* Add a subtle glow effect on hover */
+.swap-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 0 20px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Add these styles for the meal rows layout */
+.guide-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+}
+
+.meal-inspiration-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.meal-inspiration-title-section {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.meal-inspiration-title-section h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.meal-tabs-container {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+.meal-tabs-header {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.meal-tab-button {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.meal-tab-button.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.meal-tab-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.meal-tab-content {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 15px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  flex-grow: 1;
+  transition: all 0.2s ease;
+}
+
+.meal-tab-content h3 {
+  color: rgba(255, 255, 255, 1);
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meal-tab-content ul {
+  list-style: none;
+  padding-left: 0.5rem;
+  margin: 0;
+}
+
+.meal-tab-content li {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.meal-tab-content li:before {
+  content: "•";
+  position: absolute;
+  left: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.meal-tab-content li:last-child {
+  margin-bottom: 0;
+}
+
+.meal-row {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.meal-row h3 {
+  color: white;
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.meal-row ul {
+  list-style: none;
+  padding-left: 0.5rem;
+  margin: 0;
+}
+
+.meal-row li {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.meal-row li:before {
+  content: "•";
+  position: absolute;
+  left: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.meal-row li:last-child {
+  margin-bottom: 0;
+}
+
+/* Style for the pie chart explanatory note */
+.pie-chart-note {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  width: 80%;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 15px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}

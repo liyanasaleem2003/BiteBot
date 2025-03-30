@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button-ui';
+import { API_BASE_URL } from '../config';
 
 const NutritionDashboard = () => {
   const [nutritionalPlan, setNutritionalPlan] = useState(null);
@@ -14,7 +15,7 @@ const NutritionDashboard = () => {
 
   const fetchNutritionalData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/nutrition/calculate-needs', {
+      const response = await fetch(`${API_BASE_URL}/nutrition/calculate-needs`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

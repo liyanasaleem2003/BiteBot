@@ -30,7 +30,7 @@ const Home = () => {
 
       {/* Feature Buttons */}
       <div className="feature-buttons">
-        <div className="button-card top-left" onClick={() => navigate("/log-meal")}>
+        <div className="button-card top-left" onClick={() => navigate("/log-my-meal")}>
           <h2>Log My Meal</h2>
           <p>Upload an image of your food and let our AI analyze its nutritional composition.</p>
         </div>

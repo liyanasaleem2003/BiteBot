@@ -8,7 +8,16 @@ import { Label } from "../components/ui/label";
 import { Card } from "../components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Checkbox } from "../components/ui/checkbox";
-import { healthIssueOptions, dietaryOptions, micronutrientOptions, healthGoalOptions } from "../data/profileOptions";
+import { 
+  healthIssueOptions, 
+  dietaryOptions, 
+  micronutrientOptions, 
+  healthGoalOptions,
+  activityLevelOptions,
+  foodsToAvoidOptions,
+  healthConditionRecommendations
+} from "../data/profileOptions";
+import { API_BASE_URL } from '../config';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -44,9 +53,16 @@ const Profile = () => {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:8000/auth/me", {
+      if (!token) {
+        console.log("No token found");
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         }
       });
 
@@ -54,11 +70,16 @@ const Profile = () => {
         const data = await response.json();
         setUserProfile(data);
         setFormData(data);
+      } else if (response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/signup");
       } else {
         throw new Error("Failed to fetch profile");
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
+      localStorage.removeItem("token");
+      navigate("/signup");
     } finally {
       setLoading(false);
     }
@@ -121,25 +142,83 @@ const Profile = () => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:8000/profile/update", {
+      if (!token) {
+        console.log("No token found");
+        navigate("/signup");
+        return;
+      }
+
+      // Calculate age from date of birth
+      const today = new Date();
+      const birthDate = new Date(formData.profile.date_of_birth);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      // Format the date to YYYY-MM-DD
+      const formattedDate = birthDate.toISOString().split('T')[0];
+
+      // Add age to the profile data
+      const updatedFormData = {
+        ...formData,
+        profile: {
+          ...formData.profile,
+          age: age,
+          date_of_birth: formattedDate  // Ensure date is in YYYY-MM-DD format
+        }
+      };
+
+      console.log("Sending profile update request with data:", updatedFormData);
+
+      // Remove Bearer prefix if it exists
+      const cleanToken = token.replace('Bearer ', '');
+
+      console.log("Making request to:", `${API_BASE_URL}/auth/profile/update`);
+      console.log("Using token:", cleanToken.substring(0, 10) + "...");
+
+      const response = await fetch(`${API_BASE_URL}/auth/profile/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          "Authorization": `Bearer ${cleanToken}`,
+          "Accept": "application/json"
         },
-        body: JSON.stringify(formData)
+        credentials: "include",
+        mode: "cors", // Explicitly set CORS mode
+        body: JSON.stringify(updatedFormData)
       });
 
-      if (response.ok) {
-        alert("Profile updated successfully!");
-        setEditMode(false);
-        fetchUserProfile();
-      } else {
-        throw new Error("Failed to update profile");
+      console.log("Response status:", response.status);
+      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+          console.error("Server error response:", errorData);
+        } catch (e) {
+          console.error("Failed to parse error response:", e);
+          errorData = { detail: "Failed to parse error response" };
+        }
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
+
+      const updatedProfile = await response.json();
+      console.log("Profile updated successfully:", updatedProfile);
+      
+      // Update the local state with the new profile data
+      setUserProfile(updatedProfile);
+      setFormData(updatedProfile);
+      
+      // Show success message
+      alert("Profile updated successfully! Your nutritional needs have been recalculated based on your updated information.");
+      setEditMode(false);
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile. Please try again.");
+      console.error("Error stack:", error.stack);
+      alert(error.message || "Failed to update profile. Please try again.");
     }
   };
 
@@ -148,8 +227,37 @@ const Profile = () => {
     navigate("/");
   };
 
+  // Helper function to get label from ID
+  const getLabelFromId = (id, options) => {
+    const option = options.find(opt => opt.id === id);
+    return option ? option.label : id;
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="profile-container">
+        <Navbar />
+        <div className="profile-content">
+          <Card className="profile-card">
+            <div>Loading profile...</div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userProfile) {
+    return (
+      <div className="profile-container">
+        <Navbar />
+        <div className="profile-content">
+          <Card className="profile-card">
+            <div>No profile data available. Please try logging in again.</div>
+            <Button onClick={() => navigate("/signup")}>Go to Login</Button>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -161,25 +269,39 @@ const Profile = () => {
           
           {!editMode ? (
             <div className="profile-info">
-              <h2>Personal Information</h2>
-              <p><strong>Name:</strong> {userProfile.first_name}</p>
-              <p><strong>Email:</strong> {userProfile.email}</p>
-              <p><strong>Date of Birth:</strong> {userProfile.profile.date_of_birth}</p>
-              <p><strong>Sex:</strong> {userProfile.profile.sex}</p>
-              <p><strong>Height:</strong> {userProfile.profile.height.value} cm</p>
-              <p><strong>Weight:</strong> {userProfile.profile.weight.value} kg</p>
-              <p><strong>Activity Level:</strong> {userProfile.profile.activity_level}</p>
-              
-              <h2>Health Information</h2>
-              <p><strong>Health Conditions:</strong> {userProfile.profile.personal_health_history.join(", ")}</p>
-              <p><strong>Family Health History:</strong> {userProfile.profile.family_health_history.join(", ")}</p>
-              <p><strong>Priority Nutrients:</strong> {userProfile.profile.priority_micronutrients.join(", ")}</p>
-              
-              <h2>Dietary Preferences</h2>
-              <p><strong>Diet Type:</strong> {userProfile.profile.dietary_preferences.join(", ")}</p>
-              <p><strong>Meals per Day:</strong> {userProfile.profile.meals_per_day}</p>
-              <p><strong>Foods to Avoid:</strong> {userProfile.profile.foods_to_avoid.join(", ")}</p>
-              <p><strong>Health Goals:</strong> {userProfile.profile.health_goals.join(", ")}</p>
+              {/* Step 1: Basic Information */}
+              <div className="profile-info-section">
+                <h2>Basic Information</h2>
+                <p><strong>Name:</strong> <span className="value">{userProfile?.first_name || 'N/A'}</span></p>
+                <p><strong>Email:</strong> <span className="value">{userProfile?.email || 'N/A'}</span></p>
+                <p><strong>Date of Birth:</strong> <span className="value">{userProfile?.profile?.date_of_birth || 'N/A'}</span></p>
+                <p><strong>Sex:</strong> <span className="value">{userProfile?.profile?.sex || 'N/A'}</span></p>
+              </div>
+
+              {/* Step 2: Physical Information */}
+              <div className="profile-info-section">
+                <h2>Physical Information</h2>
+                <p><strong>Height:</strong> <span className="value">{userProfile?.profile?.height.value || 0} cm</span></p>
+                <p><strong>Weight:</strong> <span className="value">{userProfile?.profile?.weight.value || 0} kg</span></p>
+                <p><strong>Activity Level:</strong> <span className="value">{getLabelFromId(userProfile?.profile?.activity_level, activityLevelOptions) || 'N/A'}</span></p>
+              </div>
+
+              {/* Step 3: Health Information */}
+              <div className="profile-info-section">
+                <h2>Health Information</h2>
+                <p><strong>Health Conditions:</strong> <span className="value">{userProfile?.profile?.personal_health_history.map(id => getLabelFromId(id, healthIssueOptions)).join(", ") || 'N/A'}</span></p>
+                <p><strong>Family Health History:</strong> <span className="value">{userProfile?.profile?.family_health_history.map(id => getLabelFromId(id, healthIssueOptions)).join(", ") || 'N/A'}</span></p>
+                <p><strong>Priority Nutrients:</strong> <span className="value">{userProfile?.profile?.priority_micronutrients.map(id => getLabelFromId(id, micronutrientOptions)).join(", ") || 'N/A'}</span></p>
+              </div>
+
+              {/* Step 4: Dietary Preferences */}
+              <div className="profile-info-section">
+                <h2>Dietary Preferences</h2>
+                <p><strong>Diet Type:</strong> <span className="value">{userProfile?.profile?.dietary_preferences.join(", ") || 'N/A'}</span></p>
+                <p><strong>Meals per Day:</strong> <span className="value">{userProfile?.profile?.meals_per_day || 'N/A'}</span></p>
+                <p><strong>Foods to Avoid:</strong> <span className="value">{userProfile?.profile?.foods_to_avoid.map(id => getLabelFromId(id, foodsToAvoidOptions)).join(", ") || 'N/A'}</span></p>
+                <p><strong>Health Goals:</strong> <span className="value">{userProfile?.profile?.health_goals.map(id => getLabelFromId(id, healthGoalOptions)).join(", ") || 'N/A'}</span></p>
+              </div>
 
               <div className="profile-actions">
                 <Button onClick={() => setEditMode(true)}>Edit Profile</Button>
@@ -188,13 +310,14 @@ const Profile = () => {
             </div>
           ) : (
             <div className="profile-edit">
-              {/* Step navigation */}
+              {/* Step navigation - Only visible in edit mode */}
               <div className="step-navigation">
                 {[1, 2, 3, 4].map((step) => (
                   <Button
                     key={step}
                     variant={currentStep === step ? "default" : "outline"}
                     onClick={() => setCurrentStep(step)}
+                    data-state={currentStep === step ? "active" : ""}
                   >
                     Step {step}
                   </Button>
@@ -221,13 +344,6 @@ const Profile = () => {
                       onChange={(e) => handleInputChange("email", e.target.value)}
                     />
                   </div>
-                </div>
-              )}
-
-              {/* Step 2: Physical Information */}
-              {currentStep === 2 && (
-                <div className="edit-section">
-                  <h2>Physical Information</h2>
                   <div className="form-group">
                     <Label htmlFor="dob">Date of Birth</Label>
                     <Input
@@ -253,7 +369,49 @@ const Profile = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  {/* Add other physical information fields */}
+                </div>
+              )}
+
+              {/* Step 2: Physical Information */}
+              {currentStep === 2 && (
+                <div className="edit-section">
+                  <h2>Physical Information</h2>
+                  <div className="form-group">
+                    <Label htmlFor="height">Height (cm)</Label>
+                    <Input
+                      id="height"
+                      type="number"
+                      value={formData.profile.height.value}
+                      onChange={(e) => handleInputChange("profile.height.value", e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <Label htmlFor="weight">Weight (kg)</Label>
+                    <Input
+                      id="weight"
+                      type="number"
+                      value={formData.profile.weight.value}
+                      onChange={(e) => handleInputChange("profile.weight.value", e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <Label htmlFor="activity_level">Activity Level</Label>
+                    <Select
+                      value={formData.profile.activity_level}
+                      onValueChange={(value) => handleInputChange("profile_activity_level", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select activity level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {activityLevelOptions.map((option) => (
+                          <SelectItem key={option.id} value={option.id}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               )}
 
@@ -263,19 +421,165 @@ const Profile = () => {
                   <h2>Health Information</h2>
                   <div className="form-group">
                     <Label>Health Conditions (Select up to 3)</Label>
-                    {healthIssueOptions.map((option) => (
-                      <div key={option.id} className="checkbox-item">
-                        <Checkbox
-                          checked={formData.profile.personal_health_history.includes(option.id)}
-                          onCheckedChange={() => handleCheckboxChange(option.id, "personal_health_history")}
-                          disabled={
-                            formData.profile.personal_health_history.length >= 3 &&
-                            !formData.profile.personal_health_history.includes(option.id)
-                          }
-                        />
-                        <Label>{option.label}</Label>
-                      </div>
-                    ))}
+                    <div className="health-history-grid">
+                      {healthIssueOptions.map((option) => (
+                        <div key={option.id} className="health-history-item">
+                          <Checkbox
+                            checked={formData.profile.personal_health_history.includes(option.id)}
+                            onCheckedChange={() => handleCheckboxChange(option.id, "personal_health_history")}
+                            disabled={
+                              formData.profile.personal_health_history.length >= 3 &&
+                              !formData.profile.personal_health_history.includes(option.id)
+                            }
+                          />
+                          <Label>{option.label}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <Label>Family Health History (Select up to 3)</Label>
+                    <div className="health-history-grid">
+                      {healthIssueOptions.map((option) => (
+                        <div key={option.id} className="health-history-item">
+                          <Checkbox
+                            checked={formData.profile.family_health_history.includes(option.id)}
+                            onCheckedChange={() => handleCheckboxChange(option.id, "family_health_history")}
+                            disabled={
+                              formData.profile.family_health_history.length >= 3 &&
+                              !formData.profile.family_health_history.includes(option.id)
+                            }
+                          />
+                          <Label>{option.label}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Smart Recommendations */}
+                  {(formData.profile.personal_health_history.length > 0 || formData.profile.family_health_history.length > 0) && (
+                    <div className="recommendations-box mb-4">
+                      <h4 className="text-sm font-medium mb-2">Smart Recommendations</h4>
+                      {formData.profile.personal_health_history.map(issueId => {
+                        const recommendation = healthConditionRecommendations[issueId];
+                        if (recommendation) {
+                          return (
+                            <div key={`personal-${issueId}`} className="recommendation-item">
+                              <div className="recommendation-header">
+                                <span className="recommendation-icon">👤</span>
+                                <h5 className="recommendation-title">{recommendation.title} (Personal)</h5>
+                              </div>
+                              <div className="recommendation-content">
+                                <div className="recommendation-nutrients">
+                                  <span className="recommendation-icon">🔹</span>
+                                  <span>Suggested Micronutrients: </span>
+                                  {recommendation.nutrients.map(nutrientId => {
+                                    const nutrient = micronutrientOptions.find(n => n.id === nutrientId);
+                                    return nutrient ? nutrient.label : '';
+                                  }).join(", ")}
+                                </div>
+                                <div className="recommendation-message">
+                                  <span className="recommendation-icon">✏️</span>
+                                  <span>{recommendation.message}</span>
+                                </div>
+                                <div className="recommendation-details">
+                                  {recommendation.details}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <Label>Priority Micronutrients to Track</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Select up to 3 micronutrients to track based on your health conditions</p>
+                    <Select 
+                      value={formData.profile.priority_micronutrients[0] || ""}
+                      onValueChange={(value) => {
+                        const newNutrients = [value];
+                        if (formData.profile.priority_micronutrients[1]) newNutrients.push(formData.profile.priority_micronutrients[1]);
+                        if (formData.profile.priority_micronutrients[2]) newNutrients.push(formData.profile.priority_micronutrients[2]);
+                        handleInputChange("profile_priority_micronutrients", newNutrients);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue>
+                          {formData.profile.priority_micronutrients[0] 
+                            ? micronutrientOptions.find(n => n.id === formData.profile.priority_micronutrients[0])?.label 
+                            : "Select first micronutrient"}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {micronutrientOptions.map((nutrient) => (
+                          <SelectItem key={nutrient.id} value={nutrient.id}>
+                            {nutrient.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {formData.profile.priority_micronutrients[0] && (
+                      <Select 
+                        value={formData.profile.priority_micronutrients[1] || ""}
+                        onValueChange={(value) => {
+                          const newNutrients = [formData.profile.priority_micronutrients[0], value];
+                          if (formData.profile.priority_micronutrients[2]) newNutrients.push(formData.profile.priority_micronutrients[2]);
+                          handleInputChange("profile_priority_micronutrients", newNutrients);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {formData.profile.priority_micronutrients[1] 
+                              ? micronutrientOptions.find(n => n.id === formData.profile.priority_micronutrients[1])?.label 
+                              : "Select second micronutrient"}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {micronutrientOptions
+                            .filter(nutrient => !formData.profile.priority_micronutrients.includes(nutrient.id))
+                            .map((nutrient) => (
+                              <SelectItem key={nutrient.id} value={nutrient.id}>
+                                {nutrient.label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+
+                    {formData.profile.priority_micronutrients[1] && (
+                      <Select 
+                        value={formData.profile.priority_micronutrients[2] || ""}
+                        onValueChange={(value) => {
+                          handleInputChange("profile_priority_micronutrients", [
+                            formData.profile.priority_micronutrients[0],
+                            formData.profile.priority_micronutrients[1],
+                            value
+                          ]);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {formData.profile.priority_micronutrients[2] 
+                              ? micronutrientOptions.find(n => n.id === formData.profile.priority_micronutrients[2])?.label 
+                              : "Select third micronutrient"}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {micronutrientOptions
+                            .filter(nutrient => !formData.profile.priority_micronutrients.includes(nutrient.id))
+                            .map((nutrient) => (
+                              <SelectItem key={nutrient.id} value={nutrient.id}>
+                                {nutrient.label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                 </div>
               )}
@@ -286,19 +590,97 @@ const Profile = () => {
                   <h2>Dietary Preferences</h2>
                   <div className="form-group">
                     <Label>Diet Type (Select up to 2)</Label>
-                    {dietaryOptions.map((option) => (
-                      <div key={option} className="checkbox-item">
-                        <Checkbox
-                          checked={formData.profile.dietary_preferences.includes(option)}
-                          onCheckedChange={() => handleCheckboxChange(option, "dietary_preferences")}
-                          disabled={
-                            formData.profile.dietary_preferences.length >= 2 &&
-                            !formData.profile.dietary_preferences.includes(option)
-                          }
-                        />
-                        <Label>{option}</Label>
-                      </div>
-                    ))}
+                    <div className="grid">
+                      {dietaryOptions.map((option) => (
+                        <div 
+                          key={option} 
+                          className={`filter-button ${formData.profile.dietary_preferences.includes(option) ? 'selected' : ''}`}
+                          onClick={() => {
+                            const newPreferences = [...formData.profile.dietary_preferences];
+                            if (newPreferences.includes(option)) {
+                              handleInputChange("profile_dietary_preferences", newPreferences.filter(pref => pref !== option));
+                            } else if (newPreferences.length < 2) {
+                              handleInputChange("profile_dietary_preferences", [...newPreferences, option]);
+                            }
+                          }}
+                        >
+                          {option}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <Label>Meals per Day</Label>
+                    <Select 
+                      value={formData.profile.meals_per_day}
+                      onValueChange={(value) => handleInputChange("profile_meals_per_day", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue>
+                          {formData.profile.meals_per_day 
+                            ? `${formData.profile.meals_per_day} ${formData.profile.meals_per_day === "1" ? "meal" : "meals"}`
+                            : "Select number of meals"}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5, 6].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num} {num === 1 ? "meal" : "meals"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="form-group">
+                    <Label>Foods to Avoid</Label>
+                    <div className="grid">
+                      {foodsToAvoidOptions.map((option) => (
+                        <div 
+                          key={option.id} 
+                          className={`filter-button ${formData.profile.foods_to_avoid.includes(option.id) ? 'selected' : ''}`}
+                          onClick={() => {
+                            const newFoods = [...formData.profile.foods_to_avoid];
+                            if (newFoods.includes(option.id)) {
+                              handleInputChange("profile_foods_to_avoid", newFoods.filter(food => food !== option.id));
+                            } else {
+                              handleInputChange("profile_foods_to_avoid", [...newFoods, option.id]);
+                            }
+                          }}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <Label>Health Goals (Select up to 3)</Label>
+                    <div className="grid grid-cols-1 gap-1">
+                      {healthGoalOptions.map((goal) => {
+                        const isSelected = formData.profile.health_goals.includes(goal.id);
+                        return (
+                          <div 
+                            key={goal.id}
+                            className={`py-1 px-2 rounded-md ${isSelected ? 'bg-primary/10' : ''} transition-colors`}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <Checkbox 
+                                id={`goal-${goal.id}`}
+                                checked={isSelected}
+                                onCheckedChange={() => handleCheckboxChange(goal.id, "health_goals")}
+                                disabled={formData.profile.health_goals.length >= 3 && !isSelected}
+                                className="h-3 w-3"
+                              />
+                              <Label htmlFor={`goal-${goal.id}`} className="text-sm font-medium">
+                                {goal.label}
+                              </Label>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}

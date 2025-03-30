@@ -3,6 +3,7 @@ import { Button } from './ui/button-ui';
 import { Card } from './ui/card';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
+import { API_BASE_URL } from '../config';
 
 const MealLogger = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -37,7 +38,7 @@ const MealLogger = () => {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      const response = await fetch('http://127.0.0.1:8000/nutrition/analyze-meal', {
+      const response = await fetch(`${API_BASE_URL}/nutrition/analyze-meal`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

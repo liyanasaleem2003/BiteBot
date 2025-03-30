@@ -422,7 +422,15 @@ const Signup = () => {
 
         console.log("Registration successful:", data);
         
+        // Add a small delay before attempting login
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         // After successful registration, log in the user
+        console.log("Attempting login with credentials:", {
+            username: signupForm.email,
+            password: "[REDACTED]"
+        });
+
         const loginResponse = await fetch('http://127.0.0.1:8000/auth/login', {
             method: 'POST',
             headers: {
@@ -434,11 +442,14 @@ const Signup = () => {
             }),
         });
 
+        const loginData = await loginResponse.json();
+
         if (!loginResponse.ok) {
-            throw new Error('Registration successful but login failed');
+            console.error("Login failed:", loginData);
+            throw new Error(loginData.detail || 'Registration successful but login failed');
         }
 
-        const loginData = await loginResponse.json();
+        console.log("Login successful:", loginData);
         localStorage.setItem('token', `Bearer ${loginData.access_token}`);
         navigate('/dashboard');
     } catch (error) {

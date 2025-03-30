@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Heart, Clock, DollarSign, ArrowRight, X } from "lucide-react";
+import { Heart, Clock, DollarSign, ArrowRight, X, ShoppingCart } from "lucide-react";
 import "./RecipeCard.css";
+import { useShoppingList } from "../../context/ShoppingListContext";
 
 const Card = ({ children, className }) => (
   <div className={`border rounded-lg shadow p-4 bg-black/40 backdrop-blur-sm border-gray-800 hover:border-gray-700 transition-all ${className}`}>
@@ -33,13 +34,22 @@ export function RecipeCard({
   const [isExpanded, setIsExpanded] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const { addIngredients } = useShoppingList();
 
   // Handle favorite toggle with popup
   const handleFavoriteClick = () => {
     onFavoriteToggle();
     setPopupMessage(isFavorite ? "Removed from saved recipes" : "Added to saved recipes!");
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 2000); // Hide popup after 2 seconds
+    setTimeout(() => setShowPopup(false), 2000);
+  };
+
+  const handleAddToShoppingList = () => {
+    const ingredientNames = ingredients.map(ing => ing.name);
+    addIngredients(ingredientNames);
+    setPopupMessage("Added to shopping list!");
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
   };
 
   return (
@@ -212,7 +222,16 @@ export function RecipeCard({
             </div>
             
             <div className="recipe-section">
-              <h3>Ingredients</h3>
+              <div className="ingredients-header">
+                <h3>Ingredients</h3>
+                <button 
+                  className="add-to-shopping-list-button"
+                  onClick={handleAddToShoppingList}
+                >
+                  <ShoppingCart className="icon" />
+                  Add Ingredients to Shopping List
+                </button>
+              </div>
               <div className="ingredients-table">
                 <div className="ingredients-header">
                   <span>Ingredient</span>

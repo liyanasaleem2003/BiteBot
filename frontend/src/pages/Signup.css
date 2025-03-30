@@ -833,3 +833,12 @@ label[for="meals-per-day"] {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.calendar-day-selected {
+  background: #22c55e;
+  color: #fff;
+}
+
+.calendar-day-selected:hover {
+  background: #16a34a;
+}
