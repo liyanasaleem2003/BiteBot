@@ -2,97 +2,68 @@ from typing import Dict, Any
 import openai
 from ..config import settings
 from ..models import UserProfile
+import json
 
 class NutritionService:
     def __init__(self):
         openai.api_key = settings.OPENAI_API_KEY
 
-    async def calculate_nutritional_needs(self, user_profile: UserProfile) -> Dict[str, Any]:
-        """
-        Calculate nutritional needs using GPT-4 based on user profile
-        """
-        # Create a detailed prompt for GPT-4
-        prompt = f"""
-        Calculate daily nutritional needs for a person with the following profile:
-        
-        Basic Information:
-        - Age: {user_profile.age}
-        - Sex: {user_profile.sex}
-        - Height: {user_profile.height.value} {user_profile.height.unit}
-        - Weight: {user_profile.weight.value} {user_profile.weight.unit}
-        - Activity Level: {user_profile.activity_level}
-        
-        Health Conditions:
-        Personal Health History: {', '.join(user_profile.personal_health_history)}
-        Family Health History: {', '.join(user_profile.family_health_history)}
-        
-        Dietary Preferences: {', '.join(user_profile.dietary_preferences)}
-        Foods to Avoid: {', '.join(user_profile.foods_to_avoid)}
-        
-        Health Goals: {', '.join(user_profile.health_goals)}
-        Priority Micronutrients: {', '.join(user_profile.priority_micronutrients)}
-        
-        Please provide a detailed nutritional plan in the following JSON format:
-        {{
-            "daily_calories": number,
-            "macros": {{
-                "protein": {{
-                    "grams": number,
-                    "percentage": number
-                }},
-                "carbs": {{
-                    "grams": number,
-                    "percentage": number
-                }},
-                "fats": {{
-                    "grams": number,
-                    "percentage": number
-                }}
-            }},
-            "fiber": {{
-                "grams": number
-            }},
-            "sugar": {{
-                "grams": number,
-                "percentage_of_carbs": number
-            }},
-            "sodium": {{
-                "mg": number
-            }},
-            "micronutrient_targets": {{
-                "nutrient_name": {{
-                    "amount": number,
-                    "unit": string
-                }}
-            }},
-            "meal_timing": {{
-                "meals_per_day": number,
-                "suggested_times": [string],
-                "portion_distribution": {{
-                    "breakfast": number,
-                    "lunch": number,
-                    "dinner": number,
-                    "snacks": number
-                }}
-            }},
-            "recommendations": [string]
-        }}
-        """
-
+    async def calculate_nutritional_needs(self, profile_data: dict) -> dict:
+        """Calculate personalized nutritional needs using GPT-4"""
         try:
+            print("\n=== Starting Nutrition Service Calculation ===")
+            print(f"Calculating needs for profile: {json.dumps(profile_data, indent=2)}")
+            
+            # Construct the prompt
+            prompt = f"""Based on the following user profile, calculate personalized daily nutritional needs:
+
+User Profile:
+- Age: {profile_data.get('age', 'Not specified')}
+- Gender: {profile_data.get('gender', 'Not specified')}
+- Weight: {profile_data.get('weight', 'Not specified')} kg
+- Height: {profile_data.get('height', 'Not specified')} cm
+- Activity Level: {profile_data.get('activity_level', 'Not specified')}
+- Health Conditions: {profile_data.get('health_conditions', 'None')}
+- Dietary Preferences: {profile_data.get('dietary_preferences', 'None')}
+- Fitness Goals: {profile_data.get('fitness_goals', 'Not specified')}
+
+Please provide a JSON response with the following structure:
+{{
+    "calories": {{
+        "min": <minimum daily calories>,
+        "max": <maximum daily calories>
+    }},
+    "macros": {{
+        "protein": {{"min": <min g>, "max": <max g>, "unit": "g"}},
+        "carbs": {{"min": <min g>, "max": <max g>, "unit": "g"}},
+        "fats": {{"min": <min g>, "max": <max g>, "unit": "g"}}
+    }},
+    "other_nutrients": {{
+        "fiber": {{"min": <min g>, "max": <max g>, "unit": "g"}},
+        "sugar": {{"min": <min g>, "max": <max g>, "unit": "g"}},
+        "sodium": {{"min": <min mg>, "max": <max mg>, "unit": "mg"}}
+    }}
+}}"""
+
+            print("Sending request to GPT-4o-mini-2024-07-18...")
             response = await openai.ChatCompletion.acreate(
-                model="gpt-4",
+                model="gpt-4o-mini-2024-07-18",
                 messages=[
-                    {"role": "system", "content": "You are a professional nutritionist specializing in South Asian cuisine and dietary needs. Provide accurate, personalized nutritional recommendations."},
+                    {"role": "system", "content": "You are a professional nutritionist providing personalized nutritional recommendations."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
                 max_tokens=1000
             )
-
-            # Parse the response and return the nutritional plan
-            nutritional_plan = response.choices[0].message.content
-            return nutritional_plan
+            
+            print("Received response from GPT-4o-mini-2024-07-18")
+            response_text = response.choices[0].message.content
+            print(f"Raw GPT Response: {response_text}")
+            
+            nutritional_needs = json.loads(response_text)
+            print(f"Parsed nutritional needs: {json.dumps(nutritional_needs, indent=2)}")
+            
+            return nutritional_needs
 
         except Exception as e:
             raise Exception(f"Error calculating nutritional needs: {str(e)}")

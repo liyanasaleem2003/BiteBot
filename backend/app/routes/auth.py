@@ -78,26 +78,75 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
         
         # Calculate nutritional needs
         try:
-            nutritional_needs = await calculate_nutritional_needs(user_dict["profile"])
-            user_dict["profile"]["nutritional_needs"] = nutritional_needs
-            print("Successfully calculated nutritional needs")
-        except Exception as e:
-            print(f"Error calculating nutritional needs: {str(e)}")
-            # Set default nutritional needs if calculation fails
-            user_dict["profile"]["nutritional_needs"] = {
-                "calories": {"min": 2000, "max": 2500},
-                "macros": {
-                    "protein": {"min": 50, "max": 75, "unit": "g"},
-                    "carbs": {"min": 250, "max": 300, "unit": "g"},
-                    "fats": {"min": 55, "max": 70, "unit": "g"}
-                },
-                "other_nutrients": {
-                    "fiber": {"min": 25, "max": 30, "unit": "g"},
-                    "sugar": {"min": 25, "max": 50, "unit": "g"},
-                    "sodium": {"min": 1500, "max": 2300, "unit": "mg"}
+            print("\n=== Starting Nutritional Needs Calculation ===")
+            print(f"Calculating needs for user: {user.email}")
+            
+            # Create a copy of profile data for logging
+            profile_data = user_dict['profile'].copy()
+            print(f"Profile data being sent to GPT: {json.dumps(profile_data, default=str)}")
+            
+            try:
+                nutritional_needs = await calculate_nutritional_needs(user_dict["profile"])
+                print(f"GPT-MINI generated nutritional needs: {json.dumps(nutritional_needs, default=str)}")
+                user_dict["profile"]["nutritional_needs"] = nutritional_needs
+            except Exception as calc_error:
+                print(f"Error in GPT calculation: {str(calc_error)}")
+                # Calculate basic needs using BMR formula as fallback
+                weight = float(user_dict["profile"]["weight"]["value"])
+                height = float(user_dict["profile"]["height"]["value"])
+                age = int(user_dict["profile"]["age"])
+                sex = user_dict["profile"]["sex"]
+                activity_level = user_dict["profile"]["activity_level"]
+                
+                bmr = calculate_bmr(weight, height, age, sex)
+                calories = calculate_calorie_target(bmr, activity_level)
+                
+                nutritional_needs = {
+                    "calories": calories,
+                    "macros": {
+                        "protein": {
+                            "min": round(weight * 1.6),
+                            "max": round(weight * 2.2),
+                            "unit": "g"
+                        },
+                        "carbs": {
+                            "min": round(calories["min"] * 0.45 / 4),
+                            "max": round(calories["max"] * 0.65 / 4),
+                            "unit": "g"
+                        },
+                        "fats": {
+                            "min": round(calories["min"] * 0.20 / 9),
+                            "max": round(calories["max"] * 0.35 / 9),
+                            "unit": "g"
+                        }
+                    },
+                    "other_nutrients": {
+                        "fiber": {
+                            "min": 25,
+                            "max": 30,
+                            "unit": "g"
+                        },
+                        "sugar": {
+                            "min": 0,
+                            "max": 50,
+                            "unit": "g"
+                        },
+                        "sodium": {
+                            "min": 1500,
+                            "max": 2300,
+                            "unit": "mg"
+                        }
+                    }
                 }
-            }
-            print("Using default nutritional needs")
+                print("Using fallback nutritional needs calculation")
+                user_dict["profile"]["nutritional_needs"] = nutritional_needs
+            
+        except Exception as e:
+            print(f"Critical error in nutritional needs calculation: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to process nutritional needs: {str(e)}"
+            )
         
         # Debug logging with proper datetime handling
         print("User data to be inserted:")
@@ -223,3 +272,121 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db = Depends(g
 @router.get("/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.put("/profile/update")
+async def update_profile(
+    profile_data: dict,
+    current_user: UserProfile = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    try:
+        print("\n=== Starting Profile Update Process ===")
+        print(f"Updating profile for user: {current_user.email}")
+        
+        # Calculate new nutritional needs based on updated profile
+        try:
+            print("\n=== Starting Nutritional Needs Recalculation ===")
+            print(f"Calculating needs for updated profile: {json.dumps(profile_data['profile'], default=str)}")
+            
+            try:
+                nutritional_needs = await calculate_nutritional_needs(profile_data["profile"])
+                print(f"GPT-MINI generated nutritional needs: {json.dumps(nutritional_needs, default=str)}")
+                profile_data["profile"]["nutritional_needs"] = nutritional_needs
+            except Exception as calc_error:
+                print(f"Error in GPT calculation: {str(calc_error)}")
+                # Calculate basic needs using BMR formula as fallback
+                weight = float(profile_data["profile"]["weight"]["value"])
+                height = float(profile_data["profile"]["height"]["value"])
+                age = int(profile_data["profile"]["age"])
+                sex = profile_data["profile"]["sex"]
+                activity_level = profile_data["profile"]["activity_level"]
+                
+                bmr = calculate_bmr(weight, height, age, sex)
+                calories = calculate_calorie_target(bmr, activity_level)
+                
+                nutritional_needs = {
+                    "calories": calories,
+                    "macros": {
+                        "protein": {
+                            "min": round(weight * 1.6),
+                            "max": round(weight * 2.2),
+                            "unit": "g"
+                        },
+                        "carbs": {
+                            "min": round(calories["min"] * 0.45 / 4),
+                            "max": round(calories["max"] * 0.65 / 4),
+                            "unit": "g"
+                        },
+                        "fats": {
+                            "min": round(calories["min"] * 0.20 / 9),
+                            "max": round(calories["max"] * 0.35 / 9),
+                            "unit": "g"
+                        }
+                    },
+                    "other_nutrients": {
+                        "fiber": {
+                            "min": 25,
+                            "max": 30,
+                            "unit": "g"
+                        },
+                        "sugar": {
+                            "min": 0,
+                            "max": 50,
+                            "unit": "g"
+                        },
+                        "sodium": {
+                            "min": 1500,
+                            "max": 2300,
+                            "unit": "mg"
+                        }
+                    }
+                }
+                print("Using fallback nutritional needs calculation")
+                profile_data["profile"]["nutritional_needs"] = nutritional_needs
+            
+        except Exception as e:
+            print(f"Critical error in nutritional needs calculation: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to process nutritional needs: {str(e)}"
+            )
+        
+        # Update the user profile in the database
+        result = await db.user_profiles.update_one(
+            {"_id": ObjectId(current_user.id)},
+            {"$set": profile_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Profile not found or no changes made"
+            )
+        
+        # Fetch the updated profile
+        updated_profile = await db.user_profiles.find_one({"_id": ObjectId(current_user.id)})
+        
+        # Convert ObjectId to string for JSON serialization
+        if updated_profile:
+            updated_profile["id"] = str(updated_profile["_id"])
+            del updated_profile["_id"]
+            # Convert datetime objects to ISO format strings
+            if "created_at" in updated_profile:
+                updated_profile["created_at"] = updated_profile["created_at"].isoformat()
+            if "updated_at" in updated_profile:
+                updated_profile["updated_at"] = updated_profile["updated_at"].isoformat()
+            if "last_login" in updated_profile:
+                updated_profile["last_login"] = updated_profile["last_login"].isoformat()
+            return updated_profile
+        else:
+            raise HTTPException(
+                status_code=404,
+                detail="Profile not found after update"
+            )
+        
+    except Exception as e:
+        print(f"Error updating profile: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to update profile: {str(e)}"
+        )
