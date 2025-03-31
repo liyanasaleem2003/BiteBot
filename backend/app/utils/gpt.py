@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import re
+from datetime import datetime
 from dotenv import load_dotenv
 from typing import Dict, Any, List
 import httpx
@@ -457,6 +458,36 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         priority_micronutrients = user_profile.get('priority_micronutrients', [])
         priority_micronutrients_str = ', '.join(priority_micronutrients) if priority_micronutrients else "None specified"
         
+        # Extract family health history
+        family_health_history = user_profile.get('family_health_history', [])
+        family_health_history_str = ', '.join(family_health_history) if family_health_history else "None specified"
+        
+        # Extract personal health history
+        personal_health_history = user_profile.get('personal_health_history', [])
+        personal_health_history_str = ', '.join(personal_health_history) if personal_health_history else "None specified"
+        
+        # Extract foods to avoid
+        foods_to_avoid = user_profile.get('foods_to_avoid', [])
+        foods_to_avoid_str = ', '.join(foods_to_avoid) if foods_to_avoid else "None specified"
+        
+        # Extract meals per day
+        meals_per_day = user_profile.get('meals_per_day', 3)
+        
+        # Get current time to determine which meal of the day this might be
+        current_time = datetime.now()
+        hour = current_time.hour
+        
+        # Determine meal time context
+        meal_time_context = ""
+        if 5 <= hour < 11:
+            meal_time_context = "This appears to be a breakfast meal."
+        elif 11 <= hour < 15:
+            meal_time_context = "This appears to be a lunch meal."
+        elif 15 <= hour < 22:
+            meal_time_context = "This appears to be a dinner meal."
+        else:
+            meal_time_context = "This appears to be a late night meal/snack."
+        
         # Construct a prompt that includes conversation history and user profile
         prompt = f"""
         Based on the following conversation about a meal and the user's profile, provide a detailed nutritional analysis.
@@ -467,8 +498,12 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         - Sex: {user_profile.get('sex')}
         - Health Goals: {', '.join(user_profile.get('health_goals', []))}
         - Dietary Preferences: {', '.join(user_profile.get('dietary_preferences', []))}
-        - Health Conditions: {', '.join(user_profile.get('personal_health_history', []))}
+        - Personal Health History: {personal_health_history_str}
+        - Family Health History: {family_health_history_str}
         - Priority Micronutrients: {priority_micronutrients_str}
+        - Foods to Avoid: {foods_to_avoid_str}
+        - Meals per Day: {meals_per_day}
+        - Meal Time Context: {meal_time_context}
 
         Conversation History:
         {json.dumps(conversation_history, indent=2)}
@@ -479,23 +514,55 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
             "ingredients": ["ingredient1", "ingredient2", ...],
             "cooking_method": "method",
             "serving_size": "size",
-            "calories": number,
-            "protein": number,
-            "carbs": number,
-            "fats": number,
-            "fiber": number,
-            "sugar": number,
-            "sodium": number,
+            "macronutrients": {{
+                "calories": number,
+                "protein": number,
+                "carbs": number,
+                "fats": number,
+                "fiber": number,
+                "sugar": number,
+                "sodium": number
+            }},
             "health_tags": ["Tag1", "Tag2", "Tag3"],
-            "suggestions": ["suggestion1", "suggestion2", ...],
-            "recommended_recipes": ["recipe1", "recipe2", ...],
+            "health_benefits": [
+                "Benefit 1 specifically related to user's health goals, priority micronutrients, and personal/family health history",
+                "Benefit 2 specifically related to user's health goals, priority micronutrients, and personal/family health history",
+                "Benefit 3 specifically related to user's health goals, priority micronutrients, and personal/family health history"
+            ],
+            "potential_concerns": [
+                "Concern 1 specifically related to user's health goals, priority micronutrients, and personal/family health history",
+                "Concern 2 specifically related to user's health goals, priority micronutrients, and personal/family health history"
+            ],
+            "suggestions": [
+                "Suggestion 1 to improve intake of priority micronutrients or address health goals",
+                "Suggestion 2 to improve intake of priority micronutrients or address health goals",
+                "Suggestion 3 to improve intake of priority micronutrients or address health goals"
+            ],
+            "recommended_recipes": [
+                {{
+                    "name": "Recipe Name 1",
+                    "description": "Brief description of how this recipe relates to user's health goals, priority nutrients, and dietary preferences",
+                    "ingredients": ["ingredient1", "ingredient2", "..."],
+                    "benefits": "How this recipe specifically addresses user's health goals and priority micronutrients"
+                }},
+                {{
+                    "name": "Recipe Name 2",
+                    "description": "Brief description of how this recipe relates to user's health goals, priority nutrients, and dietary preferences",
+                    "ingredients": ["ingredient1", "ingredient2", "..."],
+                    "benefits": "How this recipe specifically addresses user's health goals and priority micronutrients"
+                }},
+                {{
+                    "name": "Recipe Name 3",
+                    "description": "Brief description of how this recipe relates to user's health goals, priority nutrients, and dietary preferences",
+                    "ingredients": ["ingredient1", "ingredient2", "..."],
+                    "benefits": "How this recipe specifically addresses user's health goals and priority micronutrients"
+                }}
+            ],
             "macronutrient_split": {{
                 "protein_percentage": number,
                 "carbs_percentage": number,
                 "fats_percentage": number
             }},
-            "health_benefits": ["benefit1", "benefit2", ...],
-            "potential_concerns": ["concern1", "concern2", ...],
             "micronutrients": {{
                 "vitamin_a": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
                 "vitamin_c": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
@@ -520,24 +587,36 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
                 "chromium": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
                 "iodine": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}}
             }},
+            "priority_micronutrients": {priority_micronutrients},  # Add priority micronutrients to the analysis
             "micronutrient_balance": {{
                 "score": number,  # Average percentage of daily recommended intake for priority micronutrients
                 "priority_nutrients": [  # List of priority micronutrients and their percentages
                     {{"name": "nutrient_name", "percentage": number}},
                     ...
                 ]
+            }},
+            "scores": {{
+                "glycemic_index": number,  # 0-100 scale
+                "inflammatory": number,    # 0-100 scale (lower is better)
+                "heart_health": number,    # 0-100 scale
+                "digestive": number,       # 0-100 scale
+                "meal_balance": number     # 0-100 scale
             }}
         }}
 
-        The meal name should:
-        1. Include the main ingredients detected
-        2. Reflect the cooking method used
-        3. Be specific to the actual dish (not generic)
-        4. Follow common naming conventions for the cuisine
-        5. Be 3-6 words long
-        6. Be descriptive enough that someone could understand what the meal is
-        7. Use proper capitalization (capitalize each major word)
-        
+        For health_benefits, potential_concerns, and suggestions:
+        1. Make sure these are SPECIFICALLY tailored to the user's health goals, priority micronutrients, and personal/family health history
+        2. Each benefit should explain how the meal supports a specific health goal or provides important micronutrients
+        3. Each concern should highlight potential issues related to the user's health conditions or goals
+        4. Each suggestion should offer a concrete way to improve the meal to better support the user's specific health needs
+
+        For recommended_recipes:
+        1. Suggest recipes that are similar to the analyzed meal but optimized for the user's health goals
+        2. Ensure recipes avoid any foods listed in the user's "foods to avoid"
+        3. Focus on recipes that are rich in the user's priority micronutrients
+        4. Consider the time of day and which meal this might be (breakfast, lunch, dinner)
+        5. Provide recipes appropriate for the user's dietary preferences
+
         For health_tags:
         1. Provide ONLY 3-5 health tags maximum
         2. Focus on health BENEFITS of the meal (not dietary restrictions like "Gluten-Free" or "Vegan")
@@ -546,18 +625,8 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         5. The tags should be directly related to the meal's health benefits, not just its nutritional content
         
         The suggestions should be specific, actionable improvements that could make the meal healthier.
-        The recommended recipes should be similar to the analyzed meal but with healthier modifications.
         
         IMPORTANT: Do NOT suggest adding ingredients that are already present in the meal. For example, if the meal already contains olive oil, turmeric, cumin seeds, or coriander, do not suggest adding these ingredients.
-        Instead, focus on:
-        1. Suggesting different ingredients that are not already present
-        2. Suggesting modifications to cooking methods
-        3. Suggesting portion size adjustments
-        4. Suggesting complementary foods to eat with the meal
-        
-        IMPORTANT: For the micronutrient_balance section, ONLY include the user's priority micronutrients: {priority_micronutrients_str}. 
-        Calculate the score as the average percentage of daily recommended intake for ONLY these specific nutrients.
-        If no priority micronutrients are specified, leave the priority_nutrients list empty and set the score to 0.
         """
         
         headers = {
@@ -593,122 +662,115 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
             response_data = response.json()
             content = response_data["choices"][0]["message"]["content"]
             
-            # Extract the JSON from the response
-            try:
-                # Try to parse the entire response as JSON
-                analysis = json.loads(content)
-            except json.JSONDecodeError:
-                # If that fails, try to extract JSON from the response
-                try:
-                    match = re.search(r'```json\n(.*?)\n```', content, re.DOTALL)
-                    if match:
-                        json_str = match.group(1)
-                        analysis = json.loads(json_str)
-                    else:
-                        # Try to find JSON between curly braces
-                        match = re.search(r'({.*})', content, re.DOTALL)
-                        if match:
-                            json_str = match.group(1)
-                            analysis = json.loads(json_str)
-                        else:
-                            raise Exception("Could not extract JSON from response")
-                except Exception as e:
-                    print(f"Error extracting JSON: {str(e)}")
-                    print(f"Raw response: {content}")
-                    raise Exception(f"Failed to extract JSON from response: {str(e)}")
-        
-        # Process health tags - ensure they're capitalized and limited to 3-5
-        if "health_tags" in analysis:
-            # Capitalize first letter of each tag
-            health_tags = [tag.capitalize() for tag in analysis["health_tags"]]
+            # Clean up the response by removing markdown code block markers and any text before the JSON
+            content = content.strip()
+            if "```json" in content:
+                content = content.split("```json")[1]
+            if "```" in content:
+                content = content.split("```")[0]
+            content = content.strip()
             
-            # Limit to 3-5 tags
-            if len(health_tags) > 5:
-                health_tags = health_tags[:5]
-            elif len(health_tags) < 3 and "health_benefits" in analysis and analysis["health_benefits"]:
-                # If we have fewer than 3 tags but have health benefits, convert some benefits to tags
-                for benefit in analysis["health_benefits"]:
-                    if len(health_tags) < 3:
-                        # Convert benefit to tag format (shorter, capitalized)
-                        benefit_words = benefit.split()
-                        if len(benefit_words) > 3:
-                            # Shorten long benefits
-                            tag = " ".join(benefit_words[:3]).capitalize()
-                        else:
-                            tag = benefit.capitalize()
-                        
-                        # Only add if not already present
-                        if tag not in health_tags:
-                            health_tags.append(tag)
+            # Look for JSON-like structure between curly braces
+            import re
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+                analysis = json.loads(json_str)
+            else:
+                raise ValueError("No JSON structure found in response")
             
-            analysis["health_tags"] = health_tags
-        
-        # Ensure micronutrient_balance is properly formatted
-        if "micronutrient_balance" not in analysis or not analysis["micronutrient_balance"]:
-            # Calculate micronutrient balance manually
-            micronutrients = analysis.get("micronutrients", {})
+            # Process health tags - ensure they're capitalized and limited to 3-5
+            if "health_tags" in analysis:
+                # Capitalize first letter of each tag
+                health_tags = [tag.capitalize() for tag in analysis["health_tags"]]
+                
+                # Limit to 3-5 tags
+                if len(health_tags) > 5:
+                    health_tags = health_tags[:5]
+                elif len(health_tags) < 3 and "health_benefits" in analysis and analysis["health_benefits"]:
+                    # If we have fewer than 3 tags but have health benefits, convert some benefits to tags
+                    for benefit in analysis["health_benefits"]:
+                        if len(health_tags) < 3:
+                            # Convert benefit to tag format (shorter, capitalized)
+                            benefit_words = benefit.split()
+                            if len(benefit_words) > 3:
+                                # Shorten long benefits
+                                tag = " ".join(benefit_words[:3]).capitalize()
+                            else:
+                                tag = benefit.capitalize()
+                            
+                            # Only add if not already present
+                            if tag not in health_tags:
+                                health_tags.append(tag)
+                
+                analysis["health_tags"] = health_tags
             
-            # Only use user's priority micronutrients, no defaults
-            # Extract percentages for priority nutrients
-            priority_nutrients = []
-            total_percentage = 0
-            count = 0
-            
-            # Only proceed if there are priority micronutrients
-            if priority_micronutrients:
-                for nutrient in priority_micronutrients:
-                    # Convert to snake_case if needed
-                    nutrient_key = nutrient.lower().replace(" ", "_")
-                    
-                    if nutrient_key in micronutrients:
-                        percentage = micronutrients[nutrient_key].get("percentage_of_daily", 0)
-                        priority_nutrients.append({
-                            "name": nutrient,
-                            "percentage": percentage
-                        })
-                        total_percentage += percentage
-                        count += 1
-            
-            # Calculate average score
-            score = total_percentage / count if count > 0 else 0
-            
-            # Set the micronutrient balance
-            analysis["micronutrient_balance"] = {
-                "score": round(score, 1),
-                "priority_nutrients": priority_nutrients
-            }
-        else:
-            # Ensure the micronutrient_balance only contains priority nutrients
-            if priority_micronutrients:
-                existing_balance = analysis["micronutrient_balance"]
-                filtered_nutrients = []
+            # Ensure micronutrient_balance is properly formatted
+            if "micronutrient_balance" not in analysis or not analysis["micronutrient_balance"]:
+                # Calculate micronutrient balance manually
+                micronutrients = analysis.get("micronutrients", {})
+                
+                # Only use user's priority micronutrients, no defaults
+                # Extract percentages for priority nutrients
+                priority_nutrients = []
                 total_percentage = 0
                 count = 0
                 
-                # Filter to only include priority nutrients
-                for nutrient_info in existing_balance.get("priority_nutrients", []):
-                    nutrient_name = nutrient_info.get("name", "").lower().replace(" ", "_")
-                    if any(pn.lower().replace(" ", "_") == nutrient_name for pn in priority_micronutrients):
-                        filtered_nutrients.append(nutrient_info)
-                        total_percentage += nutrient_info.get("percentage", 0)
-                        count += 1
+                # Only proceed if there are priority micronutrients
+                if priority_micronutrients:
+                    for nutrient in priority_micronutrients:
+                        # Convert to snake_case if needed
+                        nutrient_key = nutrient.lower().replace(" ", "_")
+                        
+                        if nutrient_key in micronutrients:
+                            percentage = micronutrients[nutrient_key].get("percentage_of_daily", 0)
+                            priority_nutrients.append({
+                                "name": nutrient,
+                                "percentage": percentage
+                            })
+                            total_percentage += percentage
+                            count += 1
                 
-                # Recalculate score based only on priority nutrients
+                # Calculate average score
                 score = total_percentage / count if count > 0 else 0
                 
+                # Set the micronutrient balance
                 analysis["micronutrient_balance"] = {
                     "score": round(score, 1),
-                    "priority_nutrients": filtered_nutrients
+                    "priority_nutrients": priority_nutrients
                 }
             else:
-                # If no priority nutrients, set empty list and score to 0
-                analysis["micronutrient_balance"] = {
-                    "score": 0,
-                    "priority_nutrients": []
-                }
-        
-        return analysis
-        
+                # Ensure the micronutrient_balance only contains priority nutrients
+                if priority_micronutrients:
+                    existing_balance = analysis["micronutrient_balance"]
+                    filtered_nutrients = []
+                    total_percentage = 0
+                    count = 0
+                    
+                    # Filter to only include priority nutrients
+                    for nutrient_info in existing_balance.get("priority_nutrients", []):
+                        nutrient_name = nutrient_info.get("name", "").lower().replace(" ", "_")
+                        if any(pn.lower().replace(" ", "_") == nutrient_name for pn in priority_micronutrients):
+                            filtered_nutrients.append(nutrient_info)
+                            total_percentage += nutrient_info.get("percentage", 0)
+                            count += 1
+                    
+                    # Recalculate score based only on priority nutrients
+                    score = total_percentage / count if count > 0 else 0
+                    
+                    analysis["micronutrient_balance"] = {
+                        "score": round(score, 1),
+                        "priority_nutrients": filtered_nutrients
+                    }
+                else:
+                    # If no priority nutrients, set empty list and score to 0
+                    analysis["micronutrient_balance"] = {
+                        "score": 0,
+                        "priority_nutrients": []
+                    }
+            
+            return analysis
+            
     except Exception as e:
         print(f"Error in analyze_meal_details: {str(e)}")
         raise Exception(f"Failed to analyze meal details: {str(e)}")

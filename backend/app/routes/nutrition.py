@@ -193,6 +193,50 @@ async def analyze_meal_details_endpoint(
         # Analyze meal details using GPT
         analysis = await analyze_meal_details(conversation_history, user_profile)
         
+        # Process the analysis data to ensure all required fields are present
+        # Make sure macronutrients is properly structured
+        if "macronutrients" not in analysis or not analysis["macronutrients"]:
+            analysis["macronutrients"] = {
+                "calories": 0,
+                "protein": 0,
+                "carbs": 0,
+                "fats": 0,
+                "fiber": 0,
+                "sugar": 0,
+                "sodium": 0
+            }
+        
+        # Make sure micronutrients is properly structured
+        if "micronutrients" not in analysis or not analysis["micronutrients"]:
+            analysis["micronutrients"] = {
+                "vitamin_a": {"percentage_of_daily": 0},
+                "vitamin_c": {"percentage_of_daily": 0},
+                "vitamin_d": {"percentage_of_daily": 0},
+                "vitamin_e": {"percentage_of_daily": 0},
+                "vitamin_k": {"percentage_of_daily": 0},
+                "vitamin_b1": {"percentage_of_daily": 0},
+                "vitamin_b2": {"percentage_of_daily": 0},
+                "vitamin_b3": {"percentage_of_daily": 0},
+                "vitamin_b6": {"percentage_of_daily": 0},
+                "vitamin_b12": {"percentage_of_daily": 0},
+                "folate": {"percentage_of_daily": 0},
+                "calcium": {"percentage_of_daily": 0},
+                "iron": {"percentage_of_daily": 0},
+                "magnesium": {"percentage_of_daily": 0},
+                "phosphorus": {"percentage_of_daily": 0},
+                "potassium": {"percentage_of_daily": 0},
+                "zinc": {"percentage_of_daily": 0},
+                "copper": {"percentage_of_daily": 0},
+                "manganese": {"percentage_of_daily": 0},
+                "selenium": {"percentage_of_daily": 0},
+                "chromium": {"percentage_of_daily": 0},
+                "iodine": {"percentage_of_daily": 0}
+            }
+        
+        # Calculate nutritional scores
+        scores = calculate_meal_scores(analysis)
+        analysis["scores"] = scores
+        
         # Ensure we have a meal name
         if not analysis.get("meal_name"):
             # Try to extract a meal name from the conversation
@@ -204,10 +248,6 @@ async def analyze_meal_details_endpoint(
         
         # Log the meal name for debugging
         logger.info(f"Meal name from analysis: {analysis.get('meal_name', 'Not provided')}")
-        
-        # Calculate nutritional scores
-        scores = calculate_meal_scores(analysis)
-        analysis["health_scores"] = scores
         
         # Extract image URL from the analysis if it exists
         image_url = analysis.get("image_url", "")
@@ -222,16 +262,25 @@ async def analyze_meal_details_endpoint(
             "ingredients": analysis.get("ingredients", []),
             "cooking_method": analysis.get("cooking_method", ""),
             "serving_size": analysis.get("serving_size", ""),
-            "macronutrients": {
-                "calories": analysis.get("calories", 0),
-                "protein": analysis.get("protein", 0),
-                "carbs": analysis.get("carbs", 0),
-                "fats": analysis.get("fats", 0),
-                "fiber": analysis.get("fiber", 0),
-                "sugar": analysis.get("sugar", 0),
-                "sodium": analysis.get("sodium", 0)
+            "macronutrients": analysis.get("macronutrients", {
+                "calories": 0,
+                "protein": 0,
+                "carbs": 0,
+                "fats": 0,
+                "fiber": 0,
+                "sugar": 0,
+                "sodium": 0
+            }),
+            "micronutrients": analysis.get("micronutrients", {}),
+            "scores": {
+                "glycemic_index": scores.get("glycemic_index", 0),
+                "inflammatory": scores.get("inflammatory", 0),
+                "heart_health": scores.get("heart_health", 0),
+                "digestive": scores.get("digestive", 0),
+                "meal_balance": scores.get("meal_balance", 0),
+                "micronutrient_balance": scores.get("micronutrient_balance", 0)
             },
-            "scores": scores,
+            "individual_micronutrients": scores.get("individual_micronutrients", {}),
             "health_tags": analysis.get("health_tags", []),
             "suggestions": analysis.get("suggestions", []),
             "recommended_recipes": analysis.get("recommended_recipes", []),
@@ -286,10 +335,20 @@ def extract_meal_name_from_conversation(conversation_history):
                 words = content.split()
                 for i, word in enumerate(words):
                     if word in meal_keywords and i + 1 < len(words):
-                        # Return next few words as potential meal name
-                        potential_name = " ".join(words[i+1:i+4])
-                        # Capitalize words
-                        return " ".join(word.capitalize() for word in potential_name.split())
+                        # Get 4-5 words after the meal keyword
+                        start_idx = i + 1
+                        end_idx = min(start_idx + 5, len(words))  # Get up to 5 words
+                        potential_name = " ".join(words[start_idx:end_idx])
+                        
+                        # If we got less than 4 words, try to get more context
+                        if len(potential_name.split()) < 4:
+                            # Look for more words before the meal keyword
+                            pre_words = words[max(0, i-2):i]  # Get up to 2 words before
+                            potential_name = " ".join(pre_words + [word] + words[start_idx:end_idx])
+                        
+                        # Capitalize words and limit to 5 words
+                        name_parts = potential_name.split()[:5]
+                        return " ".join(word.capitalize() for word in name_parts)
     
     return None
 
@@ -364,7 +423,16 @@ async def create_meal(
                 meal_dict["micronutrient_balance"]["score"] = 0
             if "priority_nutrients" not in meal_dict["micronutrient_balance"]:
                 meal_dict["micronutrient_balance"]["priority_nutrients"] = []
-            
+        
+        # Ensure image_url is properly set
+        if "image_url" not in meal_dict or not meal_dict["image_url"]:
+            # Try to get image_url from the analysis if available
+            if "analysis" in meal_dict and isinstance(meal_dict["analysis"], dict):
+                meal_dict["image_url"] = meal_dict["analysis"].get("image_url", "")
+            else:
+                # Use a default image if no image URL is provided
+                meal_dict["image_url"] = "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80"
+        
         logger.info(f"Meal data: {meal_dict}")
         
         # Insert the meal into the database
@@ -374,15 +442,11 @@ async def create_meal(
         created_meal = await db.meals.find_one({"_id": result.inserted_id})
         
         # Convert ObjectId to string for JSON serialization
-        if created_meal:
-            created_meal["id"] = str(created_meal["_id"])
-            del created_meal["_id"]
-            created_meal["user_id"] = str(created_meal["user_id"])
+        created_meal["id"] = str(created_meal["_id"])
+        del created_meal["_id"]
         
-        logger.info(f"Meal created with ID: {created_meal['id']}")
+        return created_meal
         
-        # Use enhanced JSON serialization utility
-        return json_loads(json_dumps(created_meal))
     except Exception as e:
         logger.error(f"Error creating meal: {str(e)}")
         raise HTTPException(
@@ -474,3 +538,108 @@ async def delete_meal(
             status_code=500,
             detail=f"Failed to delete meal: {str(e)}"
         )
+
+@router.post("/recipe-recommendations")
+async def get_recipe_recommendations(
+    data: Dict[str, Any],
+    current_user: UserProfile = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """
+    Get recipe recommendations based on meal analysis.
+    """
+    try:
+        meal_analysis = data.get("meal_analysis", {})
+        if not meal_analysis:
+            raise HTTPException(status_code=400, detail="Meal analysis data is required")
+
+        # Get health tags from meal analysis and normalize them
+        health_tags = meal_analysis.get("health_tags", [])
+        normalized_tags = []
+        
+        # Mapping of common variations to standardized format
+        tag_mapping = {
+            "Heart healthy": "Heart-Healthy",
+            "Energy enhancing": "High-Protein",
+            "Gut friendly": "Digestive Health",
+            "Low sugar": "Low-Sugar",
+            "High protein": "High-Protein",
+            "Immunity boosting": "Immunity Boosting",
+            "Skin health": "Skin & Joint Health",
+            "Iron rich": "Iron & Folate Rich"
+        }
+        
+        # Normalize each tag
+        for tag in health_tags:
+            normalized_tag = tag_mapping.get(tag, tag)
+            # Convert to proper format if not in mapping
+            if normalized_tag == tag:
+                # Convert to title case and replace spaces with hyphens
+                normalized_tag = "-".join(word.capitalize() for word in tag.split())
+            normalized_tags.append(normalized_tag)
+        
+        logger.info(f"Normalized health tags: {normalized_tags}")
+        
+        # Query recipes collection for recommendations
+        recipes_cursor = db.recipes.find(
+            {
+                "tags.health_goal": {
+                    "$elemMatch": {
+                        "main": {"$in": normalized_tags}
+                    }
+                }
+            },
+            {"_id": 0}
+        ).limit(3)  # Limit to 3 recommendations
+        
+        recipes = await recipes_cursor.to_list(length=None)
+        logger.info(f"Found {len(recipes)} matching recipes")
+        
+        # Format recipes for response
+        formatted_recipes = []
+        for recipe in recipes:
+            formatted_recipe = {
+                "name": recipe["name"],
+                "description": recipe.get("introduction", ""),
+                "ingredients": [ing["name"] for ing in recipe.get("ingredients", [])],
+                "benefits": ", ".join([
+                    sub for goal in recipe.get("tags", {}).get("health_goal", [])
+                    for sub in goal.get("sub", [])
+                ])
+            }
+            formatted_recipes.append(formatted_recipe)
+        
+        # If no recipes found, try a more lenient search
+        if not formatted_recipes:
+            logger.info("No exact matches found, trying more lenient search")
+            recipes_cursor = db.recipes.find(
+                {
+                    "tags.health_goal": {
+                        "$elemMatch": {
+                            "main": {"$regex": "|".join(normalized_tags), "$options": "i"}
+                        }
+                    }
+                },
+                {"_id": 0}
+            ).limit(3)
+            
+            recipes = await recipes_cursor.to_list(length=None)
+            logger.info(f"Found {len(recipes)} recipes in lenient search")
+            
+            for recipe in recipes:
+                formatted_recipe = {
+                    "name": recipe["name"],
+                    "description": recipe.get("introduction", ""),
+                    "ingredients": [ing["name"] for ing in recipe.get("ingredients", [])],
+                    "benefits": ", ".join([
+                        sub for goal in recipe.get("tags", {}).get("health_goal", [])
+                        for sub in goal.get("sub", [])
+                    ])
+                }
+                formatted_recipes.append(formatted_recipe)
+        
+        return {"recipes": formatted_recipes}
+        
+    except Exception as e:
+        logger.error(f"Error in get_recipe_recommendations: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
