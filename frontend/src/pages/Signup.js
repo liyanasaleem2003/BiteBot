@@ -451,7 +451,7 @@ const Signup = () => {
 
         console.log("Login successful:", loginData);
         localStorage.setItem('token', `Bearer ${loginData.access_token}`);
-        navigate('/dashboard');
+        navigate('/');
     } catch (error) {
         console.error("Registration error:", error);
         alert(error.message || "Registration failed. Please try again.");

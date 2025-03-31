@@ -7,8 +7,10 @@ import { Label } from "../components/ui/label";
 import { ImageIcon, SendIcon, UploadIcon, ClockIcon, PlusIcon, Trash2 } from "lucide-react";
 import { API_BASE_URL } from '../config';
 import Navbar from "../components/ui/Navbar";
+import { useNavigate } from 'react-router-dom';
 
 const LogMyMeal = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {
       id: "bot-1",
@@ -85,19 +87,42 @@ const LogMyMeal = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Update the message ID generation to include a random component
+  const generateUniqueId = () => {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  // Update where we create new messages
   const handleStartNewChat = () => {
     const now = new Date();
     
     // Clear any previous state
     setActiveChat(null);
-    setMealAnalysis(null);
     setConversationHistory([]);
     setCurrentQuestion(null);
     setCurrentStep("initial");
     
-    // Set initial welcome message
+    // Check if there's a previously analyzed meal name to restore
+    const lastMealName = localStorage.getItem('lastAnalyzedMealName');
+    const lastAnalyzedMeal = localStorage.getItem('lastAnalyzedMeal');
+    
+    if (lastAnalyzedMeal && lastMealName) {
+      try {
+        // Restore the meal analysis data
+        const mealData = JSON.parse(lastAnalyzedMeal);
+        setMealAnalysis(mealData);
+        console.log(`Restored previous meal analysis for: ${lastMealName}`);
+      } catch (error) {
+        console.error('Error restoring meal analysis:', error);
+        setMealAnalysis(null);
+      }
+    } else {
+      setMealAnalysis(null);
+    }
+    
+    // Set initial welcome message with unique ID
     setMessages([{
-      id: `bot-${Date.now()}`,
+      id: generateUniqueId(),
       type: "bot",
       content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
       timestamp: now,
@@ -108,7 +133,7 @@ const LogMyMeal = () => {
       _id: `temp-${Date.now()}`, // Temporary ID for new chat
       title: "New Meal Analysis",
       messages: [{
-        id: `bot-${Date.now()}`,
+        id: generateUniqueId(),
         type: "bot",
         content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
         timestamp: now,
@@ -191,9 +216,9 @@ const LogMyMeal = () => {
       }
 
       // Remove chat from local state
-      setChatHistory(prevChats => {
+      setChatHistory(prev => {
         console.log(`Removing chat ${chatId} from state`);
-        return prevChats.filter(chat => chat._id !== chatId);
+        return prev.filter(chat => chat._id !== chatId);
       });
       
       // If the deleted chat was the active chat, reset the active chat and start a new chat
@@ -220,6 +245,106 @@ const LogMyMeal = () => {
       setTimeout(() => {
         setNotification(prev => ({ ...prev, show: false }));
       }, 3000);
+    }
+  };
+
+  // Save chat to backend
+  const saveChatToBackend = async (chatId, updatedMessages, updatedMealAnalysis) => {
+    try {
+      // Skip saving for temporary chats
+      if (chatId && chatId.startsWith('temp-')) {
+        console.log('Skipping backend save for temporary chat');
+        
+        // Update local state
+        setChatHistory(prev => {
+          return prev.map(chat => {
+            if (chat._id === chatId) {
+              return {
+                ...chat,
+                messages: updatedMessages,
+                meal_analysis: updatedMealAnalysis || chat.meal_analysis,
+                updated_at: new Date()
+              };
+            }
+            return chat;
+          });
+        });
+        
+        return;
+      }
+      
+      console.log(`Saving chat with ID: ${chatId} to backend`);
+      console.log('Updated messages:', updatedMessages);
+      console.log('Updated meal analysis:', updatedMealAnalysis);
+      
+      // If no chatId, create a new chat
+      if (!chatId) {
+        console.log('Creating new chat in backend');
+        const response = await fetch(`${API_BASE_URL}/chat/history`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: updatedMealAnalysis?.meal_name || "New Meal Analysis",
+            messages: updatedMessages,
+            meal_analysis: updatedMealAnalysis
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to create chat');
+        }
+        
+        const data = await response.json();
+        
+        // Update local state with the new chat
+        setChatHistory(prev => [data.data, ...prev]);
+        setActiveChat(data.data._id);
+        
+        return data.data._id;
+      } else {
+        // Update existing chat
+        console.log(`Updating existing chat: ${chatId}`);
+        const response = await fetch(`${API_BASE_URL}/chat/history/${chatId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: updatedMealAnalysis?.meal_name || "Meal Analysis",
+            messages: updatedMessages,
+            meal_analysis: updatedMealAnalysis
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to update chat');
+        }
+        
+        // Update local state
+        setChatHistory(prev => {
+          return prev.map(chat => {
+            if (chat._id === chatId) {
+              return {
+                ...chat,
+                title: updatedMealAnalysis?.meal_name || chat.title,
+                messages: updatedMessages,
+                meal_analysis: updatedMealAnalysis || chat.meal_analysis,
+                updated_at: new Date()
+              };
+            }
+            return chat;
+          });
+        });
+        
+        return chatId;
+      }
+    } catch (error) {
+      console.error('Error saving chat to backend:', error);
+      return null;
     }
   };
 
@@ -338,6 +463,7 @@ const LogMyMeal = () => {
     return true;
   };
 
+  // Update handleUserMessage to use unique IDs
   const handleUserMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
@@ -345,239 +471,131 @@ const LogMyMeal = () => {
     const message = inputMessage;
     setInputMessage(""); // Clear input after sending
 
-    // Add user message to chat
-    setMessages(prev => [...prev, {
-      id: `user-${Date.now()}`,
+    // Create a new message object with unique ID
+    const newUserMessage = {
+      id: generateUniqueId(),
       type: "user",
       content: message,
-      timestamp: new Date(),
-    }]);
+      timestamp: new Date().toISOString(),
+    };
 
-    // Update chat history in database
-    if (activeChat) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/chat/history/${activeChat}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            messages: [...messages, {
-              id: `user-${Date.now()}`,
-              type: "user",
-              content: message,
-              timestamp: new Date(),
-            }],
-            meal_analysis: mealAnalysis
-          }),
-        });
+    // Add the user message to the messages array
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
+    
+    // Save the updated chat to the backend
+    await saveChatToBackend(activeChat, updatedMessages, mealAnalysis);
 
-        if (!response.ok) {
-          throw new Error('Failed to update chat history');
-        }
-      } catch (error) {
-        console.error('Error updating chat history:', error);
-      }
-    }
+    // Check if the last message was a recipe prompt
+    const lastMessage = messages[messages.length - 1];
+    const isRecipePrompt = lastMessage && 
+      lastMessage.type === "bot" && 
+      lastMessage.content.includes("Would you like to see recommended recipes based on this meal?");
+    
+    // Check if the last message was a dashboard prompt
+    const isDashboardPrompt = lastMessage && 
+      lastMessage.type === "bot" && 
+      lastMessage.content.includes("Would you like to view this meal in your dashboard?");
 
-    // Update chat history state
-    if (activeChat) {
-      setChatHistory(prev => prev.map(chat => 
-        chat._id === activeChat 
-          ? { ...chat, messages: [...chat.messages, { id: `user-${Date.now()}`, type: "user", content: message, timestamp: new Date() }] }
-          : chat
-      ));
-    }
+    // If responding to recipe prompt
+    if (isRecipePrompt) {
+      const positiveResponses = ["yes", "yeah", "sure", "ok", "okay", "yep", "y", "please", "definitely", "absolutely"];
+      const isPositiveResponse = positiveResponses.some(response => 
+        message.toLowerCase().includes(response)
+      );
 
-    // Add user response to conversation history
-    setConversationHistory(prev => [...prev, {
-      role: "user",
-      content: message
-    }]);
+      if (isPositiveResponse) {
+        // Show loading indicator
+        const loadingMessage = {
+          id: `bot-${Date.now()}`,
+          type: "bot",
+          content: "Searching for recipes that match your meal...",
+          isLoading: true,
+          timestamp: new Date().toISOString(),
+        };
+        
+        const messagesWithLoading = [...updatedMessages, loadingMessage];
+        setMessages(messagesWithLoading);
 
-    try {
-      if (currentQuestion) {
-        // Validate user response
-        if (!validateUserResponse(currentQuestion.question, message)) {
-          setMessages(prev => [...prev, {
+        try {
+          // Get recipe recommendations
+          const response = await fetch(`${API_BASE_URL}/nutrition/recipe-recommendations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              meal_analysis: mealAnalysis
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to get recipe recommendations');
+          }
+
+          const data = await response.json();
+          console.log("Recipe recommendations:", data);
+
+          // Remove loading indicator
+          const updatedMessagesWithoutLoading = messagesWithLoading.filter(msg => !msg.isLoading);
+          
+          // Add bot response with recipe recommendations
+          const recipeMessage = {
             id: `bot-${Date.now()}`,
             type: "bot",
-            content: "I need more specific information. Could you please provide the amount and unit? For example, '2 tablespoons olive oil' or '1 cup rice'.",
-            timestamp: new Date(),
-          }]);
-          return;
-        }
-
-        // Add bot's question to conversation history
-        setConversationHistory(prev => [...prev, {
-          role: "assistant",
-          content: currentQuestion.question
-        }]);
-
-        // Handle sub-questions if they exist
-        if (currentQuestion.sub_questions) {
-          const currentIndex = mealAnalysis.clarifying_questions.findIndex(
-            q => q.question === currentQuestion.question
-          );
-
-          if (currentIndex < mealAnalysis.clarifying_questions.length) {
-            const currentQuestionObj = mealAnalysis.clarifying_questions[currentIndex];
-            const subQuestionIndex = currentQuestionObj.sub_questions.findIndex(
-              sq => sq === currentQuestion.current_sub_question
-            );
-
-            if (subQuestionIndex < currentQuestionObj.sub_questions.length - 1) {
-              // Move to next sub-question
-              const nextSubQuestion = currentQuestionObj.sub_questions[subQuestionIndex + 1];
-              setCurrentQuestion({
-                ...currentQuestionObj,
-                current_sub_question: nextSubQuestion
-              });
-              setMessages(prev => [...prev, {
-                id: `bot-${Date.now()}`,
-                type: "bot",
-                content: nextSubQuestion,
-                timestamp: new Date(),
-              }]);
-            } else {
-              // Move to next main question
-              if (currentIndex < mealAnalysis.clarifying_questions.length - 1) {
-                const nextQuestion = mealAnalysis.clarifying_questions[currentIndex + 1];
-                setCurrentQuestion(nextQuestion);
-                setMessages(prev => [...prev, {
-                  id: `bot-${Date.now()}`,
-                  type: "bot",
-                  content: nextQuestion.question,
-                  timestamp: new Date(),
-                }]);
-              } else {
-                // Get final analysis
-                await getFinalAnalysis();
-              }
-            }
-          }
-        } else {
-          // Handle regular questions
-          const currentIndex = mealAnalysis.clarifying_questions.findIndex(
-            q => q.question === currentQuestion.question
-          );
-
-          if (currentIndex < mealAnalysis.clarifying_questions.length - 1) {
-            // Move to next question
-            const nextQuestion = mealAnalysis.clarifying_questions[currentIndex + 1];
-            setCurrentQuestion(nextQuestion);
-            setMessages(prev => [...prev, {
-              id: `bot-${Date.now()}`,
-              type: "bot",
-              content: nextQuestion.question,
-              timestamp: new Date(),
-            }]);
-          } else {
-            // Get final analysis
-            await getFinalAnalysis();
-          }
+            content: generateRecipeRecommendations(data.recipes),
+            timestamp: new Date().toISOString(),
+            isHtml: true,
+          };
+          
+          const finalMessages = [...updatedMessagesWithoutLoading, recipeMessage];
+          setMessages(finalMessages);
+          
+          // Save the updated chat with recipes to the backend
+          await saveChatToBackend(activeChat, finalMessages, mealAnalysis);
+          
+        } catch (error) {
+          console.error("Error getting recipe recommendations:", error);
+          
+          // Remove loading indicator and show error
+          const updatedMessagesWithoutLoading = updatedMessages.filter(msg => !msg.isLoading);
+          
+          // Add error message
+          const errorMessage = {
+            id: `bot-${Date.now()}`,
+            type: "bot",
+            content: "Sorry, I encountered an error while getting recipe recommendations. Please try again later.",
+            timestamp: new Date().toISOString(),
+          };
+          
+          const finalMessages = [...updatedMessagesWithoutLoading, errorMessage];
+          setMessages(finalMessages);
+          
+          // Save the updated chat with error message to the backend
+          await saveChatToBackend(activeChat, finalMessages, mealAnalysis);
         }
       }
-    } catch (error) {
-      console.error("Error handling user message:", error);
-      console.error("Error details:", error.stack);
-      setMessages(prev => [...prev, {
-        id: `bot-${Date.now()}`,
-        type: "bot",
-        content: `Sorry, I encountered an error while processing your response: ${error.message}. Please try again.`,
-        timestamp: new Date(),
-      }]);
     }
-  };
+    
+    // If responding to dashboard prompt
+    else if (isDashboardPrompt) {
+      const positiveResponses = ["yes", "yeah", "sure", "ok", "okay", "yep", "y", "please", "definitely", "absolutely"];
+      const isPositiveResponse = positiveResponses.some(response => 
+        message.toLowerCase().includes(response)
+      );
 
-  const getFinalAnalysis = async () => {
-    try {
-      console.log("Sending conversation history:", conversationHistory);
-      console.log("Sending user profile:", JSON.parse(localStorage.getItem('userProfile') || '{}'));
-      
-      const analysisResponse = await fetch(`${API_BASE_URL}/nutrition/analyze-details`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          conversation_history: conversationHistory,
-          user_profile: JSON.parse(localStorage.getItem('userProfile') || '{}')
-        }),
-      });
-
-      if (!analysisResponse.ok) {
-        const errorData = await analysisResponse.json();
-        console.error("Analysis response error:", errorData);
-        throw new Error(errorData.detail || 'Failed to analyze meal details');
+      if (isPositiveResponse) {
+        // Call the handleViewInDashboard function
+        handleViewInDashboard();
       }
-
-      const analysisData = await analysisResponse.json();
-      console.log("Analysis response:", analysisData);
-      
-      // Update meal analysis state
-      setMealAnalysis(prev => ({
-        ...prev,
-        ...analysisData.data,
-        calories: analysisData.data.macronutrients?.calories || 0,
-        protein: analysisData.data.macronutrients?.protein || 0,
-        carbs: analysisData.data.macronutrients?.carbs || 0,
-        fats: analysisData.data.macronutrients?.fats || 0,
-        fiber: analysisData.data.macronutrients?.fiber || 0,
-        sugar: analysisData.data.macronutrients?.sugar || 0,
-        sodium: analysisData.data.macronutrients?.sodium || 0,
-        scores: {
-          glycemic: analysisData.data.scores?.glycemic_index || 0,
-          inflammatory: analysisData.data.scores?.inflammatory || 0,
-          heart: analysisData.data.scores?.heart_health || 0,
-          digestive: analysisData.data.scores?.digestive || 0,
-          balance: analysisData.data.scores?.meal_balance || 0
-        },
-        health_tags: analysisData.data.health_tags || [],
-        suggestions: analysisData.data.suggestions || [],
-        recommended_recipes: analysisData.data.recommended_recipes || []
-      }));
-
-      // Create a final analysis message with a prominent meal name
-      const mealName = analysisData.data.meal_name || "Analyzed Meal";
-      console.log(`Creating final analysis message with meal name: ${mealName}`);
-      
-      const finalAnalysisMessage = {
-        id: `bot-${Date.now()}`,
-        type: "bot",
-        content: `## ${mealName}\n\n${generateAnalysisContent(analysisData.data)}`,
-        timestamp: new Date(),
-        isAnalysis: true,
-      };
-
-      // Add final analysis message to messages
-      setMessages(prev => [...prev, finalAnalysisMessage]);
-
-      // Add dashboard button message
-      setMessages(prev => [...prev, {
-        id: `bot-${Date.now()}`,
-        type: "bot",
-        content: "Would you like to view this meal in your dashboard?",
-        timestamp: new Date(),
-      }]);
-
-      // Update chat history in database with meal name and analysis
+    }
+    
+    // For other types of messages, process normally
+    else {
+      // Update chat history in database
       if (activeChat) {
         try {
-          const updatedMessages = [...messages, finalAnalysisMessage, {
-            id: `bot-${Date.now()}`,
-            type: "bot",
-            content: "Would you like to view this meal in your dashboard?",
-            timestamp: new Date(),
-          }];
-
-          // Make sure we have a meal name
-          const mealName = analysisData.data.meal_name || "Analyzed Meal";
-          
-          console.log(`Updating chat history with meal name: ${mealName}`);
-          
           const response = await fetch(`${API_BASE_URL}/chat/history/${activeChat}`, {
             method: 'PUT',
             headers: {
@@ -585,178 +603,427 @@ const LogMyMeal = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              title: mealName,
-              messages: updatedMessages,
-              meal_analysis: analysisData.data
+              messages: [...messages, {
+                id: `user-${Date.now()}`,
+                type: "user",
+                content: message,
+                timestamp: new Date().toISOString(),
+              }],
+              meal_analysis: mealAnalysis
             }),
           });
 
           if (!response.ok) {
             throw new Error('Failed to update chat history');
           }
-          
-          // Also update the local chat history title
-          setChatHistory(prev => prev.map(chat => 
-            chat._id === activeChat 
-              ? { ...chat, title: mealName }
-              : chat
-          ));
         } catch (error) {
           console.error('Error updating chat history:', error);
         }
       }
 
-      // Update chat history with final analysis
+      // Update chat history state
       if (activeChat) {
         setChatHistory(prev => prev.map(chat => 
           chat._id === activeChat 
-            ? { 
-                ...chat, 
-                title: analysisData.data.meal_name || "Analyzed Meal",
-                messages: [...chat.messages, {
-                  id: `bot-${Date.now()}`,
-                  type: "bot",
-                  content: generateAnalysisContent(analysisData.data),
-                  timestamp: new Date()
-                }, {
-                  id: `bot-${Date.now()}`,
-                  type: "bot",
-                  content: "Would you like to view this meal in your dashboard?",
-                  timestamp: new Date()
-                }]
-              }
+            ? { ...chat, messages: [...chat.messages, { id: `user-${Date.now()}`, type: "user", content: message, timestamp: new Date().toISOString() }] }
             : chat
         ));
       }
 
-      setCurrentStep("complete");
-    } catch (error) {
-      console.error("Error getting final analysis:", error);
+      // Add user response to conversation history
+      setConversationHistory(prev => [...prev, {
+        role: "user",
+        content: message
+      }]);
+
+      try {
+        if (currentQuestion) {
+          // Validate user response
+          if (!validateUserResponse(currentQuestion.question, message)) {
+            setMessages(prev => [...prev, {
+              id: `bot-${Date.now()}`,
+              type: "bot",
+              content: "I need more specific information. Could you please provide the amount and unit? For example, '2 tablespoons olive oil' or '1 cup rice'.",
+              timestamp: new Date().toISOString(),
+            }]);
+            return;
+          }
+
+          // Add bot's question to conversation history
+          setConversationHistory(prev => [...prev, {
+            role: "assistant",
+            content: currentQuestion.question
+          }]);
+
+          // Handle sub-questions if they exist
+          if (currentQuestion.sub_questions) {
+            const currentIndex = mealAnalysis.clarifying_questions.findIndex(
+              q => q.question === currentQuestion.question
+            );
+
+            if (currentIndex < mealAnalysis.clarifying_questions.length) {
+              const currentQuestionObj = mealAnalysis.clarifying_questions[currentIndex];
+              const subQuestionIndex = currentQuestionObj.sub_questions.findIndex(
+                sq => sq === currentQuestion.current_sub_question
+              );
+
+              if (subQuestionIndex < currentQuestionObj.sub_questions.length - 1) {
+                // Move to next sub-question
+                const nextSubQuestion = currentQuestionObj.sub_questions[subQuestionIndex + 1];
+                setCurrentQuestion({
+                  ...currentQuestionObj,
+                  current_sub_question: nextSubQuestion
+                });
+                setMessages(prev => [...prev, {
+                  id: `bot-${Date.now()}`,
+                  type: "bot",
+                  content: nextSubQuestion,
+                  timestamp: new Date().toISOString(),
+                }]);
+              } else {
+                // Move to next main question
+                if (currentIndex < mealAnalysis.clarifying_questions.length - 1) {
+                  const nextQuestion = mealAnalysis.clarifying_questions[currentIndex + 1];
+                  setCurrentQuestion(nextQuestion);
+                  setMessages(prev => [...prev, {
+                    id: `bot-${Date.now()}`,
+                    type: "bot",
+                    content: nextQuestion.question,
+                    timestamp: new Date().toISOString(),
+                  }]);
+                } else {
+                  // Get final analysis
+                  await getFinalAnalysis();
+                }
+              }
+            }
+          } else {
+            // Handle regular questions
+            const currentIndex = mealAnalysis.clarifying_questions.findIndex(
+              q => q.question === currentQuestion.question
+            );
+
+            if (currentIndex < mealAnalysis.clarifying_questions.length - 1) {
+              // Move to next question
+              const nextQuestion = mealAnalysis.clarifying_questions[currentIndex + 1];
+              setCurrentQuestion(nextQuestion);
+              setMessages(prev => [...prev, {
+                id: `bot-${Date.now()}`,
+                type: "bot",
+                content: nextQuestion.question,
+                timestamp: new Date().toISOString(),
+              }]);
+            } else {
+              // Get final analysis
+              await getFinalAnalysis();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error handling user message:", error);
+        console.error("Error details:", error.stack);
+        setMessages(prev => [...prev, {
+          id: `bot-${Date.now()}`,
+          type: "bot",
+          content: `Sorry, I encountered an error while processing your response: ${error.message}. Please try again.`,
+          timestamp: new Date().toISOString(),
+        }]);
+      }
+    }
+  };
+
+  const getFinalAnalysis = async () => {
+    try {
+      // Show loading indicator
       setMessages(prev => [...prev, {
         id: `bot-${Date.now()}`,
         type: "bot",
-        content: "Sorry, I encountered an error while analyzing your meal. Please try again.",
-        timestamp: new Date(),
+        content: "",
+        isLoading: true,
+        timestamp: new Date().toISOString(),
       }]);
+
+      // Prepare the conversation history
+      const conversationHistory = messages.map(msg => ({
+        role: msg.type === "user" ? "user" : "assistant",
+        content: msg.content
+      }));
+
+      // Call the API to get the analysis
+      const response = await fetch(`${API_BASE_URL}/nutrition/analyze-details`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          conversation_history: conversationHistory,
+          user_profile: JSON.parse(localStorage.getItem('userProfile') || '{}')
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze meal');
+      }
+
+      const analysisData = await response.json();
+      console.log("Analysis response:", analysisData);
+
+      // Remove loading indicator
+      setMessages(prev => prev.filter(msg => !msg.isLoading));
+      
+      // Use the handleAnalysisDone function to process the analysis
+      handleAnalysisDone(analysisData);
+
+    } catch (error) {
+      console.error("Error in final analysis:", error);
+      // Remove loading indicator and show error
+      setMessages(prev => 
+        prev.filter(msg => !msg.isLoading).concat({
+          id: `bot-${Date.now()}`,
+          type: "bot",
+          content: "Sorry, I encountered an error while analyzing your meal. Please try again.",
+          timestamp: new Date().toISOString(),
+        })
+      );
+    }
+  };
+
+  // Update handleAnalysisDone to use unique IDs
+  const handleAnalysisDone = async (analysisData) => {
+    console.log("Analysis response:", analysisData);
+    console.log("Analysis data:", analysisData);
+    
+    // Check if data is in the expected format, if not adjust it
+    const data = analysisData.data || analysisData;
+    setMealAnalysis(data);
+    
+    // Store the analyzed meal data in localStorage for recipe recommendations
+    localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
+    
+    // Store the meal name in localStorage so it persists when returning to the chat
+    if (data.meal_name) {
+      localStorage.setItem('lastAnalyzedMealName', data.meal_name);
+    }
+
+    try {
+      // Add the analysis message to the chat with unique ID
+      const analysisMessage = {
+        id: generateUniqueId(),
+        type: "bot",
+        content: `${generateAnalysisContent(data)}`,
+        timestamp: new Date().toISOString(),
+        isAnalysis: true,
+      };
+      
+      // Add the dashboard prompt message with unique ID
+      const dashboardPromptMessage = {
+        id: generateUniqueId(),
+        type: "bot",
+        content: "Would you like to view this meal in your dashboard?",
+        timestamp: new Date().toISOString(),
+      };
+      
+      // Add the recipe prompt message with unique ID
+      const recipePromptMessage = {
+        id: generateUniqueId(),
+        type: "bot",
+        content: "Would you like to see recommended recipes based on this meal?",
+        timestamp: new Date().toISOString(),
+        isRecipePrompt: true,
+      };
+      
+      // Update messages state with all new messages
+      const updatedMessages = [...messages, analysisMessage, dashboardPromptMessage, recipePromptMessage];
+      setMessages(updatedMessages);
+      
+      // Save the chat with the meal analysis to the backend
+      await saveChatToBackend(activeChat, updatedMessages, data);
+      
+    } catch (error) {
+      console.error("Error handling analysis done:", error);
     }
   };
 
   const generateAnalysisContent = (data) => {
-    return `**Nutritional Information:**
-- Calories: ${data.macronutrients?.calories || 0} kcal
-- Protein: ${data.macronutrients?.protein || 0}g
-- Carbs: ${data.macronutrients?.carbs || 0}g
-- Fats: ${data.macronutrients?.fats || 0}g
-- Fiber: ${data.macronutrients?.fiber || 0}g
-- Sugar: ${data.macronutrients?.sugar || 0}g
-- Sodium: ${data.macronutrients?.sodium || 0}mg
-
-**Health Scores:**
-- Glycemic Index: ${data.scores?.glycemic_index || 0}
-- Inflammatory Score: ${data.scores?.inflammatory || 0}
-- Heart Health: ${data.scores?.heart_health || 0}
-- Digestive Score: ${data.scores?.digestive || 0}
-- Meal Balance: ${data.scores?.meal_balance || 0}
-
-**Health Tags:** ${(data.health_tags || []).join(', ')}
+    // Format health benefits, concerns, and suggestions
+    const healthBenefits = (data.health_benefits || []).map(benefit => `- ${benefit}`).join('\n');
+    const potentialConcerns = (data.potential_concerns || []).map(concern => `- ${concern}`).join('\n');
+    const suggestions = (data.suggestions || []).map(suggestion => `- ${suggestion}`).join('\n');
+    
+    // Format health tags
+    const healthTags = (data.health_tags || []).join(', ');
+    
+    // Check if macronutrients is nested inside data.data
+    const macros = data.macronutrients || (data.data && data.data.macronutrients) || {};
+    
+    // Get macronutrients with fallbacks to prevent NaN
+    const calories = Math.round(macros.calories || 0);
+    const protein = Math.round(macros.protein || 0);
+    const carbs = Math.round(macros.carbs || 0);
+    const fats = Math.round(macros.fats || 0);
+    const fiber = Math.round(macros.fiber || 0);
+    const sugar = Math.round(macros.sugar || 0);
+    const sodium = Math.round(macros.sodium || 0);
+    
+    // Get scores with proper fallback handling
+    const scores = data.scores || data.health_scores || {};
+    
+    // Get scores with fallbacks and ensure they're percentages
+    const glycemicIndex = Math.round(scores.glycemic_index || 0);
+    const inflammatoryScore = Math.round(scores.inflammatory || 0);
+    const heartHealth = Math.round(scores.heart_health || 0);
+    const digestiveScore = Math.round(scores.digestive || 0);
+    const mealBalance = Math.round(scores.meal_balance || 0);
+    
+    // Get micronutrient balance score from either scores or micronutrient_balance
+    const micronutrientBalance = Math.round(
+      scores.micronutrient_balance || 
+      (data.micronutrient_balance && data.micronutrient_balance.score) || 
+      0
+    );
+    
+    return `**Meal Analysis**
 
 **Health Benefits:**
-${(data.health_benefits || []).map(benefit => `- ${benefit}`).join('\n')}
+${healthBenefits}
 
 **Potential Concerns:**
-${(data.potential_concerns || []).map(concern => `- ${concern}`).join('\n')}
+${potentialConcerns}
 
 **Suggestions for Improvement:**
-${(data.suggestions || []).map(suggestion => `- ${suggestion}`).join('\n')}
+${suggestions}
 
-**Recommended Recipes:**
-${(data.recommended_recipes || []).map(recipe => `- ${recipe}`).join('\n')}`;
+**Health Tags:** ${healthTags}
+
+**Nutrient**|**Amount**
+---|---
+Calories|${calories} kcal
+Protein|${protein}g
+Carbs|${carbs}g
+Fats|${fats}g
+Fiber|${fiber}g
+Sugar|${sugar}g
+Sodium|${sodium}mg
+
+**Metric**|**Score**
+---|---
+Glycemic Index|${glycemicIndex}%
+Inflammatory Score|${inflammatoryScore}%
+Heart Health|${heartHealth}%
+Digestive Score|${digestiveScore}%
+Meal Balance|${mealBalance}%
+Micronutrient Balance|${micronutrientBalance}%`;
   };
 
-  const handleViewInDashboard = async () => {
-    console.log("Current mealAnalysis:", mealAnalysis);
-    
-    // Format the meal data to match the backend's expected structure
-    const mealData = {
-      meal_name: mealAnalysis.meal_name || "Analyzed Meal",
-      date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-      timestamp: new Date().toISOString(),
-      image_url: mealAnalysis.image_url || "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",
-      health_tags: mealAnalysis.health_tags || [],
-      ingredients: mealAnalysis.ingredients || [],
-      cooking_method: mealAnalysis.cooking_method || "",
-      serving_size: mealAnalysis.serving_size || "",
-      macronutrients: {
-        calories: mealAnalysis.macronutrients?.calories || 0,
-        protein: mealAnalysis.macronutrients?.protein || 0,
-        carbs: mealAnalysis.macronutrients?.carbs || 0,
-        fats: mealAnalysis.macronutrients?.fats || 0,
-        fiber: mealAnalysis.macronutrients?.fiber || 0,
-        sugar: mealAnalysis.macronutrients?.sugar || 0,
-        sodium: mealAnalysis.macronutrients?.sodium || 0
-      },
-      scores: {
-        glycemic_index: mealAnalysis.scores?.glycemic_index || 0,
-        inflammatory: mealAnalysis.scores?.inflammatory || 0,
-        heart_health: mealAnalysis.scores?.heart_health || 0,
-        digestive: mealAnalysis.scores?.digestive || 0,
-        meal_balance: mealAnalysis.scores?.meal_balance || 0
-      },
-      micronutrient_balance: {
-        score: mealAnalysis.micronutrient_balance?.score || 0,
-        priority_nutrients: mealAnalysis.micronutrient_balance?.priority_nutrients || []
-      },
-      suggestions: mealAnalysis.suggestions || [],
-      recommended_recipes: mealAnalysis.recommended_recipes || [],
-      health_benefits: mealAnalysis.health_benefits || [],
-      potential_concerns: mealAnalysis.potential_concerns || []
-    };
-
-    console.log("Formatted meal data to be sent to backend:", mealData);
-    
-    try {
-      // Save the meal data to the database
-      const response = await fetch(`${API_BASE_URL}/nutrition/meals`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(mealData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error saving meal:", errorData);
-        throw new Error(errorData.detail || 'Failed to save meal');
-      }
-
-      const savedMeal = await response.json();
-      console.log("Meal saved successfully:", savedMeal);
-      
-      // Save the formatted meal data to localStorage as a backup
-      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(savedMeal));
-      console.log("Saved meal data to localStorage:", savedMeal);
-      
-      // Redirect to dashboard with a query parameter to force refresh
-      window.location.href = '/dashboard?refresh=' + new Date().getTime();
-    } catch (error) {
-      console.error("Error in handleViewInDashboard:", error);
-      setMessages(prev => [...prev, {
-        id: `bot-${Date.now()}`,
-        type: "bot",
-        content: `Sorry, I encountered an error while saving your meal: ${error.message}. Please try again.`,
-        timestamp: new Date()
-      }]);
+  const generateRecipeRecommendations = (recipes) => {
+    if (!recipes || recipes.length === 0) {
+      return "Sorry, I don't have any recipe recommendations for this meal at the moment.";
     }
+
+    let content = `<div class="recipe-recommendations">
+      <h3 class="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>`;
+    
+    recipes.forEach(recipe => {
+      content += `
+        <div class="recipe-card mb-4 p-3 border border-gray-600 rounded bg-black/20">
+          <h4 class="font-bold text-green-300">${recipe.name}</h4>
+          <p class="mb-2">${recipe.description}</p>
+          <div class="mb-2">
+            <span class="font-medium text-green-300">Ingredients:</span> 
+            ${recipe.ingredients.join(', ')}
+          </div>
+          <div class="mb-2">
+            <span class="font-medium text-green-300">Benefits:</span> 
+            ${recipe.benefits}
+          </div>
+        </div>`;
+    });
+    
+    // Add Browse More Recipes button
+    content += `
+      <div class="flex justify-center mt-4 mb-2">
+        <a href="/recipes" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
+          Browse More Recipes
+        </a>
+      </div>
+    </div>`;
+    
+    return content;
   };
 
+  // Update handleChatSelect to use unique IDs for new messages
   const handleChatSelect = (chatId) => {
     setActiveChat(chatId);
     const selectedChat = chatHistory.find(chat => chat._id === chatId);
     if (selectedChat) {
       setMessages(selectedChat.messages);
+      
+      // If this chat has meal analysis data, restore it
+      if (selectedChat.meal_analysis) {
+        console.log("Restoring meal analysis from selected chat:", selectedChat.meal_analysis);
+        setMealAnalysis(selectedChat.meal_analysis);
+        
+        // Also update localStorage for persistence
+        localStorage.setItem('lastAnalyzedMeal', JSON.stringify(selectedChat.meal_analysis));
+        if (selectedChat.meal_analysis.meal_name) {
+          localStorage.setItem('lastAnalyzedMealName', selectedChat.meal_analysis.meal_name);
+        }
+        
+        // Check if the chat already has the dashboard and recipe prompts
+        const hasDashboardPrompt = selectedChat.messages.some(msg => 
+          msg.type === "bot" && msg.content === "Would you like to view this meal in your dashboard?"
+        );
+        
+        const hasRecipePrompt = selectedChat.messages.some(msg => 
+          msg.type === "bot" && msg.isRecipePrompt
+        );
+        
+        // If the chat doesn't have these prompts, add them with unique IDs
+        let updatedMessages = [...selectedChat.messages];
+        let messagesChanged = false;
+        
+        if (!hasDashboardPrompt) {
+          updatedMessages.push({
+            id: generateUniqueId(),
+            type: "bot",
+            content: "Would you like to view this meal in your dashboard?",
+            timestamp: new Date().toISOString(),
+          });
+          messagesChanged = true;
+        }
+        
+        if (!hasRecipePrompt) {
+          updatedMessages.push({
+            id: generateUniqueId(),
+            type: "bot",
+            content: "Would you like to see recommended recipes based on this meal?",
+            timestamp: new Date().toISOString(),
+            isRecipePrompt: true,
+          });
+          messagesChanged = true;
+        }
+        
+        // Update messages if needed
+        if (messagesChanged) {
+          setMessages(updatedMessages);
+          
+          // Save the updated messages to the backend
+          saveChatToBackend(chatId, updatedMessages, selectedChat.meal_analysis);
+        }
+      } else {
+        // Clear meal analysis if not present in the selected chat
+        setMealAnalysis(null);
+      }
     }
+  };
+
+  const handleViewInDashboard = () => {
+    // Store the date in localStorage to ensure we load the correct day in the dashboard
+    localStorage.setItem('selectedDashboardDate', new Date().toISOString().split('T')[0]);
+    
+    // Navigate to dashboard using direct window location change for more reliable navigation
+    window.location.href = '/dashboard';
   };
 
   const formattedMessages = messages.map(message => ({
@@ -818,9 +1085,113 @@ ${(data.recommended_recipes || []).map(recipe => `- ${recipe}`).join('\n')}`;
                       <span>.</span>
                       <span>.</span>
                     </div>
+                  ) : message.isHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: message.content }} />
                   ) : (
                     <>
-                      <p>{message.content}</p>
+                      <div className="markdown-content">
+                        {message.content.split('\n').map((line, i) => {
+                          if (line.startsWith('**Meal Analysis**')) {
+                            // Main title
+                            return <h2 key={i} className="text-xl font-bold mb-3 text-green-400">Meal Analysis</h2>;
+                          } else if (line.startsWith('**') && line.endsWith(':**')) {
+                            // Section headers
+                            return <h3 key={i} className="font-bold mt-4 mb-2 text-green-300">{line.replace(/\*\*/g, '')}</h3>;
+                          } else if (line.startsWith('**') && line.includes('|')) {
+                            // Table headers - don't process these individually, handle tables as a group
+                            return null;
+                          } else if (line.startsWith('**Health Tags:**')) {
+                            // Health tags line
+                            const tags = line.replace('**Health Tags:**', '').trim();
+                            return (
+                              <div key={i} className="mt-3 mb-2">
+                                <h3 className="font-bold mb-1 text-green-300">Health Tags:</h3>
+                                <div className="flex flex-wrap gap-2">
+                                  {tags.split(', ').map((tag, tagIndex) => (
+                                    <span key={tagIndex} className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          } else if (line.startsWith('- ')) {
+                            // List items
+                            return <li key={i} className="ml-5 mb-1">{line.substring(2)}</li>;
+                          } else if (line.trim() === '') {
+                            // Empty lines
+                            return <br key={i} />;
+                          } else if (line.includes('|') && !line.startsWith('**')) {
+                            // Table rows - don't process these individually, handle tables as a group
+                            return null;
+                          } else {
+                            // Regular text
+                            return <p key={i}>{line}</p>;
+                          }
+                        })}
+                        
+                        {/* Process nutrient table */}
+                        {message.content.includes('**Nutrient**|**Amount**') && (
+                          <div className="overflow-x-auto my-3">
+                            <table className="min-w-full bg-white/10 border border-gray-600 rounded">
+                              <thead>
+                                <tr>
+                                  <th className="py-2 px-4 border-b border-gray-600 text-left font-medium">Nutrient</th>
+                                  <th className="py-2 px-4 border-b border-gray-600 text-left font-medium">Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {message.content.split('\n')
+                                  .filter(line => line.includes('|') && !line.startsWith('**') && 
+                                          !line.includes('---') && 
+                                          !line.includes('Metric') && 
+                                          !line.includes('Glycemic') && 
+                                          !line.includes('Inflammatory') && 
+                                          !line.includes('Heart Health') && 
+                                          !line.includes('Digestive') && 
+                                          !line.includes('Meal Balance'))
+                                  .map((row, rowIndex) => (
+                                    <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-black/20' : ''}>
+                                      {row.split('|').map((cell, cellIndex) => (
+                                        <td key={cellIndex} className="py-2 px-4 border-t border-gray-600">{cell.trim()}</td>
+                                      ))}
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                        
+                        {/* Process metrics table */}
+                        {message.content.includes('**Metric**|**Score**') && (
+                          <div className="overflow-x-auto my-3">
+                            <table className="min-w-full bg-white/10 border border-gray-600 rounded mb-4">
+                              <thead>
+                                <tr>
+                                  <th className="py-2 px-4 border-b border-gray-600 text-left font-medium">Metric</th>
+                                  <th className="py-2 px-4 border-b border-gray-600 text-left font-medium">Score</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {message.content.split('\n')
+                                  .filter(line => line.includes('|') && 
+                                          (line.includes('Glycemic') || 
+                                           line.includes('Inflammatory') || 
+                                           line.includes('Heart Health') || 
+                                           line.includes('Digestive') || 
+                                           line.includes('Meal Balance')))
+                                  .map((row, rowIndex) => (
+                                    <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-black/20' : ''}>
+                                      {row.split('|').map((cell, cellIndex) => (
+                                        <td key={cellIndex} className="py-2 px-4 border-t border-gray-600">{cell.trim()}</td>
+                                      ))}
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
                       {message.image && (
                         <div className="message-image-container">
                           <img 
@@ -832,14 +1203,15 @@ ${(data.recommended_recipes || []).map(recipe => `- ${recipe}`).join('\n')}`;
                       )}
                     </>
                   )}
-                  {message.type === "bot" && 
-                   message.content === "Would you like to view this meal in your dashboard?" && (
-                    <Button
-                      onClick={handleViewInDashboard}
-                      className="mt-4 bg-primary text-white hover:bg-primary/90"
-                    >
-                      View in Dashboard
-                    </Button>
+                  {message.content === "Would you like to view this meal in your dashboard?" && (
+                    <div className="mt-2">
+                      <Button
+                        onClick={handleViewInDashboard}
+                        className="bg-primary text-white hover:bg-primary/90"
+                      >
+                        View in Dashboard
+                      </Button>
+                    </div>
                   )}
                 </div>
                 <div className="message-timestamp">

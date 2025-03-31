@@ -64,6 +64,8 @@ body {
 @media (min-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto auto;
+    align-items: start;
   }
 }
 
@@ -71,17 +73,138 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: 100%;
 }
 
 .dashboard-main {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: 100%;
 }
 
 .dashboard-card {
   padding: 1.5rem;
   backdrop-filter: blur(12px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Meal Diary and Saved Recipes specific styles */
+.dashboard-main .dashboard-card {
+  flex: 1;
+  min-height: 0; /* Important for nested scrolling */
+}
+
+.meal-diary-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.saved-recipes-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 8px;
+}
+
+/* Update the empty states to fill available space */
+.empty-recipes-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgb(161, 161, 170);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  justify-content: center;
+}
+
+/* Ensure the meal cards and recipe cards fill available space */
+.meal-card, .recipe-card {
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.meal-card:last-child, .recipe-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Update the saved recipes grid to fill available space */
+.saved-recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 0.5rem;
+  height: auto;
+}
+
+/* Ensure the supplement form container doesn't overflow */
+.supplement-form-container {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+/* Update the health scores container */
+.dashboard-health-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+/* Update the micronutrient balance section */
+.dashboard-micronutrient-balance {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+/* Ensure the progress circles container fills space */
+.dashboard-macros-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Update responsive breakpoints */
+@media (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-sidebar,
+  .dashboard-main {
+    height: auto;
+  }
+  
+  .dashboard-card {
+    height: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .dashboard-macros-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .saved-recipes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-macros-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .dashboard-streak {
@@ -92,30 +215,6 @@ body {
   color: rgb(253, 224, 71);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-}
-
-.dashboard-macros-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .dashboard-macros-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1280px) {
-  .dashboard-macros-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.dashboard-health-scores {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .dashboard-supplements-list {
@@ -179,6 +278,10 @@ body {
   stroke-linecap: round;
 }
 
+.progress-circle circle.exceeded {
+  stroke: rgb(239, 68, 68); /* Red color for exceeded values */
+}
+
 /* Health Score Bar Styles */
 .health-score-bar {
   width: 100%;
@@ -194,13 +297,22 @@ body {
   transition: width 0.3s ease;
 }
 
-/* Micronutrient Balance Styles for Dashboard */
-.dashboard-micronutrient-balance {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+.health-score-bar-fill.exceeded {
+  background-color: rgb(239, 68, 68); /* Red color for exceeded values */
 }
 
+/* Calories Bar Styles */
+.calories-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.calories-bar.exceeded {
+  background-color: rgb(239, 68, 68); /* Red color for exceeded values */
+}
+
+/* Micronutrient Balance Styles for Dashboard */
 .dashboard-micronutrient-balance-header {
   display: flex;
   justify-content: space-between;
@@ -405,12 +517,6 @@ body {
   color: rgb(34, 197, 94);
 }
 
-.saved-recipes-container {
-  max-height: 800px;
-  overflow-y: auto;
-  padding-right: 8px;
-}
-
 .saved-recipes-container::-webkit-scrollbar {
   width: 6px;
 }
@@ -422,16 +528,6 @@ body {
 
 .saved-recipes-container::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
-}
-
-.empty-recipes-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: rgb(161, 161, 170);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
 }
 
 .empty-recipes-state .heart-icon {
@@ -456,13 +552,6 @@ body {
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   padding: 0.5rem;
-}
-
-.supplement-form-container {
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-  max-height: 0;
-  opacity: 0;
 }
 
 .supplement-form-container.show {
@@ -692,4 +781,53 @@ body {
 
 .calendar-day-selected:hover {
   background: #16a34a;
+}
+
+/* Info Icon Button Styles */
+.info-icon-button {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.info-icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tooltip Styles */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
+}
+
+[data-radix-popper-content-wrapper] > div {
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="left"] {
+  margin-right: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="right"] {
+  margin-left: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="top"] {
+  margin-bottom: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="bottom"] {
+  margin-top: 8px;
 }

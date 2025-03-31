@@ -523,3 +523,52 @@
     0 0 15px rgba(0, 0, 0, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+
+/* Add styles for the grocery stores section */
+.grocery-stores-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+}
+
+.grocery-stores-section h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.grocery-stores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.grocery-store-link {
+  display: block;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 15px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.grocery-store-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}

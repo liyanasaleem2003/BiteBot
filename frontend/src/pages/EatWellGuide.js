@@ -182,13 +182,13 @@ export default function EatWellGuide() {
       <Navbar />
       <div className="eatwell-content">
         <div className="eatwell-title-section">
-          <h1 className="eatwell-title">The South Asian EatWell Guide</h1>
+          <h1 className="eatwell-title">The NHS South Asian EatWell Guide</h1>
         </div>
 
         <div className="guide-container">
           <div className="guide-left-column">
             <div className="pie-chart-section">
-              <h2 className="pie-chart-title">A Balanced Plate</h2>
+              <h2 className="pie-chart-title">A Balanced Day's Worth of Eating</h2>
               
               <div className="pie-chart-note">
                 These are general % recommendations, the exact proportions may vary day-to-day while still maintaining overall balance

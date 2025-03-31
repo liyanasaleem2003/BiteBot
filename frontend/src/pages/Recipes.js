@@ -418,6 +418,26 @@ export default function Recipes() {
           </div>
         </main>
       </div>
+
+      {/* Grocery Stores Section */}
+      <div className="grocery-stores-bar">
+        <h3>Find your Desi Groceries Online at:</h3>
+        <div className="grocery-stores-links">
+          <a href="https://desicart.co.uk/" target="_blank" rel="noopener noreferrer">Desicart</a>
+          <a href="https://www.lakshmistores.com/" target="_blank" rel="noopener noreferrer">Lakshmi Stores</a>
+          <a href="https://veenas.com/" target="_blank" rel="noopener noreferrer">Veenas</a>
+          <a href="https://itsconv.co.uk/" target="_blank" rel="noopener noreferrer">Its Convenience</a>
+          <a href="https://banglasupermarket.co.uk/" target="_blank" rel="noopener noreferrer">Bangla Supermarket</a>
+          <a href="https://myjam.co.uk/collections/indian-pakistani-grocery" target="_blank" rel="noopener noreferrer">MyJam</a>
+          <a href="https://happiroo.co.uk/" target="_blank" rel="noopener noreferrer">Happiroo</a>
+          <a href="https://zingoxfoods.co.uk/collections/nationwide-delivery/pakistani-grocery-uk" target="_blank" rel="noopener noreferrer">Zingox Foods</a>
+          <a href="https://www.thehalalfoodshop.com/" target="_blank" rel="noopener noreferrer">The Halal Food Shop</a>
+          <a href="https://greenoranges.co.uk/" target="_blank" rel="noopener noreferrer">Green Oranges</a>
+          <a href="https://www.masalabazaar.co.uk/" target="_blank" rel="noopener noreferrer">Masala Bazaar</a>
+          <a href="https://www.redrickshaw.com/" target="_blank" rel="noopener noreferrer">Red Rickshaw</a>
+          <a href="https://bombaybasket.co.uk/" target="_blank" rel="noopener noreferrer">Bombay Basket</a>
+        </div>
+      </div>
     </div>
   );
 }

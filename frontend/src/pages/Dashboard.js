@@ -147,7 +147,16 @@ const defaultHealthScores = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Initialize current date state
+  const [currentDate, setCurrentDate] = useState(() => {
+    // Check if there's a selected date in localStorage from meal logging
+    const savedDate = localStorage.getItem('selectedDashboardDate');
+    if (savedDate) {
+      console.log('Using saved date from localStorage:', savedDate);
+      return new Date(savedDate);
+    }
+    return new Date();
+  });
   const [showAddSupplement, setShowAddSupplement] = useState(false);
   const [newSupplementName, setNewSupplementName] = useState("");
   const [newSupplementDose, setNewSupplementDose] = useState("");
@@ -163,6 +172,9 @@ export default function Dashboard() {
   const [nutritionalNeeds, setNutritionalNeeds] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
+
+  // Add state for priority micronutrients
+  const [priorityMicronutrients, setPriorityMicronutrients] = useState([]);
 
   // Fetch user profile and nutritional needs
   useEffect(() => {
@@ -194,6 +206,10 @@ export default function Dashboard() {
           } else {
             console.log("No nutritional needs found in profile data"); // Debug log
           }
+          // Set priority micronutrients from profile
+          if (data.profile?.priority_micronutrients) {
+            setPriorityMicronutrients(data.profile.priority_micronutrients);
+          }
         } else if (response.status === 401) {
           console.log("Unauthorized - clearing token"); // Debug log
           localStorage.removeItem("token");
@@ -223,6 +239,12 @@ export default function Dashboard() {
         if (lastFetchedDate === currentDate.toISOString().split('T')[0]) {
           console.log('Already have meals for this date, skipping fetch');
           return;
+        }
+        
+        // Clear any existing selectedDashboardDate in localStorage after we've used it
+        if (localStorage.getItem('selectedDashboardDate')) {
+          console.log('Clearing selectedDashboardDate from localStorage after use');
+          localStorage.removeItem('selectedDashboardDate');
         }
         
         // Check for refresh parameter in URL
@@ -323,8 +345,8 @@ export default function Dashboard() {
       console.log(`Fetching meals for date: ${formattedDate}`);
       
       // Check if the selected date is today
-      const today = new Date().toISOString().split('T')[0];
-      const isToday = formattedDate === today;
+      const today = new Date();
+      const isToday = formattedDate === today.toISOString().split('T')[0];
       
       // If not today, return placeholder meals with adjusted dates
       if (!isToday) {
@@ -397,11 +419,11 @@ export default function Dashboard() {
               sodium: meal.macronutrients?.sodium || 0
             },
             healthScores: {
-              glycemic: meal.scores?.glycemic_index || 0,
+              glycemic: meal.scores?.glycemic_index || meal.scores?.glycemic || 0,
               inflammatory: meal.scores?.inflammatory || 0,
-              heart: meal.scores?.heart_health || 0,
+              heart: meal.scores?.heart_health || meal.scores?.heart || 0,
               digestive: meal.scores?.digestive || 0,
-              balance: meal.scores?.meal_balance || 0
+              balance: meal.scores?.meal_balance || meal.scores?.balance || 0
             },
             micronutrient_balance: {
               score: meal.micronutrient_balance?.score || 0,
@@ -439,11 +461,11 @@ export default function Dashboard() {
                 sodium: parsedMeal.macronutrients?.sodium || 0
               },
               healthScores: {
-                glycemic: parsedMeal.scores?.glycemic_index || 0,
+                glycemic: parsedMeal.scores?.glycemic_index || parsedMeal.scores?.glycemic || 0,
                 inflammatory: parsedMeal.scores?.inflammatory || 0,
-                heart: parsedMeal.scores?.heart_health || 0,
+                heart: parsedMeal.scores?.heart_health || parsedMeal.scores?.heart || 0,
                 digestive: parsedMeal.scores?.digestive || 0,
-                balance: parsedMeal.scores?.meal_balance || 0
+                balance: parsedMeal.scores?.meal_balance || parsedMeal.scores?.balance || 0
               },
               micronutrient_balance: {
                 score: parsedMeal.micronutrient_balance?.score || 0,
@@ -553,7 +575,7 @@ export default function Dashboard() {
     return 0;
   };
 
-  // Update the ProgressCircle component to handle empty state
+  // Update the ProgressCircle component to handle exceeded values
   const ProgressCircle = ({ current, nutrientType, label }) => {
     const goal = getNutrientGoal(nutrientType);
     const unit = getNutrientUnit(nutrientType);
@@ -566,6 +588,7 @@ export default function Dashboard() {
     const radius = 40;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
+    const isExceeded = currentValue > goalValue;
     
     return (
       <div className="flex flex-col items-center justify-center">
@@ -583,7 +606,7 @@ export default function Dashboard() {
               cx="50"
               cy="50"
               r={radius}
-              stroke="#9d5e26"
+              stroke={isExceeded ? "rgb(239, 68, 68)" : "#9d5e26"}
               strokeWidth="12"
               fill="transparent"
               strokeDasharray={circumference}
@@ -594,7 +617,7 @@ export default function Dashboard() {
           </svg>
           
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-2xl font-bold">{currentValue}</span>
+            <span className={`text-2xl font-bold ${isExceeded ? "text-red-500" : ""}`}>{currentValue}</span>
             <span className="text-xs text-zinc-400">{unit}</span>
           </div>
         </div>
@@ -684,9 +707,22 @@ export default function Dashboard() {
     }
   };
 
+  // Update the getDayLoggedStreak function to check for meals today
   const getDayLoggedStreak = () => {
-    // This would be calculated based on user's history
-    return 15;
+    const today = new Date();
+    const isToday = currentDate.toDateString() === today.toDateString();
+    if (isToday) {
+      // If there are meals logged today, return 1, otherwise 0
+      return userMeals.length > 0 ? 1 : 0;
+    }
+    return 15; // Return 15 for other days
+  };
+
+  // Update the supplements display for today
+  const displaySupplements = () => {
+    const today = new Date();
+    const isToday = currentDate.toDateString() === today.toDateString();
+    return isToday ? [] : userSupplements; // Return empty array for today, normal supplements for other days
   };
 
   const handleToggleMeal = (mealId) => {
@@ -745,24 +781,25 @@ export default function Dashboard() {
     );
   };
 
-  // Update the CaloriesBar component to handle empty state
+  // Update the CaloriesBar component to handle exceeded values
   const CaloriesBar = ({ current, goal }) => {
     const percentage = Math.min((current / goal) * 100, 100);
+    const isExceeded = current > goal;
     
     return (
       <div className="w-full mb-6">
         <div className="flex justify-between mb-2">
           <div>
             <h3 className="text-lg font-semibold">Calories</h3>
-            <p className="text-sm text-zinc-400">{current} / {goal} kcal</p>
+            <p className={`text-sm ${isExceeded ? "text-red-500" : "text-zinc-400"}`}>{current} / {goal} kcal</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-semibold">{Math.round(percentage)}%</p>
+            <p className={`text-lg font-semibold ${isExceeded ? "text-red-500" : ""}`}>{Math.round(percentage)}%</p>
           </div>
         </div>
         <div className="h-4 bg-black/30 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[#9d5e26] rounded-full transition-all duration-300"
+            className={`h-full rounded-full transition-all duration-300 ${isExceeded ? "bg-red-500" : "bg-[#9d5e26]"}`}
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -817,6 +854,63 @@ export default function Dashboard() {
     }
     
     return processedTags;
+  };
+
+  // Update the getHealthScores function to calculate scores from meals
+  const getHealthScores = () => {
+    const today = new Date();
+    const isToday = currentDate.toDateString() === today.toDateString();
+    
+    if (isToday && userMeals.length > 0) {
+      // Calculate average scores from today's meals
+      const scores = userMeals.reduce((acc, meal) => {
+        if (meal.healthScores) {
+          acc.glycemic += meal.healthScores.glycemic || 0;
+          acc.inflammatory += meal.healthScores.inflammatory || 0;
+          acc.heart += meal.healthScores.heart || 0;
+          acc.digestive += meal.healthScores.digestive || 0;
+          acc.balance += meal.healthScores.balance || 0;
+        }
+        return acc;
+      }, { glycemic: 0, inflammatory: 0, heart: 0, digestive: 0, balance: 0 });
+
+      // Calculate averages
+      const mealCount = userMeals.length;
+      return [
+        { 
+          score: Math.round(scores.glycemic / mealCount), 
+          label: "Glycemic Index", 
+          info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", 
+          colorScale: "lowGood" 
+        },
+        { 
+          score: Math.round(scores.inflammatory / mealCount), 
+          label: "Inflammatory Score", 
+          info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", 
+          colorScale: "lowGood" 
+        },
+        { 
+          score: Math.round(scores.heart / mealCount), 
+          label: "Heart Health Score", 
+          info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", 
+          colorScale: "highGood" 
+        },
+        { 
+          score: Math.round(scores.digestive / mealCount), 
+          label: "Digestive Score", 
+          info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", 
+          colorScale: "highGood" 
+        },
+        { 
+          score: Math.round(scores.balance / mealCount), 
+          label: "Meal Balance Score", 
+          info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", 
+          colorScale: "highGood" 
+        }
+      ];
+    }
+    
+    return defaultHealthScores;
   };
 
   // Add loading state display
@@ -945,6 +1039,7 @@ export default function Dashboard() {
                   <span className="text-sm font-medium">{getDayLoggedStreak()} Days Logged</span>
                 </div>
               </div>
+              <p className="text-sm text-zinc-400 mt-2">Track your daily nutrition and health scores to monitor your progress.</p>
             </Card>
 
             {/* Macronutrient Progress */}
@@ -1012,8 +1107,10 @@ export default function Dashboard() {
                 <h2 className="text-lg font-semibold text-white">Health Scores</h2>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="h-4 w-4 text-zinc-400 hover:text-zinc-300" />
+                    <TooltipTrigger asChild>
+                      <button className="info-icon-button">
+                        <Info className="h-4 w-4 text-zinc-400 hover:text-zinc-300" />
+                      </button>
                     </TooltipTrigger>
                     <TooltipContent 
                       side="left"
@@ -1026,15 +1123,9 @@ export default function Dashboard() {
                 </TooltipProvider>
               </div>
               <div className="dashboard-health-scores">
-                {userMeals.length > 0 ? (
-                  healthScores.map((score, index) => (
-                    <HealthScoreBar key={index} {...score} />
-                  ))
-                ) : (
-                  defaultHealthScores.map((score, index) => (
-                    <HealthScoreBar key={index} {...score} />
-                  ))
-                )}
+                {getHealthScores().map((score, index) => (
+                  <HealthScoreBar key={index} {...score} />
+                ))}
               </div>
 
               {/* Micronutrient Balance Section */}
@@ -1076,46 +1167,45 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="dashboard-micronutrient-balance-details">
-                  {userMeals.length > 0 && userProfile?.profile?.priority_micronutrients && 
-                   userProfile.profile.priority_micronutrients.length > 0 ? (
-                    // Filter to only show the user's priority micronutrients
-                    userMeals[0].micronutrient_balance?.priority_nutrients
-                      .filter(nutrient => 
-                        userProfile.profile.priority_micronutrients.some(
-                          pn => pn.toLowerCase().replace(" ", "_") === nutrient.name.toLowerCase().replace(" ", "_")
-                        )
-                      )
-                      .map((nutrient, index) => (
-                        <div key={index} className="dashboard-micronutrient-balance-item">
-                          <div className="dashboard-micronutrient-balance-item-name">
-                            <span>{nutrient.name}</span>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <HelpCircle className="help-icon" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <div className="dashboard-micronutrient-tooltip">
-                                    Percentage of daily recommended intake for {nutrient.name}.
-                                  </div>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <div className="dashboard-micronutrient-balance-item-value">
-                            <span>{Math.round(nutrient.percentage)}%</span>
-                            <div className="dashboard-micronutrient-balance-item-bar">
-                              <div 
-                                className={`dashboard-micronutrient-balance-item-progress ${
-                                  nutrient.percentage >= 70 ? 'good' :
-                                  nutrient.percentage >= 40 ? 'warning' : 'poor'
-                                }`}
-                                style={{ width: `${Math.min(nutrient.percentage, 100)}%` }}
-                              />
-                            </div>
+                  {priorityMicronutrients.length > 0 ? (
+                    priorityMicronutrients.map((nutrient, index) => (
+                      <div key={index} className="dashboard-micronutrient-balance-item">
+                        <div className="dashboard-micronutrient-balance-item-name">
+                          <span>{getMicronutrientLabel(nutrient)}</span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <HelpCircle className="help-icon" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <div className="dashboard-micronutrient-tooltip">
+                                  {micronutrientOptions.find(n => n.id === nutrient)?.description || 
+                                   `Percentage of daily recommended intake for ${getMicronutrientLabel(nutrient)}.`}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <div className="dashboard-micronutrient-balance-item-value">
+                          <span>{userMeals.length > 0 ? 
+                            `${Math.round(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length)}%` 
+                            : '0%'}</span>
+                          <div className="dashboard-micronutrient-balance-item-bar">
+                            <div 
+                              className={`dashboard-micronutrient-balance-item-progress ${
+                                userMeals.length > 0 && 
+                                (userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 70 ? 'good' :
+                                userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 40 ? 'warning' : 'poor')
+                              }`}
+                              style={{ 
+                                width: `${userMeals.length > 0 ? 
+                                  Math.min(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length, 100) : 0}%` 
+                              }}
+                            />
                           </div>
                         </div>
-                      ))
+                      </div>
+                    ))
                   ) : (
                     <div className="dashboard-micronutrient-balance-empty">
                       <span>No priority micronutrients set in your profile</span>
@@ -1137,15 +1227,19 @@ export default function Dashboard() {
                   </Button>
                 </div>
                 <div className="mt-2 text-sm">
-                  {userProfile?.profile?.priority_micronutrients?.map((nutrientId) => (
-                    <Badge 
-                      key={nutrientId} 
-                      variant="outline" 
-                      className="mr-1 bg-black/30 border-zinc-700 text-zinc-300"
-                    >
-                      {getMicronutrientLabel(nutrientId)}
-                    </Badge>
-                  ))}
+                  {priorityMicronutrients.length > 0 ? (
+                    priorityMicronutrients.map((nutrient) => (
+                      <Badge 
+                        key={nutrient} 
+                        variant="outline" 
+                        className="mr-1 bg-black/30 border-zinc-700 text-zinc-300"
+                      >
+                        {getMicronutrientLabel(nutrient)}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-zinc-500">No priority micronutrients set</span>
+                  )}
                 </div>
               </div>
             </Card>
@@ -1198,7 +1292,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                {userSupplements.map((supplement, index) => (
+                {displaySupplements().map((supplement, index) => (
                   <div key={index} className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700">
                     <Pill className="h-4 w-4 text-zinc-400" />
                     <span className="ml-3 text-zinc-300">{supplement.name}</span>
@@ -1214,7 +1308,7 @@ export default function Dashboard() {
             {/* Meal Diary */}
             <Card className="dashboard-card bg-black/50 border-zinc-700">
               <h2 className="text-lg font-semibold mb-4 text-white">Meal Diary</h2>
-              <div className="space-y-2">
+              <div className="meal-diary-container">
                 {userMeals.length > 0 ? (
                   userMeals.map((meal) => (
                     <MealCard 

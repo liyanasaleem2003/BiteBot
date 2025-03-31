@@ -60,7 +60,9 @@ export function RecipeCard({
             src={image} 
             alt={title} 
             className="recipe-image" 
-            onError={(e) => e.target.style.display = 'none'} 
+            onError={(e) => {
+              e.target.src = 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80';
+            }}
           />
           <div className="recipe-image-overlay">
             <button 
@@ -86,11 +88,9 @@ export function RecipeCard({
           <div className="recipe-details">
             <div className="recipe-info">
               <Clock className="icon" /> {timeInMinutes}m
-              <span><span className="pound-sign">£</span> {pricePerPortion}</span>
+              <span><span className="pound-sign">£</span>{pricePerPortion}</span>
               <span className="spice-level">
-                {Array(spiceLevel).fill(0).map((_, i) => (
-                  <span key={i} className="chili">🌶️</span>
-                ))}
+                {Array(spiceLevel).fill("🌶️").join("")}
               </span>
               <Badge className="cultural-style">{culturalStyle}</Badge>
             </div>
@@ -98,19 +98,19 @@ export function RecipeCard({
 
           <div className="nutrition-info">
             <div className="nutrition-left">
-              <p><strong>Calories:</strong> {nutrition.calories}</p>
-              <p><strong>Carbs:</strong> {nutrition.carbs}g</p>
-              <p><strong>Fiber:</strong> {nutrition.fiber}g</p>
+              <p><strong>Calories:</strong> {nutrition?.calories || 0}</p>
+              <p><strong>Carbs:</strong> {nutrition?.carbs || 0}g</p>
+              <p><strong>Fiber:</strong> {nutrition?.fiber || 0}g</p>
             </div>
             <div className="nutrition-right">
-              <p><strong>Protein:</strong> {nutrition.protein}g</p>
-              <p><strong>Fat:</strong> {nutrition.fat}g</p>
+              <p><strong>Protein:</strong> {nutrition?.protein || 0}g</p>
+              <p><strong>Fat:</strong> {nutrition?.fat || 0}g</p>
               <p className="portion-info">*Per Portion*</p>
             </div>
           </div>
 
           <div className="recipe-tags">
-            {healthBenefits.map((benefit, index) => (
+            {healthBenefits?.map((benefit, index) => (
               <Badge key={index} className="health-badge">{benefit}</Badge>
             ))}
           </div>

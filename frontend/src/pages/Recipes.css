@@ -143,14 +143,14 @@
 /* Recipe Grid */
 .recipes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 360px);
   gap: 25px;
   width: 100%;
   padding: 10px;
   padding-top: 0;
   overflow-y: auto;
   max-height: calc(85vh - 140px);
-  justify-items: center;
+  justify-content: center;
 }
 
 /* Filter Groups */
@@ -211,8 +211,9 @@
 
 /* Recipe Card Styling */
 .recipe-card {
-  width: flex;
-  height: 500px;
+  width: 360px !important;
+  height: 540px !important;
+  margin: 0 !important;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -220,6 +221,9 @@
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 
               0 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
 }
 
 .recipe-card:hover {
@@ -237,7 +241,12 @@
   }
   
   .recipes-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 340px);
+  }
+  
+  .recipe-card {
+    width: 340px !important;
+    height: 520px !important;
   }
 }
 
@@ -283,13 +292,98 @@
   }
 
   .recipes-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, 320px);
     gap: 20px;
     padding: 5px;
+  }
+  
+  .recipe-card {
+    width: 320px !important;
+    height: 500px !important;
   }
 
   .sidebar {
     max-width: 100%;
+  }
+}
+
+/* Grocery Stores Bar */
+.grocery-stores-bar {
+  width: 100%;
+  max-width: 1800px;
+  margin: 20px auto;
+  padding: 20px 30px;
+  background: rgba(9, 9, 9, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.grocery-stores-bar h3 {
+  color: white;
+  font-size: 18px;
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grocery-stores-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0;
+}
+
+.grocery-stores-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  padding: 0 12px;
+  position: relative;
+}
+
+.grocery-stores-links a:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 12px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.grocery-stores-links a:hover {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .grocery-stores-bar {
+    padding: 15px;
+    gap: 12px;
+  }
+
+  .grocery-stores-bar h3 {
+    font-size: 16px;
+    padding-bottom: 8px;
+  }
+
+  .grocery-stores-links {
+    gap: 8px;
+  }
+
+  .grocery-stores-links a {
+    font-size: 12px;
+    padding: 0 8px;
   }
 }
 
