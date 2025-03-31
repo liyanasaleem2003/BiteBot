@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # CORS settings
     CORS_ORIGINS: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
     
+    # API Base URL for frontend requests
+    API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
+    
     class Config:
         env_file = ".env"
 

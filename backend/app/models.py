@@ -98,7 +98,7 @@ class TokenData(BaseModel):
 class MealCreate(BaseModel):
     meal_name: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    date: str
+    date: Optional[str] = Field(default_factory=lambda: datetime.utcnow().strftime("%Y-%m-%d"))
     image_url: Optional[str] = None
     ingredients: List[str] = Field(default_factory=list)
     cooking_method: Optional[str] = None
@@ -108,10 +108,29 @@ class MealCreate(BaseModel):
     health_tags: List[str] = Field(default_factory=list)
     suggestions: List[str] = Field(default_factory=list)
     recommended_recipes: List[str] = Field(default_factory=list)
+    health_benefits: List[str] = Field(default_factory=list)
+    potential_concerns: List[str] = Field(default_factory=list)
+    micronutrient_balance: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 class Meal(MealCreate):
     id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     user_id: PyObjectId
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class ChatHistory(BaseModel):
+    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
+    user_id: PyObjectId
+    title: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    image_url: Optional[str] = None
+    messages: List[Dict[str, Any]] = Field(default_factory=list)
+    meal_analysis: Optional[Dict[str, Any]] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         allow_population_by_field_name = True

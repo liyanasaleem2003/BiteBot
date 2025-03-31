@@ -1,11 +1,13 @@
-import openai
-import os
-import json
-from dotenv import load_dotenv
+import asyncio
 import base64
+import json
+import os
+import re
+from dotenv import load_dotenv
 from typing import Dict, Any, List
 import httpx
 from app.config import settings
+import openai
 
 # Load environment variables
 load_dotenv()
@@ -229,39 +231,74 @@ async def analyze_meal_image(image_content: bytes) -> Dict[str, Any]:
         image_base64 = base64.b64encode(image_content).decode('utf-8')
         print("Image converted to base64 successfully")
         
-        # First prompt: Detect ingredients
+        # First prompt: Detect ingredients and estimate proportions
         initial_prompt = """
-        Look at this meal image and list all visible ingredients. Focus on:
-        1. Main ingredients
-        2. Vegetables
-        3. Proteins
-        4. Grains
-        5. Any visible spices or herbs
+        You are a friendly and knowledgeable nutritionist having a conversation with a user about their meal. Look at this meal image and engage in a natural dialogue to understand more about it.
+
+        First, identify ALL ingredients you can see in the image, including:
+        1. Main components (rice, pasta, bread, meat, etc.)
+        2. Vegetables and fruits
+        3. Spices and herbs (be specific - look for mustard seeds, cilantro, basil, etc.)
+        4. Sauces and condiments
+        5. Garnishes and toppings
         
-        Return ONLY a JSON object with the following structure (no markdown formatting):
+        Pay special attention to small but important ingredients like:
+        - Spices (mustard seeds, cumin seeds, cardamom, cloves)
+        - Fresh herbs (cilantro, mint, basil, parsley)
+        - Garnishes (lemon wedges, chopped nuts)
+        - Oils used (ghee, olive oil, sesame oil)
+        
+        For each ingredient, provide an approximate portion size using these guidelines:
+        - For main components (rice, pasta, proteins): Estimate in cups (e.g., "1 cup rice", "1/2 cup chicken")
+        - For vegetables: Estimate in cups or tablespoons (e.g., "1/2 cup green beans", "2 tbsp onions")
+        - For spices and herbs: Estimate in teaspoons or as garnish (e.g., "1/4 tsp mustard seeds", "cilantro garnish")
+        - For oils and sauces: Estimate in tablespoons or teaspoons (e.g., "1 tbsp olive oil", "2 tsp sauce")
+        
+        Use standard nutritional serving sizes as a reference:
+        - 1 cup of rice/pasta = ~200g
+        - 1 cup of vegetables = ~100g
+        - 1 serving of protein = ~85g (3oz)
+        - 1 tablespoon of oil = ~15g
+        
+        Be as detailed as possible in your assessment. Then, ask relevant questions to gather more information about the meal. Your questions should be conversational and specific to what you observe.
+
+        For example, if you see a curry, you might say:
+        "I can see this is a curry dish with approximately 1 cup of rice, 1/2 cup of vegetable curry, and I notice mustard seeds (about 1/4 tsp) and cilantro garnish. Could you tell me what type of curry sauce was used? Was it made with coconut milk, tomato base, or something else?"
+
+        Or if you see a salad:
+        "This looks like a fresh salad! I can see about 2 cups of mixed greens, 1/4 cup of cherry tomatoes, approximately 3oz of grilled chicken, and what appears to be about 2 tbsp of dressing. I notice some herbs like cilantro or parsley (about 1 tsp). What type of dressing did you use on this?"
+
+        Return a JSON object with the following structure:
         {
-            "detected_ingredients": ["ingredient1", "ingredient2", ...],
+            "detected_ingredients": [{"name": "ingredient1", "portion": "approximate amount in standard measurements"}, ...],
             "confidence_level": "high/medium/low",
+            "meal_type": "breakfast/lunch/dinner/snack/dessert",
             "clarifying_questions": [
                 {
                     "category": "preparation",
-                    "question": "How was this meal prepared? Please specify:",
-                    "sub_questions": [
-                        "What cooking method was used? (e.g., boiled, fried, roasted, etc.)",
-                        "What type and amount of oil/fat was used? (e.g., 1 tbsp olive oil, 2 tsp butter, etc.)",
-                        "What is the serving size? (e.g., 1 cup, 2 pieces, 100g, etc.)"
-                    ]
+                    "question": "A natural, conversational question about the meal",
+                    "validation_rules": {
+                        "required_terms": ["term1", "term2"],
+                        "excluded_terms": ["term1", "term2"],
+                        "format": "amount_unit"
+                    }
                 }
             ]
         }
 
-        Important:
-        1. Only ask follow-up questions about preparation method, oil/fat used, and serving size
-        2. Keep the conversation focused and limit to 3-4 total questions
-        3. If the user provides a vague answer (e.g., just saying "potato" or "oil"), ask them to be more specific about:
-           - For ingredients: the type/variety (e.g., russet potato, sweet potato)
-           - For oils: the type and amount (e.g., 1 tbsp olive oil, 2 tsp butter)
-           - For serving sizes: the specific amount (e.g., 1 cup, 100g)
+        Guidelines for questions:
+        1. Make questions conversational and specific to what you observe
+        2. Focus on preparation methods, types of oils or dals, and significant nutritional factors
+        3. Combine related questions into single queries (e.g., type and amount of oil)
+        4. Limit to 3-4 main questions, prioritizing those with the most impact on nutritional values
+        5. Include a variety of topics such as cooking methods, ingredient types, and portion sizes
+        6. Avoid asking multiple questions about the same topic, like oil, if already covered
+        7. Adapt your questions based on the meal type (snack vs. main meal)
+
+        Example validation rules:
+        - For oil/fat: required_terms=["tbsp", "tsp", "ml"], format="amount_unit"
+        - For serving size: required_terms=["cup", "g", "piece"], format="amount_unit"
+        - For cooking method: required_terms=["fried", "baked", "boiled", "roasted"]
         """
         
         # Prepare the API request
@@ -273,6 +310,10 @@ async def analyze_meal_image(image_content: bytes) -> Dict[str, Any]:
         payload = {
             "model": "chatgpt-4o-latest",
             "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a friendly and knowledgeable nutritionist having a natural conversation with users about their meals. Your responses should be conversational, specific to what you observe, and focused on gathering accurate nutritional information."
+                },
                 {
                     "role": "user",
                     "content": [
@@ -299,49 +340,108 @@ async def analyze_meal_image(image_content: bytes) -> Dict[str, Any]:
         print(f"Request URL: https://api.openai.com/v1/chat/completions")
         print(f"Request payload: {json.dumps(payload, indent=2)}")
         
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            try:
-                response = await client.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload
-                )
-                
-                print(f"Response status code: {response.status_code}")
-                print(f"Response headers: {response.headers}")
-                
-                if response.status_code != 200:
-                    error_text = response.text
-                    print(f"GPT API error: {error_text}")
-                    raise Exception(f"GPT API error: {error_text}")
-                
-                result = response.json()
-                content = result["choices"][0]["message"]["content"]
-                print(f"Received response from ChatGPT-4o: {content}")
-                
-                # Clean up the response by removing markdown code block markers
-                content = content.strip()
-                if content.startswith("```json"):
-                    content = content[7:]
-                if content.endswith("```"):
-                    content = content[:-3]
-                content = content.strip()
-                
-                # Parse the JSON response
+        async with httpx.AsyncClient(timeout=60.0) as client:  # 60 second timeout
+            max_retries = 3
+            retry_delay = 1
+            
+            for attempt in range(max_retries):
                 try:
-                    initial_analysis = json.loads(content)
-                    print("Successfully parsed JSON response")
-                    return initial_analysis
-                except json.JSONDecodeError as e:
-                    print(f"Error parsing GPT response as JSON: {str(e)}")
-                    print(f"Raw response: {content}")
-                    raise Exception(f"Failed to parse GPT response as JSON: {str(e)}")
+                    response = await client.post(
+                        "https://api.openai.com/v1/chat/completions",
+                        headers=headers,
+                        json=payload,
+                    )
                     
-            except httpx.RequestError as e:
-                print(f"HTTP request error: {str(e)}")
-                print(f"Request details: URL=https://api.openai.com/v1/chat/completions, Headers={headers}")
-                raise Exception(f"HTTP request failed: {str(e)}")
+                    print(f"Response status code: {response.status_code}")
+                    print(f"Response headers: {response.headers}")
+                    
+                    if response.status_code != 200:
+                        error_text = response.text
+                        print(f"GPT API error: {error_text}")
+                        raise Exception(f"GPT API error: {error_text}")
+                    
+                    result = response.json()
+                    content = result["choices"][0]["message"]["content"]
+                    print(f"Received response from ChatGPT-4o: {content}")
+                    
+                    # Extract JSON from the response
+                    try:
+                        # Look for JSON content between ```json and ``` markers
+                        import re
+                        json_match = re.search(r'```json\s*(.*?)\s*```', content, re.DOTALL)
+                        
+                        if json_match:
+                            # Extract just the JSON part
+                            json_content = json_match.group(1).strip()
+                            print(f"Extracted JSON content: {json_content}")
+                            try:
+                                initial_analysis = json.loads(json_content)
+                                print("Successfully parsed extracted JSON")
+                            except json.JSONDecodeError as e:
+                                print(f"Error parsing extracted JSON: {str(e)}")
+                                raise Exception(f"Failed to parse extracted JSON: {str(e)}")
+                        else:
+                            # If no JSON block is found, try the original parsing approach
+                            print("No JSON code block found, trying alternative parsing methods")
+                            
+                            # Clean up the response by removing markdown code block markers
+                            content = content.strip()
+                            if content.startswith("```json"):
+                                content = content[7:]
+                            if content.endswith("```"):
+                                content = content[:-3]
+                            content = content.strip()
+                            
+                            # Parse the JSON response
+                            try:
+                                # First attempt: direct parsing
+                                initial_analysis = json.loads(content)
+                            except json.JSONDecodeError as e:
+                                print(f"Initial JSON parsing failed: {str(e)}")
+                                print(f"Raw response: {content}")
+                                
+                                # Second attempt: try to extract JSON from the response
+                                try:
+                                    # Look for JSON-like structure between curly braces
+                                    json_match = re.search(r'\{.*\}', content, re.DOTALL)
+                                    if json_match:
+                                        json_str = json_match.group(0)
+                                        print(f"Extracted JSON structure: {json_str}")
+                                        initial_analysis = json.loads(json_str)
+                                    else:
+                                        raise Exception("No JSON structure found in response")
+                                except Exception as e3:
+                                    print(f"Error in final JSON extraction attempt: {str(e3)}")
+                                    raise Exception(f"Failed to parse GPT response as JSON: {str(e)}")
+                    except Exception as e:
+                        print(f"Error extracting or parsing JSON: {str(e)}")
+                        raise Exception(f"Failed to extract or parse JSON from response: {str(e)}")
+
+                    # Extract ingredients from the first response
+                    ingredients_list = []
+                    for ingredient in initial_analysis.get("detected_ingredients", []):
+                        ingredient_name = ingredient.get("name", "")
+                        portion = ingredient.get("portion", "unknown amount")
+                        ingredients_list.append(f"{ingredient_name} ({portion})")
+                    
+                    print("\n=== EXTRACTED INGREDIENTS ===")
+                    print(f"Ingredients: {', '.join(ingredients_list)}")
+                    
+                    return initial_analysis
+                    
+                except (httpx.ReadTimeout, httpx.ConnectTimeout) as e:
+                    if attempt == max_retries - 1:  # Last attempt
+                        print(f"Failed after {max_retries} attempts: {str(e)}")
+                        raise Exception(f"Request timed out after {max_retries} attempts")
+                    else:
+                        print(f"Attempt {attempt + 1} failed, retrying in {retry_delay} seconds...")
+                        await asyncio.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
                 
+                except Exception as e:
+                    print(f"Unexpected error: {str(e)}")
+                    raise Exception(f"HTTP request failed: {str(e)}")
+                    
     except Exception as e:
         print(f"Error in analyze_meal_image: {str(e)}")
         print(f"Error type: {type(e).__name__}")
@@ -353,6 +453,10 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
     Analyze meal details based on conversation history and user profile.
     """
     try:
+        # Extract priority micronutrients from user profile
+        priority_micronutrients = user_profile.get('priority_micronutrients', [])
+        priority_micronutrients_str = ', '.join(priority_micronutrients) if priority_micronutrients else "None specified"
+        
         # Construct a prompt that includes conversation history and user profile
         prompt = f"""
         Based on the following conversation about a meal and the user's profile, provide a detailed nutritional analysis.
@@ -364,34 +468,64 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         - Health Goals: {', '.join(user_profile.get('health_goals', []))}
         - Dietary Preferences: {', '.join(user_profile.get('dietary_preferences', []))}
         - Health Conditions: {', '.join(user_profile.get('personal_health_history', []))}
+        - Priority Micronutrients: {priority_micronutrients_str}
 
         Conversation History:
         {json.dumps(conversation_history, indent=2)}
 
         Please provide a comprehensive analysis in the following JSON format with specific numerical values:
         {{
-            "meal_name": "A descriptive name that includes the main ingredients and cooking style. For example:
-                         - If it's a dal with rice: 'Dal Rice with Vegetables'
-                         - If it's a curry: 'Mixed Vegetable Curry with Dal'
-                         - If it's a soup: 'Lentil Vegetable Soup'
-                         The name should reflect the actual ingredients detected and cooking method used.",
+            "meal_name": "A descriptive name that includes the main ingredients and cooking style",
             "ingredients": ["ingredient1", "ingredient2", ...],
             "cooking_method": "method",
             "serving_size": "size",
-            "calories": number,  # Must be a specific number
-            "protein": number,   # Must be a specific number in grams
-            "carbs": number,     # Must be a specific number in grams
-            "fats": number,      # Must be a specific number in grams
-            "fiber": number,     # Must be a specific number in grams
-            "sugar": number,     # Must be a specific number in grams
-            "sodium": number,    # Must be a specific number in milligrams
-            "health_tags": ["tag1", "tag2", ...],
+            "calories": number,
+            "protein": number,
+            "carbs": number,
+            "fats": number,
+            "fiber": number,
+            "sugar": number,
+            "sodium": number,
+            "health_tags": ["Tag1", "Tag2", "Tag3"],
             "suggestions": ["suggestion1", "suggestion2", ...],
             "recommended_recipes": ["recipe1", "recipe2", ...],
             "macronutrient_split": {{
-                "protein_percentage": number,  # Must be a specific percentage
-                "carbs_percentage": number,    # Must be a specific percentage
-                "fats_percentage": number      # Must be a specific percentage
+                "protein_percentage": number,
+                "carbs_percentage": number,
+                "fats_percentage": number
+            }},
+            "health_benefits": ["benefit1", "benefit2", ...],
+            "potential_concerns": ["concern1", "concern2", ...],
+            "micronutrients": {{
+                "vitamin_a": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "vitamin_c": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_d": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "vitamin_e": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_k": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "vitamin_b1": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_b2": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_b3": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_b6": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "vitamin_b12": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "folate": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "calcium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "iron": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "magnesium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "phosphorus": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "potassium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "zinc": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "copper": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "manganese": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "selenium": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "chromium": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "iodine": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}}
+            }},
+            "micronutrient_balance": {{
+                "score": number,  # Average percentage of daily recommended intake for priority micronutrients
+                "priority_nutrients": [  # List of priority micronutrients and their percentages
+                    {{"name": "nutrient_name", "percentage": number}},
+                    ...
+                ]
             }}
         }}
 
@@ -400,7 +534,30 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         2. Reflect the cooking method used
         3. Be specific to the actual dish (not generic)
         4. Follow common naming conventions for the cuisine
-        5. Be 3-5 words long
+        5. Be 3-6 words long
+        6. Be descriptive enough that someone could understand what the meal is
+        7. Use proper capitalization (capitalize each major word)
+        
+        For health_tags:
+        1. Provide ONLY 3-5 health tags maximum
+        2. Focus on health BENEFITS of the meal (not dietary restrictions like "Gluten-Free" or "Vegan")
+        3. Each tag should start with a capital letter
+        4. Examples of good health tags: "Heart Healthy", "Anti-Inflammatory", "Immune Boosting", "Energy Enhancing", "Gut Friendly"
+        5. The tags should be directly related to the meal's health benefits, not just its nutritional content
+        
+        The suggestions should be specific, actionable improvements that could make the meal healthier.
+        The recommended recipes should be similar to the analyzed meal but with healthier modifications.
+        
+        IMPORTANT: Do NOT suggest adding ingredients that are already present in the meal. For example, if the meal already contains olive oil, turmeric, cumin seeds, or coriander, do not suggest adding these ingredients.
+        Instead, focus on:
+        1. Suggesting different ingredients that are not already present
+        2. Suggesting modifications to cooking methods
+        3. Suggesting portion size adjustments
+        4. Suggesting complementary foods to eat with the meal
+        
+        IMPORTANT: For the micronutrient_balance section, ONLY include the user's priority micronutrients: {priority_micronutrients_str}. 
+        Calculate the score as the average percentage of daily recommended intake for ONLY these specific nutrients.
+        If no priority micronutrients are specified, leave the priority_nutrients list empty and set the score to 0.
         """
         
         headers = {
@@ -408,140 +565,150 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
             "Content-Type": "application/json"
         }
         
-        payload = {
-            "model": "chatgpt-4o-latest",
+        # Prepare the request data
+        request_data = {
+            "model": "gpt-4o-mini-2024-07-18",
             "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a professional nutritionist specializing in South Asian cuisine and dietary needs. Provide accurate nutritional analysis based on the conversation and user profile. Always provide specific numerical values for all nutritional information."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "You are a nutritional analysis AI that provides detailed meal analysis."},
+                {"role": "user", "content": prompt}
             ],
-            "max_tokens": 16384
+            "temperature": 0.5,
+            "max_tokens": 2000
         }
         
-        print("\n=== Starting GPT Analysis Query ===")
-        print("Sending request to ChatGPT-4o...")
-        print(f"API Key present: {'Yes' if api_key else 'No'}")
-        print(f"Request URL: https://api.openai.com/v1/chat/completions")
-        print(f"Request payload: {json.dumps(payload, indent=2)}")
-        
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload
-                )
-                
-                print(f"Response status code: {response.status_code}")
-                print(f"Response headers: {response.headers}")
-                
-                if response.status_code != 200:
-                    error_text = response.text
-                    print(f"GPT API error: {error_text}")
-                    raise Exception(f"GPT API error: {error_text}")
-                
-                result = response.json()
-                content = result["choices"][0]["message"]["content"]
-                print(f"Received response from ChatGPT-4o: {content}")
-                
-                # Clean up the response by removing markdown code block markers
-                content = content.strip()
-                if content.startswith("```json"):
-                    content = content[7:]
-                if content.endswith("```"):
-                    content = content[:-3]
-                content = content.strip()
-                
-                # Parse the JSON response
-                try:
-                    # First attempt: direct parsing
-                    analysis = json.loads(content)
-                except json.JSONDecodeError as e:
-                    print(f"Initial JSON parsing failed: {str(e)}")
-                    print(f"Raw response: {content}")
-                    
-                    # Second attempt: fix common JSON formatting issues
-                    try:
-                        # Replace single quotes with double quotes
-                        content = content.replace("'", '"')
-                        # Fix unquoted property names
-                        content = content.replace(r'(\w+):', r'"\1":')
-                        # Fix trailing commas
-                        content = content.replace(',]', ']').replace(',}', '}')
-                        # Fix missing quotes around property names
-                        content = content.replace(r'([{,]\s*)(\w+)(\s*:)', r'\1"\2"\3')
-                        # Fix missing quotes around string values
-                        content = content.replace(r':\s*([^"\'\d\[\]{},]+)([,}])', r': "\1"\2')
-                        # Fix missing quotes around array values
-                        content = content.replace(r'\[([^"\'\d\[\]{},]+)\]', r'["\1"]')
-                        # Fix missing quotes around object values
-                        content = content.replace(r'{([^"\'\d\[\]{},]+)}', r'{"\1"}')
-                        
-                        print(f"Cleaned JSON content: {content}")
-                        analysis = json.loads(content)
-                    except json.JSONDecodeError as e2:
-                        print(f"Error after attempting to fix JSON: {str(e2)}")
-                        print(f"Cleaned content: {content}")
-                        
-                        # Third attempt: try to extract JSON from the response
-                        try:
-                            # Look for JSON-like structure between curly braces
-                            import re
-                            json_match = re.search(r'\{.*\}', content, re.DOTALL)
-                            if json_match:
-                                json_str = json_match.group(0)
-                                # Clean up the extracted JSON
-                                json_str = json_str.replace("'", '"')
-                                json_str = json_str.replace(r'(\w+):', r'"\1":')
-                                json_str = json_str.replace(',]', ']').replace(',}', '}')
-                                json_str = json_str.replace(r'([{,]\s*)(\w+)(\s*:)', r'\1"\2"\3')
-                                json_str = json_str.replace(r':\s*([^"\'\d\[\]{},]+)([,}])', r': "\1"\2')
-                                json_str = json_str.replace(r'\[([^"\'\d\[\]{},]+)\]', r'["\1"]')
-                                json_str = json_str.replace(r'{([^"\'\d\[\]{},]+)}', r'{"\1"}')
-                                
-                                print(f"Extracted and cleaned JSON: {json_str}")
-                                analysis = json.loads(json_str)
-                            else:
-                                raise Exception("No JSON structure found in response")
-                        except Exception as e3:
-                            print(f"Error in final JSON extraction attempt: {str(e3)}")
-                            raise Exception(f"Failed to parse GPT response as JSON: {str(e)}")
-                
-                # Validate the analysis structure
-                required_fields = [
-                    "meal_name", "ingredients", "cooking_method", "serving_size",
-                    "calories", "protein", "carbs", "fats", "fiber", "sugar", "sodium",
-                    "health_tags", "suggestions", "recommended_recipes", "macronutrient_split"
-                ]
-                
-                for field in required_fields:
-                    if field not in analysis:
-                        print(f"Warning: Missing required field '{field}' in analysis")
-                        if field in ["calories", "protein", "carbs", "fats", "fiber", "sugar", "sodium"]:
-                            analysis[field] = 0
-                        elif field in ["ingredients", "health_tags", "suggestions", "recommended_recipes"]:
-                            analysis[field] = []
-                        elif field == "macronutrient_split":
-                            analysis[field] = {"protein_percentage": 0, "carbs_percentage": 0, "fats_percentage": 0}
-                        else:
-                            analysis[field] = ""
-                
-                return analysis
-                
-            except httpx.RequestError as e:
-                print(f"HTTP request error: {str(e)}")
-                print(f"Request details: URL=https://api.openai.com/v1/chat/completions, Headers={headers}")
-                raise Exception(f"HTTP request failed: {str(e)}")
+        # Make the API request
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json=request_data
+            )
             
+            # Check if the request was successful
+            if response.status_code != 200:
+                print(f"Error from OpenAI API: {response.text}")
+                raise Exception(f"OpenAI API returned an error: {response.text}")
+            
+            # Parse the response
+            response_data = response.json()
+            content = response_data["choices"][0]["message"]["content"]
+            
+            # Extract the JSON from the response
+            try:
+                # Try to parse the entire response as JSON
+                analysis = json.loads(content)
+            except json.JSONDecodeError:
+                # If that fails, try to extract JSON from the response
+                try:
+                    match = re.search(r'```json\n(.*?)\n```', content, re.DOTALL)
+                    if match:
+                        json_str = match.group(1)
+                        analysis = json.loads(json_str)
+                    else:
+                        # Try to find JSON between curly braces
+                        match = re.search(r'({.*})', content, re.DOTALL)
+                        if match:
+                            json_str = match.group(1)
+                            analysis = json.loads(json_str)
+                        else:
+                            raise Exception("Could not extract JSON from response")
+                except Exception as e:
+                    print(f"Error extracting JSON: {str(e)}")
+                    print(f"Raw response: {content}")
+                    raise Exception(f"Failed to extract JSON from response: {str(e)}")
+        
+        # Process health tags - ensure they're capitalized and limited to 3-5
+        if "health_tags" in analysis:
+            # Capitalize first letter of each tag
+            health_tags = [tag.capitalize() for tag in analysis["health_tags"]]
+            
+            # Limit to 3-5 tags
+            if len(health_tags) > 5:
+                health_tags = health_tags[:5]
+            elif len(health_tags) < 3 and "health_benefits" in analysis and analysis["health_benefits"]:
+                # If we have fewer than 3 tags but have health benefits, convert some benefits to tags
+                for benefit in analysis["health_benefits"]:
+                    if len(health_tags) < 3:
+                        # Convert benefit to tag format (shorter, capitalized)
+                        benefit_words = benefit.split()
+                        if len(benefit_words) > 3:
+                            # Shorten long benefits
+                            tag = " ".join(benefit_words[:3]).capitalize()
+                        else:
+                            tag = benefit.capitalize()
+                        
+                        # Only add if not already present
+                        if tag not in health_tags:
+                            health_tags.append(tag)
+            
+            analysis["health_tags"] = health_tags
+        
+        # Ensure micronutrient_balance is properly formatted
+        if "micronutrient_balance" not in analysis or not analysis["micronutrient_balance"]:
+            # Calculate micronutrient balance manually
+            micronutrients = analysis.get("micronutrients", {})
+            
+            # Only use user's priority micronutrients, no defaults
+            # Extract percentages for priority nutrients
+            priority_nutrients = []
+            total_percentage = 0
+            count = 0
+            
+            # Only proceed if there are priority micronutrients
+            if priority_micronutrients:
+                for nutrient in priority_micronutrients:
+                    # Convert to snake_case if needed
+                    nutrient_key = nutrient.lower().replace(" ", "_")
+                    
+                    if nutrient_key in micronutrients:
+                        percentage = micronutrients[nutrient_key].get("percentage_of_daily", 0)
+                        priority_nutrients.append({
+                            "name": nutrient,
+                            "percentage": percentage
+                        })
+                        total_percentage += percentage
+                        count += 1
+            
+            # Calculate average score
+            score = total_percentage / count if count > 0 else 0
+            
+            # Set the micronutrient balance
+            analysis["micronutrient_balance"] = {
+                "score": round(score, 1),
+                "priority_nutrients": priority_nutrients
+            }
+        else:
+            # Ensure the micronutrient_balance only contains priority nutrients
+            if priority_micronutrients:
+                existing_balance = analysis["micronutrient_balance"]
+                filtered_nutrients = []
+                total_percentage = 0
+                count = 0
+                
+                # Filter to only include priority nutrients
+                for nutrient_info in existing_balance.get("priority_nutrients", []):
+                    nutrient_name = nutrient_info.get("name", "").lower().replace(" ", "_")
+                    if any(pn.lower().replace(" ", "_") == nutrient_name for pn in priority_micronutrients):
+                        filtered_nutrients.append(nutrient_info)
+                        total_percentage += nutrient_info.get("percentage", 0)
+                        count += 1
+                
+                # Recalculate score based only on priority nutrients
+                score = total_percentage / count if count > 0 else 0
+                
+                analysis["micronutrient_balance"] = {
+                    "score": round(score, 1),
+                    "priority_nutrients": filtered_nutrients
+                }
+            else:
+                # If no priority nutrients, set empty list and score to 0
+                analysis["micronutrient_balance"] = {
+                    "score": 0,
+                    "priority_nutrients": []
+                }
+        
+        return analysis
+        
     except Exception as e:
         print(f"Error in analyze_meal_details: {str(e)}")
-        print(f"Error type: {type(e).__name__}")
-        print(f"Error details: {e.__dict__ if hasattr(e, '__dict__') else 'No additional details'}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
-        raise Exception(f"Failed to analyze meal details: {str(e)}") 
+        raise Exception(f"Failed to analyze meal details: {str(e)}")

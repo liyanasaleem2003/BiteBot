@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from app.routes import profile, chatbot, recipes, auth, nutrition, database, shopping_list
+from app.routes import profile, chatbot, recipes, auth, nutrition, database, shopping_list, chat
 from fastapi.middleware.cors import CORSMiddleware
 from app import wellness
 from fastapi.staticfiles import StaticFiles
@@ -47,6 +47,7 @@ try:
     app.include_router(nutrition.router, prefix="/nutrition", tags=["nutrition"])
     app.include_router(database.router, prefix="/database", tags=["database"])
     app.include_router(shopping_list.router, prefix="/shopping-list", tags=["shopping-list"])
+    app.include_router(chat.router, prefix="/chat", tags=["chat"])
     logger.info("Successfully included all routers")
 except Exception as e:
     logger.error(f"Failed to include routers: {str(e)}")
