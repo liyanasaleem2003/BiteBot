@@ -50,6 +50,13 @@ interface Meal {
     digestive: number;
     balance: number;
   };
+  micronutrient_balance?: {
+    score: number;
+    priority_nutrients: Array<{
+      name: string;
+      percentage: number;
+    }>;
+  };
 }
 
 interface MealCardProps {
@@ -290,6 +297,83 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
               ))}
             </div>
           </div>
+
+          {meal.micronutrient_balance && (
+            <div className="meal-card-section">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="meal-card-section-title">Micronutrient Balance</h4>
+                <TooltipProvider>
+                  <Tooltip content={
+                    <div className="meal-card-health-score-tooltip">
+                      Shows the average percentage of daily recommended intake for your priority micronutrients.
+                    </div>
+                  }>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-zinc-500 hover:text-zinc-400 cursor-help" />
+                    </TooltipTrigger>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="meal-card-health-scores">
+                <div className="meal-card-health-score">
+                  <div className="meal-card-health-score-header">
+                    <div className="flex items-center">
+                      <TooltipProvider>
+                        <Tooltip content={
+                          <div className="meal-card-health-score-tooltip">
+                            Average percentage of daily recommended intake for your priority micronutrients.
+                          </div>
+                        }>
+                          <TooltipTrigger asChild>
+                            <div className="meal-card-health-score-label">
+                              <span>Overall Balance</span>
+                              <HelpCircle className="help-icon" />
+                            </div>
+                          </TooltipTrigger>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <span className="text-sm text-zinc-400">{Math.round(meal.micronutrient_balance.score)}%</span>
+                  </div>
+                  <div className="meal-card-health-score-bar">
+                    <div 
+                      className={`meal-card-health-score-progress ${getHealthScoreClass(meal.micronutrient_balance.score, 'highGood')}`}
+                      style={{ width: `${meal.micronutrient_balance.score}%` }}
+                    />
+                  </div>
+                </div>
+                {meal.micronutrient_balance.priority_nutrients.map((nutrient, index) => (
+                  <div key={index} className="meal-card-health-score">
+                    <div className="meal-card-health-score-header">
+                      <div className="flex items-center">
+                        <TooltipProvider>
+                          <Tooltip content={
+                            <div className="meal-card-health-score-tooltip">
+                              Percentage of daily recommended intake for {nutrient.name}.
+                            </div>
+                          }>
+                            <TooltipTrigger asChild>
+                              <div className="meal-card-health-score-label">
+                                <span>{nutrient.name}</span>
+                                <HelpCircle className="help-icon" />
+                              </div>
+                            </TooltipTrigger>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <span className="text-sm text-zinc-400">{Math.round(nutrient.percentage)}%</span>
+                    </div>
+                    <div className="meal-card-health-score-bar">
+                      <div 
+                        className={`meal-card-health-score-progress ${getHealthScoreClass(nutrient.percentage, 'highGood')}`}
+                        style={{ width: `${nutrient.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-end mt-6 pt-4 border-t border-zinc-700">
             <button
