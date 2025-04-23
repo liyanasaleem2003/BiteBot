@@ -19,11 +19,23 @@ async def get_shopping_list(
     db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     try:
-        user = await db.user_profiles.find_one({"_id": current_user.id})
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+        # Check if shopping_lists collection exists
+        collections = await db.list_collection_names()
+        if 'shopping_lists' not in collections:
+            # Create the collection if it doesn't exist
+            await db.create_collection('shopping_lists')
+            return []
+            
+        shopping_list = await db.shopping_lists.find_one({"user_id": current_user.id})
+        if not shopping_list:
+            # Create a new shopping list if it doesn't exist
+            await db.shopping_lists.insert_one({
+                "user_id": current_user.id,
+                "ingredients": []
+            })
+            return []
         
-        return user.get("shopping_list", [])
+        return shopping_list.get("ingredients", [])
     except Exception as e:
         logging.error(f"Error in get_shopping_list: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -41,14 +53,20 @@ async def update_shopping_list(
         unique_ingredients = list(dict.fromkeys(update.ingredients))
         logging.info(f"Unique ingredients: {unique_ingredients}")
         
-        result = await db.user_profiles.update_one(
-            {"_id": current_user.id},
-            {"$set": {"shopping_list": unique_ingredients}},
+        # Check if shopping_lists collection exists
+        collections = await db.list_collection_names()
+        if 'shopping_lists' not in collections:
+            # Create the collection if it doesn't exist
+            await db.create_collection('shopping_lists')
+        
+        result = await db.shopping_lists.update_one(
+            {"user_id": current_user.id},
+            {"$set": {"ingredients": unique_ingredients}},
             upsert=True
         )
         
         if result.modified_count == 0 and not result.upserted_id:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=404, detail="Shopping list not found")
         
         return {"message": "Shopping list updated successfully", "ingredients": unique_ingredients}
     except Exception as e:
@@ -61,13 +79,24 @@ async def clear_shopping_list(
     db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     try:
-        result = await db.user_profiles.update_one(
-            {"_id": current_user.id},
-            {"$set": {"shopping_list": []}}
+        # Check if shopping_lists collection exists
+        collections = await db.list_collection_names()
+        if 'shopping_lists' not in collections:
+            # Create the collection if it doesn't exist
+            await db.create_collection('shopping_lists')
+            return {"message": "Shopping list cleared successfully"}
+        
+        result = await db.shopping_lists.update_one(
+            {"user_id": current_user.id},
+            {"$set": {"ingredients": []}}
         )
         
         if result.modified_count == 0:
-            raise HTTPException(status_code=404, detail="User not found")
+            # If shopping list doesn't exist, create it with empty ingredients
+            await db.shopping_lists.insert_one({
+                "user_id": current_user.id,
+                "ingredients": []
+            })
         
         return {"message": "Shopping list cleared successfully"}
     except Exception as e:

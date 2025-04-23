@@ -5,7 +5,7 @@ from datetime import datetime
 from ..services.nutrition_service import NutritionService
 from ..models import UserProfile, MealCreate, Meal
 from ..auth import get_current_user
-from ..utils.gpt import analyze_meal_image, analyze_meal_details
+from ..utils.gpt import analyze_meal_image, analyze_meal_details, query_gpt
 from ..utils.nutrition import calculate_meal_scores
 from ..utils.json_utils import json_dumps, json_loads
 from .database import get_database as get_db
@@ -18,6 +18,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from ..routes.database import with_retry
 import logging
 from ..config import settings
+import traceback
 
 router = APIRouter()
 nutrition_service = NutritionService()
@@ -190,8 +191,25 @@ async def analyze_meal_details_endpoint(
         conversation_history = data.get("conversation_history", [])
         user_profile = data.get("user_profile", {})
         
+        logger.info(f"Received conversation history: {json.dumps(conversation_history, indent=2)}")
+        logger.info(f"Received user profile: {json.dumps(user_profile, indent=2)}")
+        
+        # Get user's priority micronutrients from their profile
+        priority_micronutrients = user_profile.get('profile', {}).get('priority_micronutrients', [])
+        logger.info(f"Priority micronutrients: {priority_micronutrients}")
+        
         # Analyze meal details using GPT
-        analysis = await analyze_meal_details(conversation_history, user_profile)
+        try:
+            analysis = await analyze_meal_details(conversation_history, user_profile)
+            logger.info(f"GPT analysis completed: {json.dumps(analysis, indent=2)}")
+        except Exception as gpt_error:
+            logger.error(f"Error in GPT analysis: {str(gpt_error)}")
+            logger.error(f"GPT error type: {type(gpt_error)}")
+            logger.error(f"GPT error traceback: {traceback.format_exc()}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to analyze meal with GPT: {str(gpt_error)}"
+            )
         
         # Process the analysis data to ensure all required fields are present
         # Make sure macronutrients is properly structured
@@ -206,32 +224,19 @@ async def analyze_meal_details_endpoint(
                 "sodium": 0
             }
         
-        # Make sure micronutrients is properly structured
+        # Only track the user's selected priority micronutrients
         if "micronutrients" not in analysis or not analysis["micronutrients"]:
-            analysis["micronutrients"] = {
-                "vitamin_a": {"percentage_of_daily": 0},
-                "vitamin_c": {"percentage_of_daily": 0},
-                "vitamin_d": {"percentage_of_daily": 0},
-                "vitamin_e": {"percentage_of_daily": 0},
-                "vitamin_k": {"percentage_of_daily": 0},
-                "vitamin_b1": {"percentage_of_daily": 0},
-                "vitamin_b2": {"percentage_of_daily": 0},
-                "vitamin_b3": {"percentage_of_daily": 0},
-                "vitamin_b6": {"percentage_of_daily": 0},
-                "vitamin_b12": {"percentage_of_daily": 0},
-                "folate": {"percentage_of_daily": 0},
-                "calcium": {"percentage_of_daily": 0},
-                "iron": {"percentage_of_daily": 0},
-                "magnesium": {"percentage_of_daily": 0},
-                "phosphorus": {"percentage_of_daily": 0},
-                "potassium": {"percentage_of_daily": 0},
-                "zinc": {"percentage_of_daily": 0},
-                "copper": {"percentage_of_daily": 0},
-                "manganese": {"percentage_of_daily": 0},
-                "selenium": {"percentage_of_daily": 0},
-                "chromium": {"percentage_of_daily": 0},
-                "iodine": {"percentage_of_daily": 0}
-            }
+            analysis["micronutrients"] = {}
+        
+        # Filter micronutrients to only include priority ones
+        filtered_micronutrients = {}
+        for nutrient in priority_micronutrients:
+            # Convert to snake_case for consistency
+            nutrient_key = nutrient.lower().replace(" ", "_")
+            if nutrient_key in analysis.get("micronutrients", {}):
+                filtered_micronutrients[nutrient_key] = analysis["micronutrients"][nutrient_key]
+        
+        analysis["micronutrients"] = filtered_micronutrients
         
         # Calculate nutritional scores
         scores = calculate_meal_scores(analysis)
@@ -642,4 +647,125 @@ async def get_recipe_recommendations(
         
     except Exception as e:
         logger.error(f"Error in get_recipe_recommendations: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/analyze-profile")
+async def analyze_profile(
+    user_profile: dict,
+    previous_profile: dict,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """
+    Analyze user profile changes and update nutritional needs
+    """
+    try:
+        # Get GPT response
+        response = query_gpt(f"""
+        Analyze the following profile changes and provide updated nutritional recommendations.
+        Previous Profile:
+        {json.dumps(previous_profile, indent=2)}
+        
+        New Profile:
+        {json.dumps(user_profile, indent=2)}
+        
+        Please provide ONLY the JSON response with nutritional needs in the following format:
+        {{
+            "calories": {{
+                "min": <integer>,
+                "max": <integer>
+            }},
+            "macros": {{
+                "protein": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "g"
+                }},
+                "carbs": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "g"
+                }},
+                "fats": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "g"
+                }}
+            }},
+            "other_nutrients": {{
+                "fiber": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "g"
+                }},
+                "sugar": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "g"
+                }},
+                "sodium": {{
+                    "min": <integer>,
+                    "max": <integer>,
+                    "unit": "mg"
+                }}
+            }}
+        }}
+        """)
+        
+        # Extract JSON from response
+        try:
+            # Clean up the response by removing markdown code block markers and any text before the JSON
+            content = response.strip()
+            if "```json" in content:
+                content = content.split("```json")[1]
+            if "```" in content:
+                content = content.split("```")[0]
+            content = content.strip()
+            
+            # Look for JSON-like structure between curly braces
+            import re
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+                nutritional_needs = json.loads(json_str)
+            else:
+                raise ValueError("No JSON structure found in response")
+                
+            # Validate the response structure
+            required_fields = ["calories", "macros", "other_nutrients"]
+            required_macros = ["protein", "carbs", "fats"]
+            required_nutrients = ["fiber", "sugar", "sodium"]
+            
+            for field in required_fields:
+                if field not in nutritional_needs:
+                    raise ValueError(f"Missing required field: {field}")
+            
+            for macro in required_macros:
+                if macro not in nutritional_needs["macros"]:
+                    raise ValueError(f"Missing required macro: {macro}")
+            
+            for nutrient in required_nutrients:
+                if nutrient not in nutritional_needs["other_nutrients"]:
+                    raise ValueError(f"Missing required nutrient: {nutrient}")
+            
+            # Ensure all numeric values are integers
+            nutritional_needs["calories"]["min"] = int(nutritional_needs["calories"]["min"])
+            nutritional_needs["calories"]["max"] = int(nutritional_needs["calories"]["max"])
+            
+            for macro in required_macros:
+                nutritional_needs["macros"][macro]["min"] = int(nutritional_needs["macros"][macro]["min"])
+                nutritional_needs["macros"][macro]["max"] = int(nutritional_needs["macros"][macro]["max"])
+            
+            for nutrient in required_nutrients:
+                nutritional_needs["other_nutrients"][nutrient]["min"] = int(nutritional_needs["other_nutrients"][nutrient]["min"])
+                nutritional_needs["other_nutrients"][nutrient]["max"] = int(nutritional_needs["other_nutrients"][nutrient]["max"])
+            
+            return {"nutritional_needs": nutritional_needs}
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"Error parsing GPT response: {str(e)}")
+            logger.error(f"Raw GPT response: {response}")
+            raise HTTPException(status_code=500, detail=f"Failed to parse GPT response: {str(e)}")
+            
+    except Exception as e:
+        logger.error(f"Error analyzing profile: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

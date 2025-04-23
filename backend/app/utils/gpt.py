@@ -38,14 +38,14 @@ def query_gpt(message: str):
 
 async def calculate_nutritional_needs(profile_data):
     """
-    Calculate personalized nutritional needs using GPT-4.
+    Calculate personalized nutritional needs and dietary recommendations using GPT-4.
     """
     try:
-        print("\n=== GPT-MINI GENERATING NUTRITIONAL NEEDS ===")
+        print("\n=== GPT-MINI GENERATING NUTRITIONAL NEEDS AND RECOMMENDATIONS ===")
         print(f"Profile data received: {json.dumps(profile_data, default=str)}")
         
         # Construct the prompt for GPT-4
-        prompt = f"""As a professional nutritionist, calculate personalized daily nutritional targets for the following individual:
+        prompt = f"""As a professional nutritionist, calculate personalized daily nutritional targets and provide dietary recommendations for the following individual:
 
 Personal Information:
 - Age: {profile_data['age']} years
@@ -61,69 +61,62 @@ Health Profile:
 - Dietary Preferences: {', '.join(profile_data['dietary_preferences'])}
 - Health Goals: {', '.join(profile_data['health_goals'])}
 
-Please calculate personalized daily nutritional targets based on the individual's age group and developmental stage:
+Please provide:
+1. Personalized daily nutritional targets
+2. 3-5 specific dietary recommendations based on the individual's profile
 
-For Adolescents (13-17):
-- Higher caloric needs for growth and development
-- Increased protein for muscle development
-- Balanced macronutrient distribution
-- Focus on calcium, iron, and other growth-related nutrients
-
-For Young Adults (18-25):
-- Peak metabolic rate
-- Balanced macronutrient distribution
-- Focus on nutrient density
-- Support for physical activity and recovery
-
-For Adults (26+):
-- Age-appropriate caloric needs
-- Balanced macronutrient distribution
-- Focus on maintaining health and preventing chronic disease
-- Support for physical activity and recovery
-
-Please provide the nutritional targets in the following JSON format:
+Please provide the response in the following JSON format:
 {{
-    "calories": {{
-        "min": <integer>,
-        "max": <integer>
-    }},
-    "macros": {{
-        "protein": {{
+    "nutritional_needs": {{
+        "calories": {{
             "min": <integer>,
-            "max": <integer>,
-            "unit": "g"
+            "max": <integer>
         }},
-        "carbs": {{
-            "min": <integer>,
-            "max": <integer>,
-            "unit": "g"
+        "macros": {{
+            "protein": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "g"
+            }},
+            "carbs": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "g"
+            }},
+            "fats": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "g"
+            }}
         }},
-        "fats": {{
-            "min": <integer>,
-            "max": <integer>,
-            "unit": "g"
+        "other_nutrients": {{
+            "fiber": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "g"
+            }},
+            "sugar": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "g"
+            }},
+            "sodium": {{
+                "min": <integer>,
+                "max": <integer>,
+                "unit": "mg"
+            }}
         }}
     }},
-    "other_nutrients": {{
-        "fiber": {{
-            "min": <integer>,
-            "max": <integer>,
-            "unit": "g"
-        }},
-        "sugar": {{
-            "min": <integer>,
-            "max": <integer>,
-            "unit": "g"
-        }},
-        "sodium": {{
-            "min": <integer>,
-            "max": <integer>,
-            "unit": "mg"
-        }}
-    }}
+    "dietary_recommendations": [
+        "Recommendation 1 - specific to user's health goals and dietary preferences",
+        "Recommendation 2 - specific to user's health conditions and micronutrient needs",
+        "Recommendation 3 - specific to user's activity level and age",
+        "Recommendation 4 - specific to user's dietary preferences and health goals",
+        "Recommendation 5 - specific to user's health history and goals"
+    ]
 }}
 
-Ensure all values are based on scientific research and dietary guidelines for the individual's age group and health profile."""
+Ensure all values are based on scientific research and dietary guidelines for the individual's age group and health profile. The dietary recommendations should be specific to the user's unique profile and not generic advice."""
 
         print("\n=== SENDING REQUEST TO GPT-MINI ===")
         print(f"Using model: gpt-4o-mini-2024-07-18")
@@ -162,53 +155,59 @@ Ensure all values are based on scientific research and dietary guidelines for th
             json_match = re.search(r'\{.*\}', content, re.DOTALL)
             if json_match:
                 json_str = json_match.group(0)
-                nutritional_needs = json.loads(json_str)
+                gpt_response = json.loads(json_str)
             else:
                 raise ValueError("No JSON structure found in response")
                 
-            print("\n=== PARSED NUTRITIONAL NEEDS ===")
-            print(f"Successfully parsed nutritional needs: {json.dumps(nutritional_needs, indent=2)}")
+            print("\n=== PARSED GPT RESPONSE ===")
+            print(f"Successfully parsed response: {json.dumps(gpt_response, indent=2)}")
             
             # Validate the response structure
-            required_fields = ["calories", "macros", "other_nutrients"]
+            required_fields = ["nutritional_needs", "dietary_recommendations"]
+            required_nutritional_fields = ["calories", "macros", "other_nutrients"]
             required_macros = ["protein", "carbs", "fats"]
             required_nutrients = ["fiber", "sugar", "sodium"]
             
             print("\n=== VALIDATING RESPONSE STRUCTURE ===")
             for field in required_fields:
-                if field not in nutritional_needs:
+                if field not in gpt_response:
                     raise ValueError(f"Missing required field: {field}")
                 print(f"✓ Found required field: {field}")
             
+            for field in required_nutritional_fields:
+                if field not in gpt_response["nutritional_needs"]:
+                    raise ValueError(f"Missing required nutritional field: {field}")
+                print(f"✓ Found required nutritional field: {field}")
+            
             for macro in required_macros:
-                if macro not in nutritional_needs["macros"]:
+                if macro not in gpt_response["nutritional_needs"]["macros"]:
                     raise ValueError(f"Missing required macro: {macro}")
                 print(f"✓ Found required macro: {macro}")
             
             for nutrient in required_nutrients:
-                if nutrient not in nutritional_needs["other_nutrients"]:
+                if nutrient not in gpt_response["nutritional_needs"]["other_nutrients"]:
                     raise ValueError(f"Missing required nutrient: {nutrient}")
                 print(f"✓ Found required nutrient: {nutrient}")
             
             # Ensure all numeric values are integers
             print("\n=== CONVERTING VALUES TO INTEGERS ===")
-            nutritional_needs["calories"]["min"] = int(nutritional_needs["calories"]["min"])
-            nutritional_needs["calories"]["max"] = int(nutritional_needs["calories"]["max"])
+            gpt_response["nutritional_needs"]["calories"]["min"] = int(gpt_response["nutritional_needs"]["calories"]["min"])
+            gpt_response["nutritional_needs"]["calories"]["max"] = int(gpt_response["nutritional_needs"]["calories"]["max"])
             print(f"✓ Converted calories to integers")
             
             for macro in required_macros:
-                nutritional_needs["macros"][macro]["min"] = int(nutritional_needs["macros"][macro]["min"])
-                nutritional_needs["macros"][macro]["max"] = int(nutritional_needs["macros"][macro]["max"])
+                gpt_response["nutritional_needs"]["macros"][macro]["min"] = int(gpt_response["nutritional_needs"]["macros"][macro]["min"])
+                gpt_response["nutritional_needs"]["macros"][macro]["max"] = int(gpt_response["nutritional_needs"]["macros"][macro]["max"])
                 print(f"✓ Converted {macro} to integers")
             
             for nutrient in required_nutrients:
-                nutritional_needs["other_nutrients"][nutrient]["min"] = int(nutritional_needs["other_nutrients"][nutrient]["min"])
-                nutritional_needs["other_nutrients"][nutrient]["max"] = int(nutritional_needs["other_nutrients"][nutrient]["max"])
+                gpt_response["nutritional_needs"]["other_nutrients"][nutrient]["min"] = int(gpt_response["nutritional_needs"]["other_nutrients"][nutrient]["min"])
+                gpt_response["nutritional_needs"]["other_nutrients"][nutrient]["max"] = int(gpt_response["nutritional_needs"]["other_nutrients"][nutrient]["max"])
                 print(f"✓ Converted {nutrient} to integers")
             
             print("\n=== GPT-MINI GENERATION COMPLETE ===")
-            print(f"Final nutritional needs: {json.dumps(nutritional_needs, indent=2)}")
-            return nutritional_needs
+            print(f"Final response: {json.dumps(gpt_response, indent=2)}")
+            return gpt_response
             
         except json.JSONDecodeError as e:
             print(f"\n❌ Error parsing GPT response as JSON: {str(e)}")
@@ -473,6 +472,10 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         # Extract meals per day
         meals_per_day = user_profile.get('meals_per_day', 3)
         
+        # Extract health goals
+        health_goals = user_profile.get('health_goals', [])
+        health_goals_str = ', '.join(health_goals) if health_goals else "None specified"
+        
         # Get current time to determine which meal of the day this might be
         current_time = datetime.now()
         hour = current_time.hour
@@ -493,22 +496,124 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         Based on the following conversation about a meal and the user's profile, provide a detailed nutritional analysis.
         Make sure to provide specific numerical values for all nutritional information.
 
-        User Profile:
-        - Age: {user_profile.get('age')}
-        - Sex: {user_profile.get('sex')}
-        - Health Goals: {', '.join(user_profile.get('health_goals', []))}
-        - Dietary Preferences: {', '.join(user_profile.get('dietary_preferences', []))}
-        - Personal Health History: {personal_health_history_str}
-        - Family Health History: {family_health_history_str}
-        - Priority Micronutrients: {priority_micronutrients_str}
-        - Foods to Avoid: {foods_to_avoid_str}
-        - Meals per Day: {meals_per_day}
-        - Meal Time Context: {meal_time_context}
+        Detected Ingredients from Image Analysis:
+        {conversation_history[0].get('content', '')}  # First message contains the detected ingredients
 
         Conversation History:
         {json.dumps(conversation_history, indent=2)}
 
-        Please provide a comprehensive analysis in the following JSON format with specific numerical values:
+        User Profile:
+        - Age: {user_profile.get('age', 'Not specified')}
+        - Sex: {user_profile.get('sex', 'Not specified')}
+        - Health Goals: {', '.join(user_profile.get('health_goals', ['Not specified']))}
+        - Dietary Preferences: {', '.join(user_profile.get('dietary_preferences', ['Not specified']))}
+        - Personal Health History: {', '.join(user_profile.get('personal_health_history', ['Not specified']))}
+        - Family Health History: {', '.join(user_profile.get('family_health_history', ['Not specified']))}
+        - Priority Micronutrients: {', '.join(user_profile.get('priority_micronutrients', ['Not specified']))}
+        - Foods to Avoid: {', '.join(user_profile.get('foods_to_avoid', ['Not specified']))}
+        - Meals per Day: {user_profile.get('meals_per_day', 'Not specified')}
+        - Activity Level: {user_profile.get('activity_level', 'Not specified')}
+        - Weight: {user_profile.get('weight', {}).get('value', 'Not specified')} {user_profile.get('weight', {}).get('unit', '')}
+        - Height: {user_profile.get('height', {}).get('value', 'Not specified')} {user_profile.get('height', {}).get('unit', '')}
+        - Meal Time Context: {meal_time_context}
+
+        Please analyze the meal based on the detected ingredients and conversation history. The analysis should focus on the actual meal described in the conversation, not any other meal type.
+
+        When generating health scores, please follow these personalized guidelines:
+
+        1. Glycemic Index Score (0-100, lower is better):
+           - Base score on meal's impact on blood sugar
+           - Adjust based on user's age (older adults need more stable blood sugar)
+           - Consider if user has diabetes or prediabetes
+           - Factor in meal timing (breakfast vs dinner)
+           - Example: A 60-year-old with prediabetes should have stricter scoring for high-carb meals
+
+        2. Inflammatory Score (0-100, lower is better):
+           - Base score on meal's inflammatory potential
+           - Consider user's health conditions (e.g., arthritis, heart disease)
+           - Factor in age (older adults may be more sensitive to inflammation)
+           - Example: A person with heart disease should have stricter scoring for high-sodium, high-saturated fat meals
+
+        3. Heart Health Score (0-100, higher is better):
+           - Base score on meal's impact on cardiovascular health
+           - Consider user's heart health history and family history
+           - Factor in age and sex (heart disease risk varies)
+           - Example: A 55-year-old male with family history of heart disease should have stricter scoring for cholesterol and saturated fat
+
+        4. Digestive Score (0-100, higher is better):
+           - Base score on meal's digestibility and gut health impact
+           - Consider user's digestive health history
+           - Factor in age (digestive efficiency changes with age)
+           - Example: A person with IBS should have stricter scoring for high-FODMAP foods
+
+        5. Meal Balance Score (0-100, higher is better):
+           - Base score on macronutrient distribution
+           - Adjust ideal ratios based on user's health goals:
+             * Muscle building: Higher protein ratio
+             * Weight loss: Higher protein, moderate fat, lower carb
+             * Endurance: Higher carb ratio
+             * Heart health: Lower saturated fat, higher fiber
+           - Consider age and activity level
+           - Example: A 25-year-old athlete should have different ideal ratios than a 65-year-old sedentary person
+
+        6. Micronutrient Balance Score (0-100, higher is better):
+           - Focus on user's priority micronutrients
+           - Consider age-specific needs (e.g., calcium for older adults)
+           - Factor in health conditions (e.g., iron for anemia)
+           - Example: A postmenopausal woman should have stricter scoring for calcium and vitamin D
+
+        For health benefits, potential concerns, and suggestions:
+        1. Make these SPECIFICALLY tailored to:
+           - User's age and sex
+           - Health goals
+           - Health conditions
+           - Dietary preferences
+           - Priority micronutrients
+           - Meal timing
+        2. Consider age-specific needs:
+           - Children: Growth and development
+           - Young adults: Energy and performance
+           - Middle age: Prevention and maintenance
+           - Older adults: Nutrient absorption and chronic conditions
+        3. Factor in sex-specific considerations:
+           - Women: Iron, calcium, folate needs
+           - Men: Heart health, prostate health
+        4. Address specific health conditions:
+           - Diabetes: Blood sugar impact
+           - Heart disease: Cholesterol and blood pressure
+           - Digestive issues: Gut health and tolerance
+        5. Respect dietary preferences and restrictions
+        6. Consider meal timing and daily pattern
+
+        Example for a 59-year-old male with heart health goals:
+        - Glycemic Index: Stricter scoring for refined carbs
+        - Inflammatory: Lower tolerance for processed foods
+        - Heart Health: Higher emphasis on fiber and omega-3s
+        - Digestive: Consider age-related digestive changes
+        - Meal Balance: Focus on heart-healthy ratios
+        - Micronutrient: Prioritize heart-healthy nutrients
+
+        Please provide a comprehensive analysis in the following JSON format with specific numerical values.
+        For health benefits, potential concerns, and suggestions, make sure to specifically address the user's age, sex, dietary preferences, foods to avoid, health goals, priority micronutrients to track, and personal/family health history:
+
+        Example health goal-specific benefits:
+        - For skin health: "The turmeric in the curry provides curcumin, which has anti-inflammatory properties that can help reduce skin inflammation and promote a healthy glow."
+        - For cellular health: "The lentils provide essential amino acids and B-vitamins that support cellular repair and energy production."
+        - For immunity: "The combination of spices like turmeric and cumin provides antioxidants that support immune function and help fight inflammation."
+        - For diabetes management: "The fiber from lentils and vegetables helps regulate blood sugar levels and improve insulin sensitivity."
+        - For muscle building: "The combination of lentils and rice provides a complete protein source with all essential amino acids needed for muscle repair and growth."
+        - For heart health: "The fiber and potassium from the vegetables help maintain healthy blood pressure and cholesterol levels."
+        - For digestive health: "The fiber from lentils and vegetables supports gut health and promotes regular digestion."
+
+        Example health goal-specific suggestions:
+        - For skin health: "Add more turmeric or include foods rich in vitamin C like amla or citrus fruits to enhance collagen production."
+        - For cellular health: "Include more antioxidant-rich spices like turmeric and add nuts or seeds for healthy fats that support cell membrane health."
+        - For immunity: "Add more garlic or ginger to the preparation for additional immune-boosting compounds."
+        - For diabetes: "Consider reducing the portion of rice and increasing the proportion of lentils and vegetables to better manage blood sugar levels."
+        - For muscle building: "Add a side of yogurt or paneer to increase protein content and support muscle recovery."
+        - For heart health: "Use less oil in cooking and consider adding more heart-healthy ingredients like garlic and ginger."
+        - For digestive health: "Include more probiotic-rich foods like yogurt or fermented vegetables to support gut health."
+
         {{
             "meal_name": "A descriptive name that includes the main ingredients and cooking style",
             "ingredients": ["ingredient1", "ingredient2", ...],
@@ -564,28 +669,15 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
                 "fats_percentage": number
             }},
             "micronutrients": {{
-                "vitamin_a": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
-                "vitamin_c": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "vitamin_d": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
-                "vitamin_e": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "vitamin_k": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
-                "vitamin_b1": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "vitamin_b2": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "vitamin_b3": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "vitamin_b6": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "iron": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
                 "vitamin_b12": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
                 "folate": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
+                "vitamin_d": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
                 "calcium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "iron": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "magnesium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "phosphorus": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "omega3": {{"amount": number, "unit": "g", "percentage_of_daily": number}},
                 "potassium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "zinc": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "copper": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "manganese": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
-                "selenium": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
-                "chromium": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}},
-                "iodine": {{"amount": number, "unit": "mcg", "percentage_of_daily": number}}
+                "magnesium": {{"amount": number, "unit": "mg", "percentage_of_daily": number}},
+                "zinc": {{"amount": number, "unit": "mg", "percentage_of_daily": number}}
             }},
             "priority_micronutrients": {priority_micronutrients},  # Add priority micronutrients to the analysis
             "micronutrient_balance": {{
@@ -609,6 +701,7 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         2. Each benefit should explain how the meal supports a specific health goal or provides important micronutrients
         3. Each concern should highlight potential issues related to the user's health conditions or goals
         4. Each suggestion should offer a concrete way to improve the meal to better support the user's specific health needs
+        5. Focus on South Asian ingredients and cooking methods that are relevant to the user's health goals
 
         For recommended_recipes:
         1. Suggest recipes that are similar to the analyzed meal but optimized for the user's health goals
@@ -616,6 +709,7 @@ async def analyze_meal_details(conversation_history: List[Dict[str, str]], user_
         3. Focus on recipes that are rich in the user's priority micronutrients
         4. Consider the time of day and which meal this might be (breakfast, lunch, dinner)
         5. Provide recipes appropriate for the user's dietary preferences
+        6. Include traditional South Asian ingredients and cooking methods that support the user's health goals
 
         For health_tags:
         1. Provide ONLY 3-5 health tags maximum

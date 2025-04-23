@@ -2,8 +2,12 @@ from fastapi import APIRouter, HTTPException, Query, Depends
 from app.routes.database import get_database
 from motor.motor_asyncio import AsyncIOMotorDatabase
 import logging
+import os
 
 router = APIRouter()
+
+# Get the API base URL from environment variable or use default
+API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
 
 @router.get("", response_model=list)
 async def get_recipes(db: AsyncIOMotorDatabase = Depends(get_database)):
@@ -14,9 +18,13 @@ async def get_recipes(db: AsyncIOMotorDatabase = Depends(get_database)):
 
         formatted_recipes = []
         for recipe in recipes:
+            # Construct the full image URL using the API base URL
+            image_url = f"{API_BASE_URL}/static/recipes/{recipe['recipe_id']}.jpg" if recipe.get("recipe_id") else None
+            
             formatted_recipe = {
+                "recipe_id": recipe["recipe_id"],
                 "title": recipe["name"],
-                "image": f"http://localhost:8000{recipe['image_url']}" if recipe.get("image_url") else None,
+                "image": image_url,
                 "timeInMinutes": recipe["time_required"],
                 "spiceLevel": min(3, recipe["spice_level"].count("🌶️")) if recipe.get("spice_level") else 0,
                 "pricePerPortion": recipe.get("approx_price_per_portion", 0),

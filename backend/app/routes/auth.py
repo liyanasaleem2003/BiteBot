@@ -68,13 +68,20 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
         
         # Create user document
         user_dict = user.dict()
-        now = datetime.utcnow()
-        user_dict["created_at"] = now
-        user_dict["updated_at"] = now
-        user_dict["is_active"] = True
+        print("\n=== Creating User Document ===")
+        print("Initial user_dict:", json_dumps(user_dict, indent=2))
         
-        # Hash the password before storing
-        user_dict["password"] = get_password_hash(user_dict["password"])
+        hashed_password = get_password_hash(user.password)
+        print("Hashed password created:", hashed_password[:10] + "...")  # Only print first 10 chars for security
+        
+        user_dict["hashed_password"] = hashed_password
+        user_dict["created_at"] = datetime.utcnow()
+        user_dict["updated_at"] = datetime.utcnow()
+        user_dict["is_active"] = True
+        del user_dict["password"]
+        
+        print("\n=== Final User Document ===")
+        print("User data to be inserted:", json_dumps(user_dict, indent=2))
         
         # Calculate nutritional needs
         try:
@@ -86,9 +93,14 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
             print(f"Profile data being sent to GPT: {json.dumps(profile_data, default=str)}")
             
             try:
-                nutritional_needs = await calculate_nutritional_needs(user_dict["profile"])
-                print(f"GPT-MINI generated nutritional needs: {json.dumps(nutritional_needs, default=str)}")
-                user_dict["profile"]["nutritional_needs"] = nutritional_needs
+                # Get GPT response for nutritional needs and dietary recommendations
+                gpt_response = await calculate_nutritional_needs(profile_data)
+                print(f"GPT-MINI generated response: {json.dumps(gpt_response, default=str)}")
+
+                # Update profile data with both nutritional needs and recommendations
+                user_dict["profile"]["nutritional_needs"] = gpt_response["nutritional_needs"]
+                user_dict["profile"]["dietary_recommendations"] = gpt_response["dietary_recommendations"]
+
             except Exception as calc_error:
                 print(f"Error in GPT calculation: {str(calc_error)}")
                 # Calculate basic needs using BMR formula as fallback
@@ -140,7 +152,12 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
                 }
                 print("Using fallback nutritional needs calculation")
                 user_dict["profile"]["nutritional_needs"] = nutritional_needs
-            
+                user_dict["profile"]["dietary_recommendations"] = [
+                    "Consume a balanced diet with adequate protein, carbs, and healthy fats",
+                    "Include a variety of fruits and vegetables in your daily meals",
+                    "Stay hydrated by drinking plenty of water throughout the day"
+                ]
+        
         except Exception as e:
             print(f"Critical error in nutritional needs calculation: {str(e)}")
             raise HTTPException(
@@ -154,7 +171,11 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
         
         # Insert user into database
         result = await db.user_profiles.insert_one(user_dict)
-        print(f"Successfully inserted user with ID: {result.inserted_id}")
+        if not result.inserted_id:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to create user"
+            )
         
         # Get the created user
         created_user = await db.user_profiles.find_one({"_id": result.inserted_id})
@@ -167,7 +188,6 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
         # Convert ObjectId to string for JSON serialization
         created_user["_id"] = str(created_user["_id"])
         created_user["id"] = str(created_user["_id"])  # Add id field for response model
-        created_user["is_active"] = True  # Ensure is_active is set
         
         # Convert datetime objects to ISO format strings
         created_user["created_at"] = created_user["created_at"].isoformat()
@@ -216,9 +236,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db = Depends(g
             )
         
         print(f"User found with ID: {user.get('_id')}")
+        print("User document from database:", json_dumps(user, indent=2))
         
         # Verify password
-        if not verify_password(form_data.password, user["password"]):
+        if not verify_password(form_data.password, user["hashed_password"]):
             print(f"Invalid password for user: {form_data.username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -289,9 +310,14 @@ async def update_profile(
             print(f"Calculating needs for updated profile: {json.dumps(profile_data['profile'], default=str)}")
             
             try:
-                nutritional_needs = await calculate_nutritional_needs(profile_data["profile"])
-                print(f"GPT-MINI generated nutritional needs: {json.dumps(nutritional_needs, default=str)}")
-                profile_data["profile"]["nutritional_needs"] = nutritional_needs
+                # Get GPT response for nutritional needs and dietary recommendations
+                gpt_response = await calculate_nutritional_needs(profile_data["profile"])
+                print(f"GPT-MINI generated response: {json.dumps(gpt_response, default=str)}")
+
+                # Update profile data with both nutritional needs and recommendations
+                profile_data["profile"]["nutritional_needs"] = gpt_response["nutritional_needs"]
+                profile_data["profile"]["dietary_recommendations"] = gpt_response["dietary_recommendations"]
+
             except Exception as calc_error:
                 print(f"Error in GPT calculation: {str(calc_error)}")
                 # Calculate basic needs using BMR formula as fallback
@@ -324,69 +350,35 @@ async def update_profile(
                         }
                     },
                     "other_nutrients": {
-                        "fiber": {
-                            "min": 25,
-                            "max": 30,
-                            "unit": "g"
-                        },
-                        "sugar": {
-                            "min": 0,
-                            "max": 50,
-                            "unit": "g"
-                        },
-                        "sodium": {
-                            "min": 1500,
-                            "max": 2300,
-                            "unit": "mg"
-                        }
+                        "fiber": {"min": 25, "max": 30, "unit": "g"},
+                        "sugar": {"min": 0, "max": 25, "unit": "g"},
+                        "sodium": {"min": 1500, "max": 2300, "unit": "mg"}
                     }
                 }
-                print("Using fallback nutritional needs calculation")
+                
+                # Add default dietary recommendations
                 profile_data["profile"]["nutritional_needs"] = nutritional_needs
-            
+                profile_data["profile"]["dietary_recommendations"] = [
+                    "Consume a balanced diet with adequate protein, carbs, and healthy fats",
+                    "Include a variety of fruits and vegetables in your daily meals",
+                    "Stay hydrated by drinking plenty of water throughout the day"
+                ]
+
         except Exception as e:
-            print(f"Critical error in nutritional needs calculation: {str(e)}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to process nutritional needs: {str(e)}"
-            )
-        
-        # Update the user profile in the database
-        result = await db.user_profiles.update_one(
+            print(f"Error calculating nutritional needs: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to calculate nutritional needs")
+
+        # Remove meal_history as it's redundant
+        if "meal_history" in profile_data["profile"]:
+            del profile_data["profile"]["meal_history"]
+
+        # Update the profile in the database
+        await db.user_profiles.update_one(
             {"_id": ObjectId(current_user.id)},
             {"$set": profile_data}
         )
-        
-        if result.modified_count == 0:
-            raise HTTPException(
-                status_code=404,
-                detail="Profile not found or no changes made"
-            )
-        
-        # Fetch the updated profile
-        updated_profile = await db.user_profiles.find_one({"_id": ObjectId(current_user.id)})
-        
-        # Convert ObjectId to string for JSON serialization
-        if updated_profile:
-            updated_profile["id"] = str(updated_profile["_id"])
-            del updated_profile["_id"]
-            # Convert datetime objects to ISO format strings
-            if "created_at" in updated_profile:
-                updated_profile["created_at"] = updated_profile["created_at"].isoformat()
-            if "updated_at" in updated_profile:
-                updated_profile["updated_at"] = updated_profile["updated_at"].isoformat()
-            if "last_login" in updated_profile:
-                updated_profile["last_login"] = updated_profile["last_login"].isoformat()
-            return updated_profile
-        else:
-            raise HTTPException(
-                status_code=404,
-                detail="Profile not found after update"
-            )
-        
+
+        return {"message": "Profile updated successfully"}
     except Exception as e:
         print(f"Error updating profile: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to update profile: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=str(e))

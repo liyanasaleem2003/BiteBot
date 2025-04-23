@@ -10,7 +10,7 @@ class PyObjectId(ObjectId):
         yield cls.validate
 
     @classmethod
-    def validate(cls, v):
+    def validate(cls, v, handler=None):
         if not ObjectId.is_valid(v):
             raise ValueError("Invalid objectid")
         return ObjectId(v)
@@ -59,10 +59,9 @@ class UserProfile(BaseModel):
     foods_to_avoid: List[str]
     health_goals: List[str]
     nutritional_needs: Optional[NutritionalNeeds] = None
-    meal_history: Optional[List[MealLog]] = []
-    shopping_list: Optional[List[str]] = []
-    created_at: datetime = datetime.utcnow()
-    updated_at: datetime = datetime.utcnow()
+    dietary_recommendations: Optional[List[str]] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         allow_population_by_field_name = True
@@ -129,6 +128,47 @@ class ChatHistory(BaseModel):
     image_url: Optional[str] = None
     messages: List[Dict[str, Any]] = Field(default_factory=list)
     meal_analysis: Optional[Dict[str, Any]] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class SavedRecipe(BaseModel):
+    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
+    user_id: PyObjectId
+    recipe_id: str
+    title: str
+    image: Optional[str] = None
+    timeInMinutes: Optional[int] = None
+    spiceLevel: Optional[int] = None
+    pricePerPortion: Optional[float] = None
+    nutrition: Optional[Dict[str, Any]] = None
+    tags: Optional[Dict[str, Any]] = None
+    healthBenefits: Optional[List[str]] = Field(default_factory=list)
+    dietaryPreference: Optional[List[str]] = Field(default_factory=list)
+    mealType: Optional[str] = None
+    culturalStyle: Optional[str] = None
+    mealPreference: Optional[str] = None
+    introduction: Optional[str] = None
+    ingredients: Optional[List[str]] = Field(default_factory=list)
+    instructions: Optional[List[str]] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class Supplement(BaseModel):
+    id: Optional[str] = Field(default=None, alias="_id")
+    user_id: str
+    name: str
+    dose: str
+    date: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
