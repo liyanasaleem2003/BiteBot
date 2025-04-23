@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 const ShoppingListContext = createContext();
 
@@ -6,6 +7,7 @@ export function ShoppingListProvider({ children }) {
   const [ingredients, setIngredients] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch shopping list when token changes
   useEffect(() => {
@@ -16,11 +18,15 @@ export function ShoppingListProvider({ children }) {
       // Clear shopping list when no token (logged out)
       setIngredients([]);
       setIsLoading(false);
+      setError(null);
     }
   }, [localStorage.getItem('token')]); // Re-run when token changes
 
   const fetchShoppingList = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
+      
       const token = localStorage.getItem('token');
       if (!token) {
         setIngredients([]);
@@ -28,10 +34,13 @@ export function ShoppingListProvider({ children }) {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/shopping-list', {
-        credentials: 'include',
+      // Remove Bearer prefix if it exists
+      const cleanToken = token.replace('Bearer ', '');
+
+      const response = await fetch(`${API_BASE_URL}/api/shopping-list`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${cleanToken}`,
+          'Content-Type': 'application/json'
         }
       });
       
@@ -40,6 +49,7 @@ export function ShoppingListProvider({ children }) {
           // Token is invalid or expired
           localStorage.removeItem('token');
           setIngredients([]);
+          setIsLoading(false);
           return;
         }
         throw new Error('Failed to fetch shopping list');
@@ -49,6 +59,7 @@ export function ShoppingListProvider({ children }) {
       setIngredients(data);
     } catch (error) {
       console.error('Error fetching shopping list:', error);
+      setError(error.message);
       setIngredients([]);
     } finally {
       setIsLoading(false);
@@ -64,12 +75,11 @@ export function ShoppingListProvider({ children }) {
 
       const updatedIngredients = [...ingredients, ...newIngredients];
       
-      const response = await fetch('http://localhost:8000/shopping-list', {
+      const response = await fetch(`${API_BASE_URL}/api/shopping-list`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token.replace('Bearer ', '')}`
         },
         body: JSON.stringify({ ingredients: updatedIngredients })
       });
@@ -87,6 +97,7 @@ export function ShoppingListProvider({ children }) {
       setIngredients(data.ingredients);
     } catch (error) {
       console.error('Error updating shopping list:', error);
+      setError(error.message);
     }
   };
 
@@ -99,12 +110,11 @@ export function ShoppingListProvider({ children }) {
 
       const updatedIngredients = ingredients.filter((_, i) => i !== index);
       
-      const response = await fetch('http://localhost:8000/shopping-list', {
+      const response = await fetch(`${API_BASE_URL}/api/shopping-list`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token.replace('Bearer ', '')}`
         },
         body: JSON.stringify({ ingredients: updatedIngredients })
       });
@@ -122,6 +132,7 @@ export function ShoppingListProvider({ children }) {
       setIngredients(data.ingredients);
     } catch (error) {
       console.error('Error removing ingredient:', error);
+      setError(error.message);
     }
   };
 
@@ -132,11 +143,10 @@ export function ShoppingListProvider({ children }) {
         throw new Error('Not authenticated');
       }
 
-      const response = await fetch('http://localhost:8000/shopping-list', {
+      const response = await fetch(`${API_BASE_URL}/api/shopping-list`, {
         method: 'DELETE',
-        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token.replace('Bearer ', '')}`
         }
       });
 
@@ -157,6 +167,7 @@ export function ShoppingListProvider({ children }) {
       setIngredients([]);
     } catch (error) {
       console.error('Error clearing shopping list:', error);
+      setError(error.message);
       // Even if the server request fails, clear the local state
       setIngredients([]);
     }
@@ -171,6 +182,7 @@ export function ShoppingListProvider({ children }) {
       ingredients,
       isOpen,
       isLoading,
+      error,
       addIngredients,
       removeIngredient,
       clearIngredients,

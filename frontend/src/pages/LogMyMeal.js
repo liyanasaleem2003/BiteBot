@@ -4,13 +4,15 @@ import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button-ui";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { ImageIcon, SendIcon, UploadIcon, ClockIcon, PlusIcon, Trash2 } from "lucide-react";
+import { ImageIcon, SendIcon, UploadIcon, ClockIcon, PlusIcon, Trash2, Heart } from "lucide-react";
 import { API_BASE_URL } from '../config';
 import Navbar from "../components/ui/Navbar";
 import { useNavigate } from 'react-router-dom';
+import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 
 const LogMyMeal = () => {
   const navigate = useNavigate();
+  const { isFavorite, addFavoriteRecipe, removeFavoriteRecipe } = useFavoriteRecipes();
   const [messages, setMessages] = useState([
     {
       id: "bot-1",
@@ -31,12 +33,17 @@ const LogMyMeal = () => {
   const [notification, setNotification] = useState({ message: '', type: '', show: false });
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [isAnalyzingMeal, setIsAnalyzingMeal] = useState(false);
+  const [lastUploadedImageUrl, setLastUploadedImageUrl] = useState(null);
 
   // Load chat history on component mount
   useEffect(() => {
     const loadChatHistory = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/chat/history`, {
+        const response = await fetch(`${API_BASE_URL}/api/chat/history`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -202,7 +209,7 @@ const LogMyMeal = () => {
       console.log(`Attempting to delete chat with ID: ${chatId} from backend`);
       
       // Send a request to delete the chat from the backend
-      const response = await fetch(`${API_BASE_URL}/chat/history/${chatId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/chat/history/${chatId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -280,7 +287,7 @@ const LogMyMeal = () => {
       // If no chatId, create a new chat
       if (!chatId) {
         console.log('Creating new chat in backend');
-        const response = await fetch(`${API_BASE_URL}/chat/history`, {
+        const response = await fetch(`${API_BASE_URL}/api/chat/history`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -307,7 +314,7 @@ const LogMyMeal = () => {
       } else {
         // Update existing chat
         console.log(`Updating existing chat: ${chatId}`);
-        const response = await fetch(`${API_BASE_URL}/chat/history/${chatId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/chat/history/${chatId}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -349,103 +356,162 @@ const LogMyMeal = () => {
   };
 
   const handleFileUpload = async (event) => {
+    if (!event.target.files || event.target.files.length === 0) {
+      return;
+    }
+    
+    // Get the selected file
     const file = event.target.files[0];
-    if (!file) return;
-
-    setIsUploading(true);
+    
+    // Check if file is an image
+    if (!file.type.match('image.*')) {
+      alert('Please select an image file.');
+      return;
+    }
+    
+    // Check file size
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_SIZE) {
+      alert('Please select an image smaller than 5MB.');
+      return;
+    }
+    
     try {
+      // Create a FormData object
       const formData = new FormData();
-      formData.append("file", file);
-
-      // Create a URL for the image preview and store it in a variable to revoke later
-      const imageUrl = URL.createObjectURL(file);
+      formData.append('image', file);
       
-      // Store the blob URL in component state to prevent it from being garbage collected
-      const newMessageId = Date.now() + Math.random().toString(36).substring(2, 9);
+      // Clear the previous image
+      setLastUploadedImageUrl(null);
       
-      // Add message about uploading with image preview and loading indicator
-      setMessages(prev => [...prev, {
-        id: `user-${newMessageId}`,
-        type: "user",
-        content: "Uploading image...",
-        image: imageUrl,
-        timestamp: new Date(),
-        blobUrl: imageUrl // Store the blob URL to revoke later
-      }, {
-        id: `bot-${newMessageId}`,
+      // Show loading state
+      const newBotMessage = {
+        id: generateUniqueId(),
         type: "bot",
-        content: "Processing your image...",
+        content: "Analyzing your image...",
+        timestamp: new Date().toISOString(),
         isLoading: true,
-        timestamp: new Date(),
-      }]);
-
-      // Make API call to analyze meal
-      const response = await fetch(`${API_BASE_URL}/nutrition/analyze-meal`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to analyze meal');
-      }
-
-      const data = await response.json();
-      setMealAnalysis(data.data);
-
-      // Create a new chat history entry
-      const newChatResponse = await fetch(`${API_BASE_URL}/chat/history`, {
+      };
+      
+      setMessages(prevMessages => [...prevMessages, newBotMessage]);
+      
+      // Upload the image
+      const uploadResponse = await fetch(`${API_BASE_URL}/api/uploads`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          title: "New Meal Analysis", // Start with a temporary title
-          image_url: data.data.image_url,
-          messages: messages,
-          meal_analysis: data.data
-        }),
+        body: formData,
       });
-
-      if (!newChatResponse.ok) {
-        throw new Error('Failed to create chat history');
+      
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload image');
       }
-
-      const newChat = await newChatResponse.json();
-      setChatHistory(prev => [newChat.data, ...prev]);
-      setActiveChat(newChat.data._id);
-
-      // Remove loading message and add bot response with detected ingredients
-      setMessages(prev => {
-        const filteredMessages = prev.filter(msg => !msg.isLoading);
-        return [...filteredMessages, {
-          id: `bot-${Date.now()}`,
-          type: "bot",
-          content: `I can see several ingredients in your meal! I've detected: ${data.data.detected_ingredients.map(ing => ing.name).join(', ')}. Let me ask you a few questions to better understand your meal.`,
-          timestamp: new Date(),
-        }];
+      
+      const uploadData = await uploadResponse.json();
+      console.log('Image upload response:', uploadData);
+      
+      // Set the uploaded image URL
+      const imageUrl = uploadData.image_url;
+      setLastUploadedImageUrl(imageUrl);
+      
+      // Analyze the meal image
+      const analyzeResponse = await fetch(`${API_BASE_URL}/api/meals/analyze-meal`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: formData,
       });
-
-      // Start the conversation flow with clarifying questions
-      if (data.data.clarifying_questions && data.data.clarifying_questions.length > 0) {
-        setCurrentQuestion(data.data.clarifying_questions[0]);
-        setMessages(prev => [...prev, {
-          id: `bot-${Date.now()}`,
-          type: "bot",
-          content: data.data.clarifying_questions[0].question,  // Render only the question text
-          timestamp: new Date(),
-        }]);
+      
+      if (!analyzeResponse.ok) {
+        throw new Error('Failed to analyze image');
       }
-
-      setCurrentStep("conversation");
+      
+      const analyzeData = await analyzeResponse.json();
+      console.log('Image analysis response:', analyzeData);
+      
+      // Process the response
+      const analysisData = analyzeData.data;
+      
+      // Format the ingredients list
+      let ingredientsList = '';
+      if (analysisData.detected_ingredients && analysisData.detected_ingredients.length > 0) {
+        ingredientsList = 'I see the following ingredients:\n';
+        analysisData.detected_ingredients.forEach(ingredient => {
+          ingredientsList += `- ${ingredient.name} (${ingredient.portion})\n`;
+        });
+        ingredientsList += '\n';
+      }
+      
+      // Format the questions
+      let questions = '';
+      if (analysisData.clarifying_questions && analysisData.clarifying_questions.length > 0) {
+        questions = 'I need a bit more information to provide an accurate analysis:\n\n';
+        analysisData.clarifying_questions.forEach((question, index) => {
+          questions += `${index + 1}. ${question.question}\n`;
+        });
+      }
+      
+      // Combine ingredients and questions
+      const combinedMessage = `${ingredientsList}${questions}`;
+      
+      // Replace the loading message with the analysis results
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === newBotMessage.id 
+            ? {
+                ...msg,
+                content: combinedMessage,
+                isLoading: false,
+                timestamp: new Date().toISOString(),
+              }
+            : msg
+        )
+      );
+      
+      // Add the detected ingredients to conversation history
+      setConversationHistory([{
+        role: "assistant",
+        content: combinedMessage
+      }]);
+      
+      // Create a new chat in the backend if needed
+      if (!activeChat) {
+        await handleStartNewChat();
+      }
+      
+      // Save chat to backend
+      await saveChatToBackend(
+        activeChat, 
+        messages.map(msg => 
+          msg.id === newBotMessage.id 
+            ? {
+                ...msg,
+                content: combinedMessage,
+                isLoading: false
+              }
+            : msg
+        ),
+        null
+      );
+      
     } catch (error) {
-      console.error("Error uploading image:", error);
-    } finally {
-      setIsUploading(false);
+      console.error('Error handling file upload:', error);
+      
+      // Replace the loading message with an error
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.isLoading 
+            ? {
+                ...msg,
+                content: `Error analyzing image: ${error.message}. Please try again.`,
+                isLoading: false,
+                isError: true
+              }
+            : msg
+        )
+      );
     }
   };
 
@@ -519,7 +585,7 @@ const LogMyMeal = () => {
 
         try {
           // Get recipe recommendations
-          const response = await fetch(`${API_BASE_URL}/nutrition/recipe-recommendations`, {
+          const response = await fetch(`${API_BASE_URL}/api/nutrition/recipe-recommendations`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -596,7 +662,7 @@ const LogMyMeal = () => {
       // Update chat history in database
       if (activeChat) {
         try {
-          const response = await fetch(`${API_BASE_URL}/chat/history/${activeChat}`, {
+          const response = await fetch(`${API_BASE_URL}/api/chat/history/${activeChat}`, {
             method: 'PUT',
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -734,23 +800,34 @@ const LogMyMeal = () => {
 
   const getFinalAnalysis = async () => {
     try {
-      // Show loading indicator
-      setMessages(prev => [...prev, {
+      setIsAnalyzingMeal(true);
+      setIsAnalyzing(true);
+      setError(null);
+      
+      // Add loading message
+      const loadingMessage = {
         id: `bot-${Date.now()}`,
         type: "bot",
-        content: "",
+        content: "Analyzing your meal...",
         isLoading: true,
         timestamp: new Date().toISOString(),
-      }]);
-
-      // Prepare the conversation history
-      const conversationHistory = messages.map(msg => ({
-        role: msg.type === "user" ? "user" : "assistant",
-        content: msg.content
-      }));
-
-      // Call the API to get the analysis
-      const response = await fetch(`${API_BASE_URL}/nutrition/analyze-details`, {
+      };
+      
+      // Add the loading message to the messages array
+      const updatedMessages = [...messages, loadingMessage];
+      setMessages(updatedMessages);
+      
+      // Prepare conversation history
+      const conversationHistory = [
+        ...messages.map(msg => ({
+          role: msg.type === "user" ? "user" : "assistant",
+          content: msg.content
+        }))
+      ];
+      
+      console.log("Sending analysis request with conversation history:", conversationHistory);
+      
+      const response = await fetch(`${API_BASE_URL}/api/nutrition/analyze-details`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -761,55 +838,118 @@ const LogMyMeal = () => {
           user_profile: JSON.parse(localStorage.getItem('userProfile') || '{}')
         })
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to analyze meal');
-      }
-
-      const analysisData = await response.json();
-      console.log("Analysis response:", analysisData);
-
-      // Remove loading indicator
-      setMessages(prev => prev.filter(msg => !msg.isLoading));
       
-      // Use the handleAnalysisDone function to process the analysis
-      handleAnalysisDone(analysisData);
-
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Analysis error response:", errorData);
+        throw new Error(errorData.detail || `Failed to analyze meal: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log("Received analysis response:", data);
+      
+      // Call handleAnalysisDone with the analysis data
+      await handleAnalysisDone(data);
+      
+      setIsAnalyzing(false);
+      setIsAnalyzingMeal(false);
     } catch (error) {
-      console.error("Error in final analysis:", error);
-      // Remove loading indicator and show error
-      setMessages(prev => 
-        prev.filter(msg => !msg.isLoading).concat({
-          id: `bot-${Date.now()}`,
-          type: "bot",
-          content: "Sorry, I encountered an error while analyzing your meal. Please try again.",
-          timestamp: new Date().toISOString(),
-        })
-      );
+      console.error("Error in getFinalAnalysis:", error);
+      setError(error.message || "Failed to analyze meal. Please try again.");
+      setIsAnalyzing(false);
+      setIsAnalyzingMeal(false);
     }
   };
 
   // Update handleAnalysisDone to use unique IDs
-  const handleAnalysisDone = async (analysisData) => {
-    console.log("Analysis response:", analysisData);
-    console.log("Analysis data:", analysisData);
-    
-    // Check if data is in the expected format, if not adjust it
-    const data = analysisData.data || analysisData;
-    setMealAnalysis(data);
-    
-    // Store the analyzed meal data in localStorage for recipe recommendations
-    localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
-    
-    // Store the meal name in localStorage so it persists when returning to the chat
-    if (data.meal_name) {
-      localStorage.setItem('lastAnalyzedMealName', data.meal_name);
-    }
-
+  const handleAnalysisDone = async (data) => {
     try {
+      console.log("Handling analysis done with data:", data);
+      
+      // Set the analysis results in state
+      setMealAnalysis(data);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
+      if (data.meal_name) {
+        localStorage.setItem('lastAnalyzedMealName', data.meal_name);
+      }
+      
+      // Get the uploaded image URL if available
+      const imageUrl = lastUploadedImageUrl || '';
+
+      // Format current date properly 
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const formattedTimestamp = today.toISOString(); // ISO format timestamp
+      
+      // Prepare meal data for saving to the database
+      const mealData = {
+        meal_name: data.meal_name,
+        date: formattedDate,
+        timestamp: formattedTimestamp,
+        image_url: imageUrl,
+        ingredients: data.ingredients || [],
+        cooking_method: data.cooking_method || '',
+        serving_size: data.serving_size || '',
+        macronutrients: {
+          calories: data.macronutrients?.calories || 0,
+          protein: data.macronutrients?.protein || 0,
+          carbs: data.macronutrients?.carbs || 0,
+          fats: data.macronutrients?.fats || 0,
+          fiber: data.macronutrients?.fiber || 0,
+          sugar: data.macronutrients?.sugar || 0,
+          sodium: data.macronutrients?.sodium || 0
+        },
+        scores: {
+          glycemic_index: data.scores?.glycemic_index || 0,
+          inflammatory: data.scores?.inflammatory || 0,
+          heart_health: data.scores?.heart_health || 0,
+          digestive: data.scores?.digestive || 0,
+          meal_balance: data.scores?.meal_balance || 0
+        },
+        health_tags: data.health_tags || [],
+        health_benefits: data.health_benefits || [],
+        potential_concerns: data.potential_concerns || [],
+        suggestions: data.suggestions || [],
+        recommended_recipes: data.recommended_recipes || [],
+        micronutrient_balance: data.micronutrient_balance || {
+          score: 0,
+          priority_nutrients: []
+        }
+      };
+      
+      console.log("Saving meal with data:", mealData);
+
+      // Save the meal to the database
+      const mealResponse = await fetch(`${API_BASE_URL}/api/nutrition/meals`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(mealData)
+      });
+
+      if (!mealResponse.ok) {
+        const errorData = await mealResponse.json();
+        console.error('Failed to save meal:', errorData);
+        console.error('Error details:', errorData.detail);
+        throw new Error(`Failed to save meal to database: ${JSON.stringify(errorData.detail)}`);
+      }
+
+      const savedMeal = await mealResponse.json();
+      console.log("Meal saved successfully:", savedMeal);
+
+      // Generate unique IDs for each message using a more unique format
+      const timestamp = Date.now();
+      const analysisMessageId = `analysis-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+      const dashboardPromptId = `dashboard-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+      const recipePromptId = `recipe-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+
       // Add the analysis message to the chat with unique ID
       const analysisMessage = {
-        id: generateUniqueId(),
+        id: analysisMessageId,
         type: "bot",
         content: `${generateAnalysisContent(data)}`,
         timestamp: new Date().toISOString(),
@@ -818,7 +958,7 @@ const LogMyMeal = () => {
       
       // Add the dashboard prompt message with unique ID
       const dashboardPromptMessage = {
-        id: generateUniqueId(),
+        id: dashboardPromptId,
         type: "bot",
         content: "Would you like to view this meal in your dashboard?",
         timestamp: new Date().toISOString(),
@@ -826,7 +966,7 @@ const LogMyMeal = () => {
       
       // Add the recipe prompt message with unique ID
       const recipePromptMessage = {
-        id: generateUniqueId(),
+        id: recipePromptId,
         type: "bot",
         content: "Would you like to see recommended recipes based on this meal?",
         timestamp: new Date().toISOString(),
@@ -842,6 +982,15 @@ const LogMyMeal = () => {
       
     } catch (error) {
       console.error("Error handling analysis done:", error);
+      // Add error message to chat with more specific error information
+      const errorMessage = {
+        id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        type: "bot",
+        content: `Sorry, there was an error saving your meal: ${error.message}. Please try again.`,
+        timestamp: new Date().toISOString(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
@@ -925,8 +1074,18 @@ Micronutrient Balance|${micronutrientBalance}%`;
       <h3 class="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>`;
     
     recipes.forEach(recipe => {
+      const isCurrentlyFavorite = isFavorite(recipe.recipe_id);
       content += `
-        <div class="recipe-card mb-4 p-3 border border-gray-600 rounded bg-black/20">
+        <div class="recipe-card mb-4 p-3 border border-gray-600 rounded bg-black/20 relative">
+          <button 
+            class="favorite-button absolute top-2 right-2 bg-transparent border-none cursor-pointer z-10"
+            onclick="window.handleToggleFavorite('${recipe.recipe_id}')"
+            title="${isCurrentlyFavorite ? "Remove from saved recipes" : "Add to saved recipes"}"
+          >
+            <svg class="heart ${isCurrentlyFavorite ? "filled" : ""}" width="30" height="30" viewBox="0 0 24 24" fill="${isCurrentlyFavorite ? "#ff3b30" : "transparent"}" stroke="${isCurrentlyFavorite ? "#ff3b30" : "white"}" stroke-width="1.5">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </button>
           <h4 class="font-bold text-green-300">${recipe.name}</h4>
           <p class="mb-2">${recipe.description}</p>
           <div class="mb-2">
@@ -951,6 +1110,24 @@ Micronutrient Balance|${micronutrientBalance}%`;
     
     return content;
   };
+
+  // Add window handler for toggling favorites
+  useEffect(() => {
+    window.handleToggleFavorite = async (recipeId) => {
+      try {
+        const recipe = mealAnalysis?.recommended_recipes?.find(r => r.recipe_id === recipeId);
+        if (!recipe) return;
+
+        if (isFavorite(recipeId)) {
+          await removeFavoriteRecipe(recipeId);
+        } else {
+          await addFavoriteRecipe(recipe);
+        }
+      } catch (error) {
+        console.error('Error toggling favorite:', error);
+      }
+    };
+  }, [mealAnalysis, isFavorite, addFavoriteRecipe, removeFavoriteRecipe]);
 
   // Update handleChatSelect to use unique IDs for new messages
   const handleChatSelect = (chatId) => {
@@ -1079,7 +1256,7 @@ Micronutrient Balance|${micronutrientBalance}%`;
                 className={`message ${message.type === "bot" ? "bot" : "user"}`}
               >
                 <div className="message-content">
-                  {message.isLoading ? (
+                  {message.isLoading || (isAnalyzingMeal && index === formattedMessages.length - 1) ? (
                     <div className="loading-dots">
                       <span>.</span>
                       <span>.</span>

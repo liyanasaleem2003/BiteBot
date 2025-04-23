@@ -29,18 +29,43 @@ export function RecipeCard({
   introduction,
   ingredients,
   instructions,
-  tags 
+  tags,
+  recipe_id,
+  location = 'recipes' // Default to 'recipes' page, can be 'dashboard' or 'recipes'
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [displayImage, setDisplayImage] = useState(image);
   const { addIngredients } = useShoppingList();
+
+  // Log the recipe_id for debugging
+  useEffect(() => {
+    console.log('RecipeCard rendered with recipe_id:', recipe_id);
+  }, [recipe_id]);
+
+  useEffect(() => {
+    setDisplayImage(image);
+  }, [image]);
 
   // Handle favorite toggle with popup
   const handleFavoriteClick = () => {
+    // Call the toggle function passed from the parent
     onFavoriteToggle();
-    setPopupMessage(isFavorite ? "Removed from saved recipes" : "Added to saved recipes!");
+    
+    // Set the popup message based on the current favorite state and location
+    if (location === 'dashboard') {
+      // In dashboard, we can only remove recipes
+      setPopupMessage("Removed from saved recipes");
+    } else {
+      // In recipes page, we can add or remove
+      setPopupMessage(!isFavorite ? "Added to saved recipes!" : "Removed from saved recipes");
+    }
+    
+    // Show the popup
     setShowPopup(true);
+    
+    // Hide the popup after 2 seconds
     setTimeout(() => setShowPopup(false), 2000);
   };
 
@@ -57,11 +82,11 @@ export function RecipeCard({
       <Card className={`recipe-card ${isExpanded ? 'expanded' : ''}`}>
         <div className="recipe-image-container">
           <img 
-            src={image} 
+            src={displayImage} 
             alt={title} 
             className="recipe-image" 
             onError={(e) => {
-              e.target.src = 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80';
+              setDisplayImage('https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80');
             }}
           />
           <div className="recipe-image-overlay">
@@ -72,7 +97,11 @@ export function RecipeCard({
               View Recipe <ArrowRight size={16} />
             </button>
           </div>
-          <button className="favorite-button" onClick={handleFavoriteClick}>
+          <button 
+            className="favorite-button" 
+            onClick={handleFavoriteClick}
+            title={isFavorite ? "Remove from saved recipes" : "Add to saved recipes"}
+          >
             <Heart className={`heart ${isFavorite ? "filled" : ""}`} />
           </button>
           {showPopup && (

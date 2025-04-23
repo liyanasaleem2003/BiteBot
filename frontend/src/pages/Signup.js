@@ -18,6 +18,7 @@ import {
 } from "../components/ui/select";
 import { Checkbox } from "../components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import { API_BASE_URL } from '../config';
 
 // Health issues for multi-select
 const healthIssueOptions = [
@@ -294,35 +295,35 @@ const Signup = () => {
   // Handle login submission
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
     
+    const formData = new URLSearchParams();
+    formData.append('username', loginForm.email);
+    formData.append('password', loginForm.password);
+
     try {
-      const formData = new URLSearchParams();
-      formData.append('username', loginForm.email);
-      formData.append('password', loginForm.password);
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString()
+        });
 
-      const response = await fetch('http://127.0.0.1:8000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData.toString(),
-      });
+        const data = await response.json();
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
-      }
+        if (!response.ok) {
+            throw new Error(data.detail || 'Login failed');
+        }
 
-      const data = await response.json();
-      // Store token with Bearer prefix
-      localStorage.setItem('token', `Bearer ${data.access_token}`);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+        // Store the token with Bearer prefix
+        localStorage.setItem('token', `Bearer ${data.access_token}`);
+        console.log('Token stored:', `Bearer ${data.access_token}`);
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+    } catch (error) {
+        console.error('Login error:', error);
+        setError(error.message);
     }
   };
 
@@ -405,7 +406,7 @@ const Signup = () => {
 
         console.log("Sending registration request with data:", userData);
 
-        const response = await fetch('http://127.0.0.1:8000/auth/register', {
+        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -431,26 +432,38 @@ const Signup = () => {
             password: "[REDACTED]"
         });
 
-        const loginResponse = await fetch('http://127.0.0.1:8000/auth/login', {
+        // Create form data for login
+        const formData = new URLSearchParams();
+        formData.append('username', signupForm.email);
+        formData.append('password', signupForm.password);
+
+        const loginResponse = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: new URLSearchParams({
-                username: signupForm.email,
-                password: signupForm.password,
-            }),
+            body: formData.toString()
         });
 
-        const loginData = await loginResponse.json();
+        const loginResult = await loginResponse.json();
 
         if (!loginResponse.ok) {
-            console.error("Login failed:", loginData);
-            throw new Error(loginData.detail || 'Registration successful but login failed');
+            console.error("Login failed:", loginResult);
+            let errorMessage = 'Registration successful but login failed';
+            
+            if (loginResult.detail) {
+                if (Array.isArray(loginResult.detail)) {
+                    errorMessage = loginResult.detail.map(err => err.msg || err).join(', ');
+                } else {
+                    errorMessage = loginResult.detail;
+                }
+            }
+            
+            throw new Error(errorMessage);
         }
 
-        console.log("Login successful:", loginData);
-        localStorage.setItem('token', `Bearer ${loginData.access_token}`);
+        console.log("Login successful:", loginResult);
+        localStorage.setItem('token', loginResult.access_token);
         navigate('/');
     } catch (error) {
         console.error("Registration error:", error);

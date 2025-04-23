@@ -25,6 +25,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -52,16 +55,19 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (!token) {
         console.log("No token found");
         navigate("/signup");
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      // Remove Bearer prefix if it exists
+      const cleanToken = token.replace('Bearer ', '');
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${cleanToken}`,
           "Content-Type": "application/json"
         }
       });
@@ -139,86 +145,108 @@ const Profile = () => {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (!token) {
-        console.log("No token found");
-        navigate("/signup");
-        return;
+        throw new Error('No authentication token found');
       }
-
-      // Calculate age from date of birth
-      const today = new Date();
-      const birthDate = new Date(formData.profile.date_of_birth);
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-
-      // Format the date to YYYY-MM-DD
-      const formattedDate = birthDate.toISOString().split('T')[0];
-
-      // Add age to the profile data
-      const updatedFormData = {
-        ...formData,
-        profile: {
-          ...formData.profile,
-          age: age,
-          date_of_birth: formattedDate  // Ensure date is in YYYY-MM-DD format
-        }
-      };
-
-      console.log("Sending profile update request with data:", updatedFormData);
 
       // Remove Bearer prefix if it exists
       const cleanToken = token.replace('Bearer ', '');
 
-      console.log("Making request to:", `${API_BASE_URL}/auth/profile/update`);
-      console.log("Using token:", cleanToken.substring(0, 10) + "...");
+      // Check if any major health-related fields have changed
+      const majorChanges = [
+        'profile.weight.value',
+        'profile.height.value',
+        'profile.date_of_birth',
+        'profile.activity_level',
+        'profile.personal_health_history',
+        'profile.family_health_history',
+        'profile.health_goals'
+      ];
 
-      const response = await fetch(`${API_BASE_URL}/auth/profile/update`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${cleanToken}`,
-          "Accept": "application/json"
-        },
-        credentials: "include",
-        mode: "cors", // Explicitly set CORS mode
-        body: JSON.stringify(updatedFormData)
+      const hasMajorChanges = majorChanges.some(field => {
+        const [parent, child] = field.split('.');
+        if (child) {
+          // Special handling for date_of_birth
+          if (field === 'profile.date_of_birth') {
+            const newDate = formData.profile.date_of_birth;
+            const oldDate = userProfile.profile.date_of_birth;
+            return newDate !== oldDate;
+          }
+          return JSON.stringify(formData[parent][child]) !== JSON.stringify(userProfile[parent][child]);
+        }
+        return JSON.stringify(formData[parent]) !== JSON.stringify(userProfile[parent]);
       });
 
-      console.log("Response status:", response.status);
-      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-
-      if (!response.ok) {
-        let errorData;
+      let nutritionalNeeds = null;
+      if (hasMajorChanges) {
+        // If there are major changes, call the GPT analysis endpoint first
+        console.log('Major health changes detected, calling GPT analysis endpoint');
+        setIsAnalyzing(true);
+        
         try {
-          errorData = await response.json();
-          console.error("Server error response:", errorData);
-        } catch (e) {
-          console.error("Failed to parse error response:", e);
-          errorData = { detail: "Failed to parse error response" };
+          const gptResponse = await fetch(`${API_BASE_URL}/api/nutrition/analyze-profile`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${cleanToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              user_profile: formData,
+              previous_profile: userProfile
+            })
+          });
+
+          if (!gptResponse.ok) {
+            const errorData = await gptResponse.json();
+            throw new Error(errorData.detail || 'Failed to analyze profile changes');
+          }
+
+          const gptAnalysis = await gptResponse.json();
+          console.log('GPT analysis received:', gptAnalysis);
+          nutritionalNeeds = gptAnalysis.nutritional_needs;
+        } catch (error) {
+          console.error('Error during GPT analysis:', error);
+          throw error;
+        } finally {
+          setIsAnalyzing(false);
         }
-        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
-      const updatedProfile = await response.json();
-      console.log("Profile updated successfully:", updatedProfile);
-      
-      // Update the local state with the new profile data
-      setUserProfile(updatedProfile);
-      setFormData(updatedProfile);
-      
-      // Show success message
-      alert("Profile updated successfully! Your nutritional needs have been recalculated based on your updated information.");
-      setEditMode(false);
+      // Update the profile with the new data
+      console.log('Updating profile with data:', formData);
+      const response = await fetch(`${API_BASE_URL}/api/profile/update`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${cleanToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          ...(nutritionalNeeds && { nutritional_needs: nutritionalNeeds })
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to update profile');
+      }
+
+      const updatedUser = await response.json();
+      console.log('Profile updated successfully:', updatedUser);
+      setUserProfile(updatedUser);
+      setFormData(updatedUser);
+      setSuccessMessage('Profile updated successfully!' + (hasMajorChanges ? ' Your nutritional needs have been recalculated.' : ''));
+      setEditMode(false); // Exit edit mode
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      console.error("Error updating profile:", error);
-      console.error("Error stack:", error.stack);
-      alert(error.message || "Failed to update profile. Please try again.");
+      console.error('Error updating profile:', error);
+      console.error('Error stack:', error.stack);
+      setError(error.message);
+      setTimeout(() => setError(''), 5000);
     }
   };
 
@@ -686,7 +714,20 @@ const Profile = () => {
               )}
 
               <div className="profile-actions">
-                <Button onClick={handleSubmit}>Save Changes</Button>
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={isAnalyzing}
+                  className={isAnalyzing ? 'analyzing' : ''}
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <span className="spinner"></span>
+                      Analyzing Health Changes...
+                    </>
+                  ) : (
+                    'Save Changes'
+                  )}
+                </Button>
                 <Button variant="outline" onClick={() => setEditMode(false)}>Cancel</Button>
               </div>
             </div>

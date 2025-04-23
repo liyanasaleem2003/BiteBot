@@ -6,6 +6,21 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { API_BASE_URL } from '../../config';
 import "./MealCard.css";
 
+// Helper function to format a date safely
+const formatDateSafely = (dateString: string): string => {
+  try {
+    const date = new Date(dateString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "Unknown time";
+    }
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch (error) {
+    console.error("Error formatting date:", error, dateString);
+    return "Unknown time";
+  }
+};
+
 // Types
 interface MacroProgress {
   current: number;
@@ -30,11 +45,11 @@ interface Supplement {
 
 interface Meal {
   id: string;
-  name: string;
-  time: string;
-  image: string;
-  tags: string[];
-  macros: {
+  meal_name: string;
+  timestamp: string;
+  image_url: string;
+  health_tags: string[];
+  macronutrients: {
     calories: number;
     protein: number;
     carbs: number;
@@ -43,18 +58,18 @@ interface Meal {
     sugar: number;
     sodium: number;
   };
-  healthScores: {
-    glycemic: number;
+  scores: {
+    glycemic_index: number;
     inflammatory: number;
-    heart: number;
+    heart_health: number;
     digestive: number;
-    balance: number;
+    meal_balance: number;
   };
   micronutrient_balance?: {
-    score: number;
     priority_nutrients: Array<{
       name: string;
       percentage: number;
+      description?: string;
     }>;
   };
 }
@@ -64,10 +79,11 @@ interface MealCardProps {
   onDelete: (id: string) => void;
   expanded?: boolean;
   onToggle?: () => void;
+  priorityMicronutrients?: string[];
 }
 
 const healthScoreInfo = {
-  glycemic: {
+  glycemic_index: {
     label: "Glycemic Index",
     description: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy."
   },
@@ -75,7 +91,7 @@ const healthScoreInfo = {
     label: "Inflammatory Score",
     description: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory."
   },
-  heart: {
+  heart_health: {
     label: "Heart Health Score",
     description: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health."
   },
@@ -83,13 +99,13 @@ const healthScoreInfo = {
     label: "Digestive Score",
     description: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support."
   },
-  balance: {
+  meal_balance: {
     label: "Meal Balance Score",
     description: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals."
   }
 };
 
-export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCardProps) {
+export function MealCard({ meal, onDelete, expanded = false, onToggle, priorityMicronutrients }: MealCardProps) {
   const getHealthScoreClass = (score: number, type: "lowGood" | "highGood"): string => {
     if (type === "lowGood") {
       if (score <= 33) return "good";
@@ -102,24 +118,40 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
     }
   };
 
-  const totalMacros = meal.macros.protein + meal.macros.carbs + meal.macros.fats;
-  const proteinPercentage = Math.round((meal.macros.protein / totalMacros) * 100);
-  const carbsPercentage = Math.round((meal.macros.carbs / totalMacros) * 100);
-  const fatsPercentage = Math.round((meal.macros.fats / totalMacros) * 100);
+  const totalMacroGrams = 
+    (meal.macronutrients.protein || 0) + 
+    (meal.macronutrients.carbs || 0) + 
+    (meal.macronutrients.fats || 0);
+
+  const proteinPercentage = Math.round(totalMacroGrams > 0 
+    ? (meal.macronutrients.protein / totalMacroGrams) * 100 
+    : 33.33);
+  
+  const carbsPercentage = Math.round(totalMacroGrams > 0 
+    ? (meal.macronutrients.carbs / totalMacroGrams) * 100 
+    : 33.33);
+  
+  const fatsPercentage = Math.round(totalMacroGrams > 0 
+    ? (meal.macronutrients.fats / totalMacroGrams) * 100 
+    : 33.33);
 
   const formatScoreLabel = (key: string): string => {
     return key.split(/(?=[A-Z])/).join(' ').charAt(0).toUpperCase() + key.slice(1);
   };
 
-  // Helper function to get the full image URL
-  const getImageUrl = (imagePath: string): string => {
-    if (!imagePath || imagePath.trim() === '') {
-      return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
+  // Function to get image URL
+  const getImageUrl = (url: string): string => {
+    if (!url) return "/placeholder-meal.jpg";
+    
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
     }
-    if (imagePath.startsWith('http')) {
-      return imagePath;
+    
+    if (url.startsWith("data:image")) {
+      return url;
     }
-    return `${API_BASE_URL}${imagePath}`;
+    
+    return `${API_BASE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
   };
 
   return (
@@ -128,13 +160,13 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
         <div className="meal-card-content">
           <div className="meal-card-image">
             <img 
-              src={getImageUrl(meal.image)}
-              alt={meal.name}
+              src={getImageUrl(meal.image_url)}
+              alt={meal.meal_name}
               className="w-full h-full object-cover rounded-lg"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "/placeholder-meal.jpg";
-                console.error("Failed to load image:", meal.image);
+                console.error("Failed to load image:", meal.image_url);
               }}
             />
           </div>
@@ -142,11 +174,11 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
             <div className="meal-card-header-row">
               <div className="meal-card-title-container">
                 <div className="flex items-center justify-between w-full">
-                  <h3 className="meal-card-title">{meal.name}</h3>
-                  <span className="meal-card-time">{meal.time}</span>
+                  <h3 className="meal-card-title">{meal.meal_name}</h3>
+                  <span className="meal-card-time">{formatDateSafely(meal.timestamp)}</span>
                 </div>
                 <div className="meal-card-tags">
-                  {meal.tags.map((tag, idx) => (
+                  {meal.health_tags.map((tag, idx) => (
                     <Badge 
                       key={idx} 
                       variant="outline" 
@@ -190,31 +222,31 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
             <div className="meal-card-nutrition-grid">
               <div className="meal-card-nutrition-item">
                 <span>Calories:</span>
-                <span>{meal.macros.calories}kcal</span>
+                <span>{meal.macronutrients.calories}kcal</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Protein:</span>
-                <span>{meal.macros.protein}g</span>
+                <span>{meal.macronutrients.protein}g</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Carbs:</span>
-                <span>{meal.macros.carbs}g</span>
+                <span>{meal.macronutrients.carbs}g</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Fats:</span>
-                <span>{meal.macros.fats}g</span>
+                <span>{meal.macronutrients.fats}g</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Fiber:</span>
-                <span>{meal.macros.fiber}g</span>
+                <span>{meal.macronutrients.fiber}g</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Sugar:</span>
-                <span>{meal.macros.sugar}g</span>
+                <span>{meal.macronutrients.sugar}g</span>
               </div>
               <div className="meal-card-nutrition-item">
                 <span>Sodium:</span>
-                <span>{meal.macros.sodium}mg</span>
+                <span>{meal.macronutrients.sodium}mg</span>
               </div>
             </div>
           </div>
@@ -266,46 +298,51 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
               </TooltipProvider>
             </div>
             <div className="meal-card-health-scores">
-              {Object.entries(meal.healthScores).map(([key, value]) => (
-                <div key={key} className="meal-card-health-score">
-                  <div className="meal-card-health-score-header">
-                    <div className="flex items-center">
-                      <TooltipProvider>
-                        <Tooltip content={
-                          <div className="meal-card-health-score-tooltip">
-                            {healthScoreInfo[key as keyof typeof healthScoreInfo].description}
-                          </div>
-                        }>
-                          <TooltipTrigger asChild>
-                            <div className="meal-card-health-score-label">
-                              <span>{healthScoreInfo[key as keyof typeof healthScoreInfo].label}</span>
-                              <HelpCircle className="help-icon" />
+              {Object.entries(meal.scores).map(([key, value]) => {
+                const scoreInfo = healthScoreInfo[key as keyof typeof healthScoreInfo];
+                if (!scoreInfo) return null; // Skip if no info exists for this score
+                
+                return (
+                  <div key={key} className="meal-card-health-score">
+                    <div className="meal-card-health-score-header">
+                      <div className="flex items-center">
+                        <TooltipProvider>
+                          <Tooltip content={
+                            <div className="meal-card-health-score-tooltip">
+                              {scoreInfo.description}
                             </div>
-                          </TooltipTrigger>
-                        </Tooltip>
-                      </TooltipProvider>
+                          }>
+                            <TooltipTrigger asChild>
+                              <div className="meal-card-health-score-label">
+                                <span>{scoreInfo.label}</span>
+                                <HelpCircle className="help-icon" />
+                              </div>
+                            </TooltipTrigger>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <span className="text-sm text-zinc-400">{Math.round(value)}%</span>
                     </div>
-                    <span className="text-sm text-zinc-400">{Math.round(value)}%</span>
+                    <div className="meal-card-health-score-bar">
+                      <div 
+                        className={`meal-card-health-score-progress ${getHealthScoreClass(value, key === 'glycemic_index' || key === 'inflammatory' ? 'lowGood' : 'highGood')}`}
+                        style={{ width: `${value}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="meal-card-health-score-bar">
-                    <div 
-                      className={`meal-card-health-score-progress ${getHealthScoreClass(value, key === 'glycemic' || key === 'inflammatory' ? 'lowGood' : 'highGood')}`}
-                      style={{ width: `${value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {meal.micronutrient_balance && (
+          {meal.micronutrient_balance && meal.micronutrient_balance.priority_nutrients.length > 0 && (
             <div className="meal-card-section">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="meal-card-section-title">Micronutrient Balance</h4>
                 <TooltipProvider>
                   <Tooltip content={
                     <div className="meal-card-health-score-tooltip">
-                      Shows the average percentage of daily recommended intake for your priority micronutrients.
+                      Shows the percentage of daily recommended intake for your priority micronutrients present in this meal.
                     </div>
                   }>
                     <TooltipTrigger asChild>
@@ -315,33 +352,6 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
                 </TooltipProvider>
               </div>
               <div className="meal-card-health-scores">
-                <div className="meal-card-health-score">
-                  <div className="meal-card-health-score-header">
-                    <div className="flex items-center">
-                      <TooltipProvider>
-                        <Tooltip content={
-                          <div className="meal-card-health-score-tooltip">
-                            Average percentage of daily recommended intake for your priority micronutrients.
-                          </div>
-                        }>
-                          <TooltipTrigger asChild>
-                            <div className="meal-card-health-score-label">
-                              <span>Overall Balance</span>
-                              <HelpCircle className="help-icon" />
-                            </div>
-                          </TooltipTrigger>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <span className="text-sm text-zinc-400">{Math.round(meal.micronutrient_balance.score)}%</span>
-                  </div>
-                  <div className="meal-card-health-score-bar">
-                    <div 
-                      className={`meal-card-health-score-progress ${getHealthScoreClass(meal.micronutrient_balance.score, 'highGood')}`}
-                      style={{ width: `${meal.micronutrient_balance.score}%` }}
-                    />
-                  </div>
-                </div>
                 {meal.micronutrient_balance.priority_nutrients.map((nutrient, index) => (
                   <div key={index} className="meal-card-health-score">
                     <div className="meal-card-health-score-header">
@@ -349,7 +359,7 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle }: MealCar
                         <TooltipProvider>
                           <Tooltip content={
                             <div className="meal-card-health-score-tooltip">
-                              Percentage of daily recommended intake for {nutrient.name}.
+                              {nutrient.description || `Percentage of daily recommended intake for ${nutrient.name}.`}
                             </div>
                           }>
                             <TooltipTrigger asChild>

@@ -5,6 +5,7 @@ import Navbar from "../components/ui/Navbar";
 import { Search } from "lucide-react";
 import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 import "./Recipes.css";
+import { API_BASE_URL } from '../config';
 
 // Filter Categories
 const dietaryOptions = [
@@ -72,25 +73,48 @@ export default function Recipes() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch("http://127.0.0.1:8000/recipes", {
+        // First fetch all recipes
+        const recipesResponse = await fetch(`${API_BASE_URL}/api/recipes`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!recipesResponse.ok) {
+          throw new Error(`HTTP error! Status: ${recipesResponse.status}`);
         }
 
-        const data = await response.json();
+        const recipesData = await recipesResponse.json();
         
-        if (Array.isArray(data)) {
-          console.log("Received recipes data:", data);
-          setRecipes(data);
-          setFilteredRecipes(data);
+        // Then fetch saved recipes
+        const savedResponse = await fetch(`${API_BASE_URL}/api/saved/recipes`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
+          },
+        });
+
+        if (!savedResponse.ok) {
+          throw new Error(`HTTP error! Status: ${savedResponse.status}`);
+        }
+
+        const savedData = await savedResponse.json();
+        
+        // Combine the data
+        const allRecipes = recipesData.map(recipe => ({
+          ...recipe,
+          isSaved: savedData.some(saved => saved.recipe_id === recipe.recipe_id)
+        }));
+        
+        if (Array.isArray(allRecipes)) {
+          console.log("Received recipes data:", allRecipes);
+          setRecipes(allRecipes);
+          setFilteredRecipes(allRecipes);
         } else {
-          console.error("Unexpected API response:", data);
+          console.error("Unexpected API response:", allRecipes);
           setRecipes([]);
           setFilteredRecipes([]);
         }
@@ -294,10 +318,23 @@ export default function Recipes() {
 
   // Updated Toggle Favorite Function
   const toggleFavorite = (recipe) => {
-    if (isFavorite(recipe.title)) {
-      removeFavoriteRecipe(recipe.title);
+    // Check if the recipe is already a favorite
+    const isCurrentlyFavorite = isFavorite(recipe.recipe_id);
+    
+    if (isCurrentlyFavorite) {
+      // If it's already a favorite, remove it
+      removeFavoriteRecipe(recipe.recipe_id);
+      console.log(`Removed recipe ${recipe.recipe_id} from favorites`);
     } else {
+      // If it's not a favorite, add it
+      // Ensure recipe has a valid recipe_id before adding
+      if (!recipe.recipe_id) {
+        console.error('Cannot add recipe to favorites: recipe_id is missing', recipe);
+        return;
+      }
+      
       addFavoriteRecipe(recipe);
+      console.log(`Added recipe ${recipe.recipe_id} to favorites`);
     }
   };
 
@@ -404,17 +441,23 @@ export default function Recipes() {
           </div>
 
           <div className="recipes-grid">
-            {filteredRecipes.map((recipe, index) => (
-              <RecipeCard 
-                key={index} 
-                {...recipe} 
-                culturalStyle={recipe.tags?.cultural?.main === "Fusion 🥘" ? 
-                  "Fusion 🥘" : 
-                  recipe.tags?.cultural?.sub || ''}
-                isFavorite={isFavorite(recipe.title)} 
-                onFavoriteToggle={() => toggleFavorite(recipe)} 
-              />
-            ))}
+            {filteredRecipes.map((recipe, index) => {
+              // Log the recipe object for debugging
+              console.log(`Rendering recipe ${index}:`, recipe);
+              
+              return (
+                <RecipeCard 
+                  key={index} 
+                  {...recipe} 
+                  culturalStyle={recipe.tags?.cultural?.main === "Fusion 🥘" ? 
+                    "Fusion 🥘" : 
+                    recipe.tags?.cultural?.sub || ''}
+                  isFavorite={isFavorite(recipe.recipe_id)} 
+                  onFavoriteToggle={() => toggleFavorite(recipe)} 
+                  location="recipes"
+                />
+              );
+            })}
           </div>
         </main>
       </div>

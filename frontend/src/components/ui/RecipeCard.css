@@ -221,11 +221,23 @@
   width: 30px;
   height: 30px;
   fill: transparent;
-  transition: fill 0.2s;
+  stroke: white;
+  stroke-width: 1.5;
+  transition: all 0.3s ease;
 }
 
 .favorite-button .heart.filled {
-  fill: red;
+  fill: #ff3b30;
+  stroke: #ff3b30;
+  transform: scale(1.1);
+}
+
+.favorite-button:hover .heart {
+  transform: scale(1.1);
+}
+
+.favorite-button:hover .heart.filled {
+  transform: scale(1.2);
 }
 
 /* View Recipe Button */
@@ -545,17 +557,20 @@
 .favorite-popup {
   position: absolute;
   top: 50px;
-  right: 12px;
+  right: 10px;
   background: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
   z-index: 10;
-  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: fadeInOut 2s ease-in-out;
   white-space: nowrap;
+  text-align: center;
+  min-width: 160px;
 }
 
 @keyframes fadeInOut {
@@ -563,11 +578,11 @@
     opacity: 0;
     transform: translateY(-10px);
   }
-  15% {
+  10% {
     opacity: 1;
     transform: translateY(0);
   }
-  85% {
+  80% {
     opacity: 1;
     transform: translateY(0);
   }
