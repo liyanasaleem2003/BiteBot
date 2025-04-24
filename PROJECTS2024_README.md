@@ -1,0 +1,33 @@
+# BiteBot - Repository Structure
+
+This repository contains a mirror of the BiteBot project from two primary sources:
+- https://git.cs.bham.ac.uk/lxs211/bitebot
+- https://github.com/liyanasaleem2003/BiteBot
+
+## Branch Structure
+
+- `new_main`: Contains the merged codebase from both sources with the latest features
+- `gitlab_main`: Mirror of the main branch from the original gitlab repository
+- `github_main`: Mirror of the main branch from the github repository
+
+## About BiteBot
+
+BiteBot is a comprehensive wellness platform that helps users maintain a healthy lifestyle while staying connected to their South Asian culinary roots. The application combines modern nutritional science with traditional South Asian cooking to provide personalized meal recommendations, recipe modifications, and health tracking.
+
+## Repository Mirroring Setup
+
+The repository has been configured with a custom Git alias to enable pushing to all repositories simultaneously:
+
+```bash
+git pushboth  # Pushes to github, gitlab, and projects2024 repositories
+git pullboth  # Pulls from github, gitlab, and fetches from projects2024
+```
+
+## How to Contribute
+
+For contributions, please push to the original repositories and the changes will be mirrored here:
+1. Make your changes
+2. Commit to your local branch
+3. Use `git pushboth` to update all repositories
+
+Please see the main README.md for more detailed information about the project features and setup instructions. 
