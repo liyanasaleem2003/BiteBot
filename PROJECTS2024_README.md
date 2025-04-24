@@ -6,9 +6,7 @@ This repository contains a mirror of the BiteBot project from two primary source
 
 ## Branch Structure
 
-- `new_main`: Contains the merged codebase from both sources with the latest features
-- `gitlab_main`: Mirror of the main branch from the original gitlab repository
-- `github_main`: Mirror of the main branch from the github repository
+- `main`: The primary branch containing the latest version of the codebase
 
 ## About BiteBot
 
@@ -19,8 +17,8 @@ BiteBot is a comprehensive wellness platform that helps users maintain a healthy
 The repository has been configured with custom Git aliases to enable pushing to and pulling from all repositories simultaneously:
 
 ```bash
-git pushall  # Pushes to github, gitlab, and projects2024 repositories
-git pullall  # Pulls from github, gitlab, and fetches from projects2024
+git pushall  # Pushes to github, gitlab, and projects2024 repositories (main branch)
+git pullall  # Pulls from github, gitlab, and projects2024 repositories (main branch)
 ```
 
 These commands will ensure that all repositories stay in sync.

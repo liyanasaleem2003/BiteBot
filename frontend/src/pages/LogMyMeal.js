@@ -396,7 +396,7 @@ const LogMyMeal = () => {
       setMessages(prevMessages => [...prevMessages, newBotMessage]);
       
       // Upload the image
-      const uploadResponse = await fetch(`${API_BASE_URL}/api/uploads`, {
+      const uploadResponse = await fetch(`${API_BASE_URL}/api/nutrition/analyze-meal`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -412,92 +412,57 @@ const LogMyMeal = () => {
       console.log('Image upload response:', uploadData);
       
       // Set the uploaded image URL
-      const imageUrl = uploadData.image_url;
+      const imageUrl = uploadData.data.image_url;
       setLastUploadedImageUrl(imageUrl);
       
-      // Analyze the meal image
-      const analyzeResponse = await fetch(`${API_BASE_URL}/api/meals/analyze-meal`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: formData,
+      // Use the data from uploadResponse instead of making a duplicate call
+      const analysisData = uploadData.data;
+      
+      // Update the loading message with the results
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        const loadingIndex = updatedMessages.findIndex(msg => msg.isLoading);
+        
+        if (loadingIndex !== -1) {
+          updatedMessages[loadingIndex] = {
+            ...updatedMessages[loadingIndex],
+            content: "I've analyzed your meal image! Here's what I can detect:",
+            isLoading: false,
+          };
+        }
+        
+        // Add another message with the detected ingredients
+        updatedMessages.push({
+          id: generateUniqueId(),
+          type: "bot",
+          content: `I can see the following ingredients: ${
+            analysisData.detected_ingredients?.map(
+              item => `${item.name} (${item.portion})`
+            ).join(", ") || "No ingredients detected"
+          }`,
+          timestamp: new Date().toISOString(),
+        });
+        
+        // Add clarifying questions
+        if (analysisData.clarifying_questions && analysisData.clarifying_questions.length > 0) {
+          analysisData.clarifying_questions.forEach(question => {
+            updatedMessages.push({
+              id: generateUniqueId(),
+              type: "bot",
+              content: question.question,
+              timestamp: new Date().toISOString(),
+              isQuestion: true,
+              category: question.category,
+              validation: question.validation_rules
+            });
+          });
+        }
+        
+        return updatedMessages;
       });
       
-      if (!analyzeResponse.ok) {
-        throw new Error('Failed to analyze image');
-      }
-      
-      const analyzeData = await analyzeResponse.json();
-      console.log('Image analysis response:', analyzeData);
-      
-      // Process the response
-      const analysisData = analyzeData.data;
-      
-      // Format the ingredients list
-      let ingredientsList = '';
-      if (analysisData.detected_ingredients && analysisData.detected_ingredients.length > 0) {
-        ingredientsList = 'I see the following ingredients:\n';
-        analysisData.detected_ingredients.forEach(ingredient => {
-          ingredientsList += `- ${ingredient.name} (${ingredient.portion})\n`;
-        });
-        ingredientsList += '\n';
-      }
-      
-      // Format the questions
-      let questions = '';
-      if (analysisData.clarifying_questions && analysisData.clarifying_questions.length > 0) {
-        questions = 'I need a bit more information to provide an accurate analysis:\n\n';
-        analysisData.clarifying_questions.forEach((question, index) => {
-          questions += `${index + 1}. ${question.question}\n`;
-        });
-      }
-      
-      // Combine ingredients and questions
-      const combinedMessage = `${ingredientsList}${questions}`;
-      
-      // Replace the loading message with the analysis results
-      setMessages(prevMessages => 
-        prevMessages.map(msg => 
-          msg.id === newBotMessage.id 
-            ? {
-                ...msg,
-                content: combinedMessage,
-                isLoading: false,
-                timestamp: new Date().toISOString(),
-              }
-            : msg
-        )
-      );
-      
-      // Add the detected ingredients to conversation history
-      setConversationHistory([{
-        role: "assistant",
-        content: combinedMessage
-      }]);
-      
-      // Create a new chat in the backend if needed
-      if (!activeChat) {
-        await handleStartNewChat();
-      }
-      
-      // Save chat to backend
-      await saveChatToBackend(
-        activeChat, 
-        messages.map(msg => 
-          msg.id === newBotMessage.id 
-            ? {
-                ...msg,
-                content: combinedMessage,
-                isLoading: false
-              }
-            : msg
-        ),
-        null
-      );
-      
     } catch (error) {
-      console.error('Error handling file upload:', error);
+      console.error("Error handling file upload:", error);
       
       // Replace the loading message with an error
       setMessages(prevMessages => 
