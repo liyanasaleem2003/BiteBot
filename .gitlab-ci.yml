@@ -1,0 +1,56 @@
+image: python:3.11
+
+variables:
+  AZURE_WEBAPP_NAME_FRONTEND: bitebot-frontend-2024
+  AZURE_WEBAPP_NAME_BACKEND: bitebot-backend-2024
+  NODE_VERSION: '18.x'
+
+stages:
+  - build
+  - deploy
+
+# Frontend build and deploy
+frontend-build:
+  stage: build
+  image: node:$NODE_VERSION
+  script:
+    - cd frontend
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/build
+    expire_in: 1 week
+
+frontend-deploy:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli
+  script:
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    - az webapp deploy --resource-group bitebot-rg --name $AZURE_WEBAPP_NAME_FRONTEND --src-path frontend/build --type zip
+  only:
+    - main
+  dependencies:
+    - frontend-build
+
+# Backend build and deploy
+backend-build:
+  stage: build
+  script:
+    - cd backend
+    - pip install -r requirements.txt
+  artifacts:
+    paths:
+      - backend/
+    expire_in: 1 week
+
+backend-deploy:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli
+  script:
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    - az webapp deploy --resource-group bitebot-rg --name $AZURE_WEBAPP_NAME_BACKEND --src-path backend --type zip
+  only:
+    - main
+  dependencies:
+    - backend-build 
