@@ -1,0 +1,3918 @@
+[{
+    "recipe_id": "1",
+    "name": "Masala Oats with Vegetables",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian", "Gluten-Free","Lactose-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+      ],
+      "meal_type": "Breakfast",
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This masala oats dish uses heart-healthy rolled oats and antioxidant-packed vegetables like carrots and peas. It supports digestive health with its high fiber content and lowers cholesterol levels with a low-sodium, low-saturated fat profile. Prepared without butter or ghee, it's an ideal breakfast for busy mornings.",
+    "ingredients": [
+      { "name": "Rolled Oats", "quantity": "1 cup" },
+      { "name": "Mixed Vegetables (Carrots, Peas, Beans)", "quantity": "1 cup" },
+      { "name": "Onion", "quantity": "1 small, finely chopped" },
+      { "name": "Tomato", "quantity": "1 small, diced" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Water", "quantity": "2 cups" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Heat a pan, add cumin seeds, and sauté onion and tomato until softened.",
+      "Step 2: Add turmeric powder, vegetables, and salt. Cook for 5 minutes.",
+      "Step 3: Add oats and water. Simmer for 7–10 minutes until oats are cooked.",
+      "Step 4: Serve warm, garnished with coriander."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 7,
+      "carbs": 35,
+      "fat": 4,
+      "fiber": 8
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "2",
+    "name": "Shorshe Dal",
+    "image_url": "url_to_image",
+    "time_required": 25,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Lactose-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources", "Folate-Heavy"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "High-Protein", "sub": ["Energy-Boosting"]}
+
+      ],
+      "meal_type": "Lunch",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Bengali 🇧🇩"
+      }
+    },
+    "introduction": "Shorshe Dal is a traditional Bengali dish rich in non-heme iron from lentils and packed with folate. The mustard seeds add antioxidants and anti-inflammatory properties, making this dish perfect for promoting cellular health and digestion.",
+    "ingredients": [
+      { "name": "Red Lentils (Masoor Dal)", "quantity": "1 cup" },
+      { "name": "Mustard Seeds", "quantity": "1/2 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Garlic", "quantity": "2 cloves, minced" },
+      { "name": "Spinach", "quantity": "1 cup, chopped" },
+      { "name": "Water", "quantity": "3 cups" },
+      { "name": "Salt", "quantity": "To taste" },
+      { "name": "Coconut Oil (or Mustard Oil)", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Rinse the red lentils thoroughly under cold water until the water runs clear. In a pot, combine the lentils, turmeric powder, and water. Bring to a boil over medium heat, then reduce to a simmer. Cook uncovered for 15-20 minutes or until the lentils are soft and the mixture thickens. Stir occasionally and skim off any foam that forms on the surface.",
+      "Step 2: In a separate pan, heat the coconut or mustard oil over medium heat. Add mustard seeds and let them splutter for 30 seconds. Add the minced garlic and sauté until golden and fragrant (about 1-2 minutes).",
+      "Step 3: Pour the cooked lentils into the pan with the garlic and mustard seeds. Stir to combine and simmer for an additional 5 minutes.",
+      "Step 4: Add chopped spinach to the dal and stir gently. Cook for another 3-4 minutes until the spinach wilts and blends well with the lentils.",
+      "Step 5: Adjust salt to taste. If the dal is too thick, add a little water to reach the desired consistency.",
+      "Step 6: Serve hot with steamed rice or whole wheat flatbread. Drizzle with a little mustard oil before serving for an authentic Bengali touch."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 10,
+      "carbs": 25,
+      "fat": 2,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "3",
+    "name": "Lahori Chicken Karahi",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+        "dietary_preferences": ["Non-Vegetarian"],
+        "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+            { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building"]}
+        ],
+        "meal_type": "Dinner",
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Pakistani 🇵🇰"
+        }
+    },
+    "introduction": "This healthier version of Lahori Chicken Karahi uses lean chicken breast and avocado oil to reduce saturated fat while retaining the traditional flavors. With collagen-boosting ingredients like tomatoes and lemon juice, it supports skin and joint health, making it a wholesome dinner option.",
+    "ingredients": [
+        { "name": "Chicken Breast", "quantity": "500g, cubed" },
+        { "name": "Tomatoes", "quantity": "3 large, pureed" },
+        { "name": "Ginger", "quantity": "1 tbsp, grated" },
+        { "name": "Garlic", "quantity": "1 tbsp, minced" },
+        { "name": "Garam Masala", "quantity": "1 tsp" },
+        { "name": "Green Chilies", "quantity": "2, finely chopped" },
+        { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+        { "name": "Avocado Oil", "quantity": "1 tbsp" },
+        { "name": "Lemon Juice", "quantity": "1 tbsp" },
+        { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Heat avocado oil in a wok over medium heat. Sauté ginger, garlic, and green chilies for 2-3 minutes until fragrant.",
+        "Step 2: Add chicken breast and cook for 5-7 minutes until lightly browned.",
+        "Step 3: Add pureed tomatoes, garam masala, and salt. Simmer for 15-20 minutes until the chicken is tender and the sauce thickens.",
+        "Step 4: Squeeze lemon juice over the dish to enhance flavor and collagen support.",
+        "Step 5: Garnish with coriander leaves and serve with whole grain roti or brown rice for an added fiber boost."
+    ],
+    "nutritional_info": {
+        "calories": 270,
+        "protein": 35,
+        "carbs": 8,
+        "fat": 7,
+        "fiber": 3
+    },
+    "approx_price_per_portion": 4,
+    "spice_level": "🌶️🌶️"
+},
+  {
+    "recipe_id": "4",
+    "name": "Mango Lassi Smoothie",
+    "image_url": "url_to_image",
+    "time_required": 10,
+    "tags": {
+      "dietary_preferences": ["Vegetarian","Non-Vegetarian","Pescatarian"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich", "Anti-Inflammatory"] },
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich"] }
+      ],
+      "meal_type": ["Snacks/In-Between Meals","Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Indian 🇮🇳"
+      }
+    },
+    "introduction": "Mango Lassi is a refreshing Indian drink packed with antioxidants like beta-carotene and Vitamin C from mangoes. It also contains probiotics from yogurt, which support gut health and strengthen the immune system. A perfect mid-day snack for boosting energy and digestion.",
+    "ingredients": [
+      { "name": "Mango", "quantity": "1 cup, diced" },
+      { "name": "Low Fat Yogurt", "quantity": "1/2 cup" },
+      { "name": "Honey", "quantity": "1 tbsp" },
+      { "name": "Cardamom Powder", "quantity": "1/4 tsp" },
+      { "name": "Ice Cubes", "quantity": "1 cup" }
+    ],
+    "instructions": [
+      "Step 1: Combine all ingredients in a blender.",
+      "Step 2: Blend until smooth and creamy.",
+      "Step 3: Serve chilled."
+    ],
+    "nutritional_info": {
+      "calories": 160,
+      "protein": 5,
+      "carbs": 28,
+      "fat": 3,
+      "fiber": 2
+    },
+    "approx_price_per_portion": 1.8,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "5",
+    "name": "Kerala Avial",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich", "High-Fiber"] },
+        { "main": "Skin & Joint Health", "sub": ["Calcium Rich", "Vitamin D Rich"] },
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] }
+      ],
+      "meal_type": "Lunch",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Kerala Avial is a quintessential South Indian dish featuring a medley of vegetables cooked in a spiced coconut-yogurt base. This version emphasizes probiotic-rich yogurt for digestion, high-fiber vegetables for gut health, and calcium from coconut for supporting skin and joint health. Antioxidants from curry leaves and turmeric further boost immunity.",
+    "ingredients": [
+      { "name": "Mixed Vegetables (Carrot, Beans, Drumsticks, Yam)", "quantity": "2 cups, cut into long strips" },
+      { "name": "Grated Coconut", "quantity": "1 cup" },
+      { "name": "Green Chilies", "quantity": "2" },
+      { "name": "Cumin Seeds", "quantity": "1 tsp" },
+      { "name": "Yogurt", "quantity": "1/2 cup" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Coconut Oil", "quantity": "1 tbsp" },
+      { "name": "Curry Leaves", "quantity": "1 sprig" }
+    ],
+    "instructions": [
+      "Step 1: Chop the vegetables into long, thin strips (around 2 inches). In a large pot, add the vegetables with turmeric powder, a pinch of salt, and 1/2 cup water. Cover and steam on low-medium heat for 10-12 minutes until just tender. Avoid overcooking to maintain slight crunch.",
+      "Step 2: Grind grated coconut, cumin, and green chilies into a coarse paste with minimal water.",
+      "Step 3: Mix the coconut paste with the cooked vegetables and gently simmer for 5 minutes on low heat, stirring occasionally.",
+      "Step 4: Add yogurt, stir gently, and simmer for 2-3 minutes. Ensure the yogurt does not curdle by keeping the heat low.",
+      "Step 5: Finish by drizzling coconut oil over the avial and adding fresh curry leaves. Serve warm with rice."
+    ],
+    "nutritional_info": {
+      "calories": 210,
+      "protein": 6,
+      "carbs": 18,
+      "fat": 11,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 2.5,
+    "spice_level": "🌶️"
+  }
+
+  ,
+  {
+    "recipe_id": "6",
+    "name": "Lahori Chana Chaat",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+        { "main": "High-Protein", "sub": ["Energy-Boosting"]}
+      ],
+      "meal_type": "Snacks/In-Between Meals",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Pakistani 🇵🇰"
+      }
+    },
+    "introduction": "Lahori Chana Chaat is a tangy and spicy chickpea salad that’s packed with high-fiber legumes, making it excellent for digestion. Made without heavy oils, its low-sodium and low-saturated fat profile also makes it heart-healthy. A refreshing snack with a traditional Pakistani twist.",
+    "ingredients": [
+      { "name": "Boiled Chickpeas", "quantity": "1 cup" },
+      { "name": "Onion", "quantity": "1 small, diced" },
+      { "name": "Tomato", "quantity": "1 small, diced" },
+      { "name": "Green Chilies", "quantity": "1, finely chopped" },
+      { "name": "Tamarind Chutney", "quantity": "2 tbsp" },
+      { "name": "Cumin Powder", "quantity": "1 tsp" },
+      { "name": "Chaat Masala", "quantity": "1 tsp" },
+      { "name": "Lemon Juice", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: In a large bowl, mix boiled chickpeas, onion, tomato, and green chilies.",
+      "Step 2: Add tamarind chutney, cumin powder, chaat masala, and lemon juice.",
+      "Step 3: Toss well and serve immediately, garnished with coriander leaves."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 8,
+      "carbs": 25,
+      "fat": 3,
+      "fiber": 7
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": "🌶️🌶️"
+  },
+  {
+    "recipe_id": "7",
+    "name": "Masala Quinoa Bowl",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building"] },
+        { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] }
+      ],
+      "meal_type": "Lunch",
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "Masala Quinoa Bowl combines high-protein quinoa with heart-healthy spices like turmeric and cumin. This fusion recipe is perfect for muscle-building and maintaining heart health.",
+    "ingredients": [
+      { "name": "Quinoa", "quantity": "1 cup" },
+      { "name": "Carrots", "quantity": "1/2 cup, diced" },
+      { "name": "Peas", "quantity": "1/2 cup" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Cumin Seeds", "quantity": "1 tsp" },
+      { "name": "Olive Oil", "quantity": "1 tbsp" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Combine the quinoa and water in a medium pot. Bring to a boil, cover, reduce the heat, and simmer for 10-15 minutes and set aside.",
+      "Step 2: Heat olive oil in a pan, add cumin seeds, and sauté until aromatic.",
+      "Step 3: Add carrots, peas, turmeric powder, and salt. Cook for 5 minutes.",
+      "Step 4: Mix cooked quinoa with the sautéed vegetables and serve warm."
+    ],
+    "nutritional_info": {
+      "calories": 220,
+      "protein": 10,
+      "carbs": 30,
+      "fat": 5,
+      "fiber": 4
+    },
+    "approx_price_per_portion": 2.2,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "8",
+    "name": "Aloo Posto",
+    "image_url": "url_to_image",
+    "time_required": 25,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": "Dinner",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Bengali 🇧🇩"
+      }
+    },
+    "introduction": "Aloo Posto is a traditional Bengali dish made with potatoes and poppy seeds, known for their anti-inflammatory properties. A fiber-rich and immunity-boosting comfort dish that pairs well with steamed rice.",
+    "ingredients": [
+      { "name": "Potatoes", "quantity": "2 large, diced" },
+      { "name": "Poppy Seeds", "quantity": "3 tbsp, soaked" },
+      { "name": "Mustard Oil", "quantity": "1 tbsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Green Chilies", "quantity": "2" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Heat mustard oil in a pan and sauté potatoes with turmeric powder.",
+      "Step 2: Grind soaked poppy seeds with green chilies to make a paste.",
+      "Step 3: Add the paste to the potatoes and cook until fully coated and tender.",
+      "Step 4: Serve warm with steamed rice."
+    ],
+    "nutritional_info": {
+      "calories": 210,
+      "protein": 4,
+      "carbs": 30,
+      "fat": 8,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 1.8,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "9",
+    "name": "Gujarati Khandvi",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+        { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] }
+      ],
+      "meal_type": "Snacks/In-Between Meals",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Western Indian 🇮🇳"
+      }
+    },
+    "introduction": "Gujarati Khandvi is a classic Western Indian snack made with gram flour and probiotic-rich yogurt. The addition of turmeric and yogurt promotes healthy digestion, while Vitamin C from grated coconut aids collagen production, benefiting skin and joint health. Tempered with mustard seeds, it also provides heart-friendly omega-3 fatty acids.",
+    "ingredients": [
+      { "name": "Gram Flour (Besan)", "quantity": "1 cup" },
+      { "name": "Yogurt", "quantity": "1/2 cup" },
+      { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+      { "name": "Salt", "quantity": "To taste" },
+      { "name": "Mustard Seeds", "quantity": "1 tsp" },
+      { "name": "Curry Leaves", "quantity": "1 sprig" },
+      { "name": "Grated Coconut", "quantity": "2 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Mix gram flour, yogurt, turmeric powder, and salt with water to form a smooth batter.",
+      "Step 2: Cook the batter on low heat until thickened. Spread it on a flat surface and let it cool.",
+      "Step 3: Cut into strips and roll tightly.",
+      "Step 4: Temper mustard seeds and curry leaves, and pour over the rolls. Garnish with grated coconut."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 7,
+      "carbs": 20,
+      "fat": 5,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "10",
+    "name": "Malabar Fish Curry",
+    "image_url": "url_to_image",
+    "time_required": 35,
+    "tags": {
+      "dietary_preferences": ["Pescatarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": ["Dinner","Lunch"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Malabar Fish Curry is a traditional Kerala dish made with fresh fish and coconut milk. This Low-Sugar version skips rice, focusing on fiber-rich vegetables and omega-3-rich fish, perfect for heart health and immunity. **Coconut oil** is used for its authentic flavor and anti-inflammatory properties.",
+    "ingredients": [
+      { "name": "Fish (Pomfret or Kingfish)", "quantity": "500g" },
+      { "name": "Coconut Milk", "quantity": "1 cup" },
+      { "name": "Tamarind Pulp", "quantity": "2 tbsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Red Chili Powder", "quantity": "1 tsp" },
+      { "name": "Mustard Seeds", "quantity": "1 tsp" },
+      { "name": "Curry Leaves", "quantity": "1 sprig" },
+      { "name": "Coconut Oil", "quantity": "1 tbsp (for tempering)" }
+    ],
+    "instructions": [
+      "Step 1: Marinate the fish with turmeric and red chili powder. Set aside for 15 minutes.",
+      "Step 2: Heat 1 tbsp coconut oil in a pan over medium heat. Add mustard seeds and let them splutter. Toss in curry leaves and sauté until fragrant.",
+      "Step 3: Add tamarind pulp and coconut milk. Simmer gently for 10 minutes, stirring occasionally.",
+      "Step 4: Place the marinated fish into the curry and cook for 8-10 minutes until tender and fully cooked.",
+      "Step 5: Serve hot with sautéed spinach or cauliflower rice for a low-carb option."
+    ],
+    "nutritional_info": {
+      "calories": 290,
+      "protein": 25,
+      "carbs": 5,
+      "fat": 16,
+      "fiber": 2
+    },
+    "approx_price_per_portion": 4.5,
+    "spice_level": "🌶️🌶️"
+  }
+,
+{
+    "recipe_id": "11",
+    "name": "Baingan Bharta",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Vegetarian", "Lactose-Free", "Gluten-Free"],
+        "health_goal": [
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly", "Blood Sugar Control"] }
+        ],
+        "meal_type": "Dinner",
+        "cultural": {
+            "main": "Authentic",
+            "sub": "North Indian 🇮🇳"
+        }
+    },
+    "introduction": "Baingan Bharta is a smoky, mashed eggplant dish rich in antioxidants from garlic and tomatoes. This version uses mustard oil for its anti-inflammatory properties and heart-healthy unsaturated fats. High in fiber, this dish aids digestion, supports blood sugar control, and is keto-friendly for a wholesome, low-saturated-fat dinner.",
+    "ingredients": [
+        { "name": "Eggplant", "quantity": "2 large" },
+        { "name": "Tomato", "quantity": "2, diced" },
+        { "name": "Onion", "quantity": "1, finely chopped" },
+        { "name": "Garlic", "quantity": "3 cloves, minced" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Green Chilies", "quantity": "2, finely chopped" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" },
+        { "name": "Mustard Oil", "quantity": "1 tbsp (minimal for added flavor and health benefits)" },
+        { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" }
+    ],
+    "instructions": [
+        "Step 1: Roast the eggplant over an open flame until charred. Peel and mash.",
+        "Step 2: Heat mustard oil, add garlic, turmeric, onion, and chilies. Sauté until fragrant.",
+        "Step 3: Add tomatoes and cook until soft. Mix in the mashed eggplant.",
+        "Step 4: Garnish with coriander leaves and serve with brown rice or quinoa for added fiber."
+    ],
+    "nutritional_info": {
+        "calories": 115,
+        "protein": 3,
+        "carbs": 7,
+        "fat": 4,
+        "fiber": 4
+    },
+    "approx_price_per_portion": 1.8,
+    "spice_level": "🌶️🌶️"
+}
+,
+  {
+    "recipe_id": "12",
+    "name": "Chicken Seekh Kebabs",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+        "dietary_preferences": ["Non-Vegetarian", "Gluten-Free", "Lactose-Free"],
+        "health_goal": [
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+        ],
+        "meal_type": ["Snacks/In-Between Meals","Lunch","Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Pakistani 🇵🇰"
+        }
+    },
+    "introduction": "Chicken Seekh Kebabs are flavorful skewers crafted with lean ground chicken and aromatic spices. High in protein and naturally low in carbs, they support muscle-building and heart health. Grilled with unsaturated fatty oils, these kebabs include heart-healthy fats and antioxidants, making them a nutritious snack or appetizer.",
+    "ingredients": [
+        { "name": "Ground Chicken (Lean)", "quantity": "500g" },
+        { "name": "Onion", "quantity": "1, finely chopped" },
+        { "name": "Garlic", "quantity": "2 cloves, minced" },
+        { "name": "Ginger", "quantity": "1 tbsp, minced" },
+        { "name": "Cumin Powder", "quantity": "1 tsp" },
+        { "name": "Coriander Powder", "quantity": "1 tsp" },
+        { "name": "Green Chilies", "quantity": "2, finely chopped" },
+        { "name": "Fresh Cilantro", "quantity": "2 tbsp, finely chopped" },
+        { "name": "Olive Oil (or Avocado Oil)", "quantity": "1 tbsp (for grilling or pan-frying)" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Combine ground chicken, onion, garlic, ginger, spices, green chilies, and cilantro in a bowl. Mix well.",
+        "Step 2: Shape the mixture into skewers or cylindrical kebabs.",
+        "Step 3: Preheat the grill or pan. Brush kebabs lightly with avocado oil.",
+        "Step 4: Grill or pan-fry on medium heat, turning occasionally, until golden brown and fully cooked (10-12 minutes).",
+        "Step 5: Serve with mint yogurt chutney or a fresh cucumber salad."
+    ],
+    "nutritional_info": {
+        "calories": 210,
+        "protein": 25,
+        "carbs": 2,
+        "fat": 11,
+        "fiber": 1
+    },
+    "approx_price_per_portion": 3.5,
+    "spice_level": "🌶️🌶️"
+}
+,
+{
+    "recipe_id": "13",
+    "name": "Tomato & Herb Chicken Pasta",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+        "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+        "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+        ],
+        "meal_type": "Lunch",
+        "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+        }
+    },
+    "introduction": "Spiced Tomato & Herb Chicken Pasta combines tender chicken, whole-grain pasta, and a lightly spiced tomato sauce for a high-protein, fiber-rich dish. With olive oil for heart health and muscle-building benefits from lean chicken, it’s a nutritious and satisfying lunch.",
+    "ingredients": [
+        { "name": "Pasta (Whole Grain)", "quantity": "2 cups" },
+        { "name": "Chicken Breast", "quantity": "200g, diced" },
+        { "name": "Tomato Puree", "quantity": "1 cup" },
+        { "name": "Garlic", "quantity": "3 cloves, minced" },
+        { "name": "Onion", "quantity": "1, finely chopped" },
+        { "name": "Olive Oil", "quantity": "1 tbsp" },
+        { "name": "Curry Powder", "quantity": "1 tsp" },
+        { "name": "Fresh Basil or Coriander Leaves", "quantity": "2 tbsp, chopped" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Boil pasta until ready to be drained and set aside.",
+        "Step 2: Heat olive oil in a pan, sauté garlic and onion until fragrant.",
+        "Step 3: Add diced chicken and cook until golden and fully cooked.",
+        "Step 4: Stir in tomato puree, curry powder, and salt. Simmer for 5 minutes.",
+        "Step 5: Add the cooked pasta to the sauce and mix well. Garnish with basil or coriander and serve hot."
+    ],
+    "nutritional_info": {
+        "calories": 400,
+        "protein": 30,
+        "carbs": 40,
+        "fat": 10,
+        "fiber": 7
+    },
+    "approx_price_per_portion": 3.5,
+    "spice_level": "🌶️🌶️"
+},
+  {
+    "recipe_id": "14",
+    "name": "Sindhi Kadhi",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Lactose-Free","Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": "Lunch",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Pakistani 🇵🇰"
+      }
+    },
+    "introduction": "Sindhi Kadhi is a tangy and nutritious curry made with gram flour and a medley of vegetables. Rich in non-heme iron, fiber, and probiotics, it promotes digestion and supports immunity with turmeric's anti-inflammatory properties. Minimal mustard oil enhances its authentic flavor while adding heart-healthy benefits.",
+    "ingredients": [
+        { "name": "Gram Flour (Besan)", "quantity": "1/4 cup" },
+        { "name": "Mixed Vegetables (Okra, Drumsticks, Carrots, Potatoes)", "quantity": "2 cups" },
+        { "name": "Tamarind Pulp", "quantity": "2 tbsp" },
+        { "name": "Curry Leaves", "quantity": "1 sprig" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Mustard Oil", "quantity": "1 tsp" }
+    ],
+    "instructions": [
+        "Step 1: Dry roast gram flour until aromatic. Set aside.",
+        "Step 2: Heat mustard oil, add curry leaves, and sauté vegetables with turmeric.",
+        "Step 3: Stir in roasted gram flour, tamarind pulp, and water. Simmer until vegetables are tender.",
+        "Step 4: Serve hot with brown rice or quinoa for extra fiber."
+    ],
+    "nutritional_info": {
+      "calories": 150,
+      "protein": 6,
+      "carbs": 25,
+      "fat": 3,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 2.0,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "15",
+    "name": "Hyderabadi Dum Biryani",
+    "image_url": "url_to_image",
+    "time_required": 70,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+      ],
+      "meal_type": "Dinner",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Hyderabadi Dum Biryani is a fragrant, slow-cooked rice dish layered with marinated meat and aromatic spices. This healthier version uses brown basmati rice for added fiber and low-sodium salt to support heart health. The turmeric and cinnamon in the dish provide anti-inflammatory benefits, making it ideal for overall wellness.",
+    "ingredients": [
+      { "name": "Brown Basmati Rice", "quantity": "2 cups" },
+      { "name": "Chicken or Mutton", "quantity": "500g" },
+      { "name": "Yogurt", "quantity": "1/2 cup" },
+      { "name": "Fried Onions", "quantity": "1 cup" },
+      { "name": "Mint Leaves", "quantity": "1/4 cup" },
+      { "name": "Garam Masala", "quantity": "1 tsp" },
+      { "name": "Saffron Milk", "quantity": "2 tbsp" },
+      { "name": "Cardamom Pods", "quantity": "4" },
+      { "name": "Cinnamon Stick", "quantity": "1" }
+    ],
+    "instructions": [
+      "Step 1: Marinate meat with yogurt, garam masala, and fried onions for at least 1 hour.",
+      "Step 2: Partially cook brown basmati rice with cardamom pods and a cinnamon stick in water. Set aside.",
+      "Step 3: Layer marinated meat and rice in a heavy-bottomed pot.",
+      "Step 4: Add mint leaves and drizzle saffron milk on top. Seal the pot with a lid and cook on low heat for 40 minutes (dum method).",
+      "Step 5: Serve hot with cucumber raita or a side salad."
+    ],
+    "nutritional_info": {
+      "calories": 420,
+      "protein": 28,
+      "carbs": 45,
+      "fat": 12,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 5.5,
+    "spice_level": "🌶️🌶️🌶️"
+  },
+{
+    "recipe_id": "16",
+    "name": "Shorshe Ilish",
+    "image_url": "url_to_image",
+    "time_required": 35,
+    "tags": {
+      "dietary_preferences": ["Pescatarian", "Non-Vegetarian","Lactose-Free", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Heart-Healthy", "sub": ["Omega-3 Rich", "Low-Sodium"] },
+        { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Bengali 🇧🇩"
+        }
+    },
+    "introduction": "Shorshe Ilish is a classic Bengali dish that highlights Hilsa fish in a tangy mustard gravy. Hilsa is an excellent source of omega-3 fatty acids, which support heart health, while mustard seeds provide antioxidants and anti-inflammatory benefits. This version uses minimal mustard oil and turmeric for added anti-inflammatory properties, making it a nutrient-dense meal.",
+    "ingredients": [
+        { "name": "Hilsa Fish", "quantity": "500g" },
+        { "name": "Mustard Seeds", "quantity": "2 tbsp" },
+        { "name": "Green Chilies", "quantity": "2" },
+        { "name": "Turmeric Powder", "quantity": "1 tsp" },
+        { "name": "Mustard Oil", "quantity": "1 tbsp" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Marinate fish with turmeric and low-sodium salt for 10 minutes.",
+        "Step 2: Grind mustard seeds and green chilies into a fine paste with water.",
+        "Step 3: Heat minimal mustard oil, lightly fry fish, and set aside.",
+        "Step 4: Add mustard paste and water to the pan. Simmer and add fish. Cook for 10 minutes."
+    ],
+    "nutritional_info": {
+        "calories": 240,
+        "protein": 22,
+        "carbs": 3,
+        "fat": 14,
+        "fiber": 1
+    },
+    "approx_price_per_portion": 5.0,
+    "spice_level": "🌶️🌶️"
+},
+  {
+    "recipe_id": "17",
+    "name": "Chettinad Pepper Chicken",
+    "image_url": "url_to_image",
+    "time_required": 45,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Chettinad Pepper Chicken is a bold and spicy dish from Tamil Nadu, rich in aromatic spices and freshly ground black pepper. Known for its fiery flavor and anti-inflammatory benefits, this dish is protein-packed and perfect for muscle building.",
+    "ingredients": [
+      { "name": "Chicken (Bone-In or Boneless)", "quantity": "500g" },
+      { "name": "Black Pepper", "quantity": "1 tbsp, coarsely ground" },
+      { "name": "Garlic", "quantity": "6 cloves, minced" },
+      { "name": "Ginger", "quantity": "1 inch, minced" },
+      { "name": "Curry Leaves", "quantity": "1 sprig" },
+      { "name": "Onion", "quantity": "2, finely chopped" },
+      { "name": "Tomato", "quantity": "1, finely chopped" },
+      { "name": "Fennel Seeds", "quantity": "1 tsp" },
+      { "name": "Coriander Powder", "quantity": "1 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Mustard Seeds", "quantity": "1 tsp" },
+      { "name": "Dried Red Chilies", "quantity": "2, broken" },
+      { "name": "Coconut Oil", "quantity": "1 tbsp" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Marinate the chicken with turmeric, salt, and half of the black pepper. Let it rest for 30 minutes.",
+      "Step 2: Heat coconut oil in a pan. Add mustard seeds and allow them to splutter. Add fennel seeds and dried red chilies, sautéing for 30 seconds.",
+      "Step 3: Add chopped onions and curry leaves. Sauté until onions are golden brown.",
+      "Step 4: Stir in ginger and garlic. Cook until fragrant.",
+      "Step 5: Add chopped tomatoes and coriander powder. Cook until the tomatoes soften and the oil begins to separate.",
+      "Step 6: Add the marinated chicken to the pan and cook on medium heat, stirring occasionally, until the chicken is fully cooked and tender (about 20-25 minutes).",
+      "Step 7: Sprinkle the remaining black pepper over the chicken and stir well. Simmer for 5 more minutes until the flavors meld.",
+      "Step 8: Garnish with fresh curry leaves and serve hot with brown rice or wheat paratha."
+    ],
+    "nutritional_info": {
+      "calories": 320,
+      "protein": 36,
+      "carbs": 5,
+      "fat": 16,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 4.5,
+    "spice_level": "🌶️🌶️🌶️"
+  },
+  {
+    "recipe_id": "18",
+    "name": "Kashmiri Yakhni",
+    "image_url": "url_to_image",
+    "time_required": 60,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+        { "main": "Low-Sugar", "sub": ["Keto-Friendly", "Blood Sugar Control"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "Kashmiri Yakhni is a traditional mutton curry simmered in a yogurt-based gravy. This version emphasizes a keto-friendly, low-saturated-fat profile by using olive oil and probiotic-rich yogurt. Lean goat meat, fennel, and ginger enhance immunity, digestion, and cellular health, making it a nutrient-packed, flavorful meal.",
+    "ingredients": [
+      { "name": "Goat Mutton (Shoulder or Leg, bone-in, cubed)", "quantity": "500g" },
+      { "name": "Yogurt", "quantity": "1 cup" },
+      { "name": "Ginger Powder", "quantity": "1 tsp" },
+      { "name": "Fennel Powder", "quantity": "1 tsp" },
+      { "name": "Cardamom Pods", "quantity": "4" },
+      { "name": "Cinnamon Stick", "quantity": "1" },
+      { "name": "Low-Sodium Salt", "quantity": "To taste" },
+      { "name": "Olive Oil", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: In a large pot, add goat mutton (cubed shoulder or leg cuts), cardamom pods, and cinnamon. Cover with water and bring to a boil. Simmer until the mutton is tender (about 45 minutes). Skim any impurities from the surface as needed.",
+      "Step 2: In a bowl, whisk yogurt with fennel powder, ginger powder, and a pinch of salt until smooth.",
+      "Step 3: Heat olive oil in a pan over medium heat. Add the cooked mutton pieces and lightly sear for 3-4 minutes.",
+      "Step 4: Lower the heat and gradually pour the yogurt mixture over the mutton. Stir continuously to avoid curdling. Simmer gently for 10-15 minutes until the sauce thickens and coats the mutton.",
+      "Step 5: Adjust seasoning to taste and serve hot with steamed brown rice or quinoa."
+    ],
+    "nutritional_info": {
+      "calories": 350,
+      "protein": 28,
+      "carbs": 6,
+      "fat": 22,
+      "fiber": 1
+    },
+    "approx_price_per_portion": 5.5,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "19",
+    "name": "Manipuri Eromba",
+    "image_url": "url_to_image",
+    "time_required": 25,
+    "tags": {
+        "dietary_preferences": ["Pescatarian", "Gluten-Free","Lactose-Free","Non-Vegetarian"],
+        "health_goal": [
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "North-Eastern Indian 🇮🇳"
+        }
+    },
+    "introduction": "Manipuri Eromba is a traditional North-Eastern Indian dish combining fermented fish (Ngari) and boiled vegetables. Rich in probiotics for gut health, it provides vitamin B12 from the fish and anti-inflammatory properties from turmeric and chilies. Its nutrient profile supports immunity, digestion, and cellular health, making it a balanced, wholesome meal.",
+    "ingredients": [
+        { "name": "Ngari (Fermented Small Fish)", "quantity": "50g" },
+        { "name": "Boiled Vegetables (Potato, Beans, Carrot)", "quantity": "2 cups" },
+        { "name": "Red Chilies", "quantity": "3, roasted" },
+        { "name": "Garlic", "quantity": "2 cloves, minced" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Mustard Oil (Optional for flavor)", "quantity": "1 tsp" },
+        { "name": "Fresh Coriander", "quantity": "For garnish" }
+    ],
+    "instructions": [
+        "Step 1: Boil the vegetables (potato, beans, and carrot) until soft. Drain and mash while warm.",
+        "Step 2: Roast red chilies over an open flame or in a dry pan until slightly charred. Set aside.",
+        "Step 3: In a pan, lightly roast the Ngari for 2-3 minutes until aromatic.",
+        "Step 4: Mash the roasted fermented fish into the boiled vegetables, blending thoroughly.",
+        "Step 5: Crush roasted chilies and garlic, adding them to the mixture along with turmeric powder.",
+        "Step 6: Drizzle with mustard oil for traditional flavor (optional). Mix well and simmer gently for 5 minutes.",
+        "Step 7: Garnish with fresh coriander and serve warm with steamed brown or red rice for added fiber."
+    ],
+    "nutritional_info": {
+        "calories": 200,
+        "protein": 12,
+        "carbs": 20,
+        "fat": 6,
+        "fiber": 4,
+        "vitamin_B12": "5 mcg"
+    },
+    "approx_price_per_portion": 2.0,
+    "spice_level": "🌶️🌶️🌶️"
+},
+  {
+    "recipe_id": "20",
+    "name": "Peshawari Chapli Kebab",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+        "dietary_preferences": ["Non-Vegetarian"],
+        "health_goal": [
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly", "Blood Sugar Control"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Pakistani 🇵🇰"
+        }
+    },
+    "introduction": "Peshawari Chapli Kebab is a protein-rich, keto-friendly minced meat patty that balances flavor and health. Prepared with **avocado oil** and spiced with coriander and cumin, it’s low in saturated fat and supports muscle growth, heart health, and blood sugar control. Pomegranate seeds add a touch of sweetness and antioxidants, enhancing immunity.",
+    "ingredients": [
+        { "name": "Lean Ground Beef or Mutton", "quantity": "500g" },
+        { "name": "Onion", "quantity": "1, finely chopped" },
+        { "name": "Tomato", "quantity": "1, finely diced" },
+        { "name": "Pomegranate Seeds", "quantity": "2 tbsp, crushed" },
+        { "name": "Coriander Powder", "quantity": "1 tsp" },
+        { "name": "Cumin Powder", "quantity": "1 tsp" },
+        { "name": "Egg", "quantity": "1, beaten" },
+        { "name": "Avocado Oil", "quantity": "1 tbsp (for frying)" },
+        { "name": "Garlic", "quantity": "2 cloves, minced (optional for additional heart health benefits)" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Combine ground meat, onion, tomato, pomegranate seeds, coriander powder, cumin powder, egg, garlic (optional), and low-sodium salt in a large bowl.",
+        "Step 2: Shape the mixture into flat, round patties.",
+        "Step 3: Heat avocado oil in a non-stick pan over medium heat. Pan-fry the patties for 4-5 minutes on each side until golden brown and fully cooked.",
+        "Step 4: Serve with fresh salad, mint chutney, or gluten-free flatbread for a balanced meal."
+    ],
+    "nutritional_info": {
+        "calories": 280,
+        "protein": 26,
+        "carbs": 3,
+        "fat": 18,
+        "fiber": 1
+    },
+    "approx_price_per_portion": 3.8,
+    "spice_level": "🌶️🌶️"
+},
+  {
+    "recipe_id": "21",
+    "name": "Shatkora Beef Curry",
+    "image_url": "url_to_image",
+    "time_required": 50,
+    "tags": {
+        "dietary_preferences": ["Non-Vegetarian", "Gluten-Free","Lactose-Free"],
+        "health_goal": [
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly", "Blood Sugar Control"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Bengali 🇧🇩"
+        }
+    },
+    "introduction": "Shatkora Beef Curry is a Sylheti delicacy featuring slow-cooked beef and the unique tang of shatkora (wild citrus). This version uses lean beef and mustard oil for omega-3 benefits. With its keto-friendly, antioxidant-rich profile, it supports heart health, blood sugar control, and immunity while staying true to traditional flavors.",
+    "ingredients": [
+        { "name": "Lean Beef (Cubed)", "quantity": "500g" },
+        { "name": "Shatkora (Wild Citrus)", "quantity": "1, sliced" },
+        { "name": "Onion", "quantity": "2, finely chopped" },
+        { "name": "Garlic", "quantity": "3 cloves, minced" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Mustard Oil (Cold-Pressed)", "quantity": "1 tbsp" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" },
+        { "name": "Green Chilies", "quantity": "2, slit" }
+    ],
+    "instructions": [
+        "Step 1: Marinate the lean beef with turmeric, green chilies, and low-sodium salt for 30 minutes.",
+        "Step 2: Heat cold-pressed mustard oil, sauté onions and garlic until golden.",
+        "Step 3: Add marinated beef, cook for 20 minutes while stirring occasionally.",
+        "Step 4: Add shatkora slices, cover, and simmer for 20 minutes until tender. Serve hot with cauliflower rice for a keto-friendly option."
+    ],
+    "nutritional_info": {
+        "calories": 290,
+        "protein": 32,
+        "carbs": 4,
+        "fat": 14,
+        "fiber": 2
+    },
+    "approx_price_per_portion": 4.5,
+    "spice_level": "🌶️"
+}
+,
+  {
+    "recipe_id": "22",
+    "name": "Kashmiri Haak Saag",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Gluten-Free", "Lactose-Free"],
+        "health_goal": [
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+        ],
+        "meal_type": ["Lunch","Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "North Indian 🇮🇳"
+        }
+    },
+    "introduction": "Haak Saag is a traditional Kashmiri delicacy made with nutrient-dense collard greens, a rich source of calcium and non-heme iron. These greens support joint health, cellular function, and immunity with their anti-inflammatory properties from turmeric and garlic.",
+    "ingredients": [
+        { "name": "Collard Greens (or Mustard Greens)", "quantity": "2 cups, chopped" },
+        { "name": "Garlic", "quantity": "2 cloves, minced" },
+        { "name": "Green Chilies", "quantity": "2, slit" },
+        { "name": "Mustard Oil (or Avocado Oil)", "quantity": "1 tbsp" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Heat mustard oil until smoking point, then cool slightly. Add garlic and chilies, and sauté briefly.",
+        "Step 2: Add collard greens, turmeric, and a pinch of salt. Stir well.",
+        "Step 3: Pour 1/4 cup water, cover, and cook on low heat until greens are tender. Serve with steamed rice."
+    ],
+    "nutritional_info": {
+        "calories": 120,
+        "protein": 5,
+        "carbs": 8,
+        "fat": 7,
+        "fiber": 4
+    },
+    "approx_price_per_portion": 1.8,
+    "spice_level": "🌶️"
+}
+,
+  {
+    "recipe_id": "23",
+    "name": "Bengali Shukto",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
+        "health_goal": [
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Bengali 🇧🇩"
+        }
+    },
+    "introduction": "Shukto is a traditional Bengali dish featuring a mix of bitter and savory vegetables cooked in a mustard-based sauce. Drumsticks add a unique flavor and are rich in non-heme iron and folate, supporting cellular health. With their high fiber and vitamin C content, they also enhance digestion and immunity.",
+    "ingredients": [
+        { "name": "Drumsticks (Moringa)", "quantity": "2, cut into pieces" },
+        { "name": "Bitter Gourd", "quantity": "1, sliced" },
+        { "name": "Potato", "quantity": "1, diced" },
+        { "name": "Eggplant", "quantity": "1, diced" },
+        { "name": "Mustard Seeds", "quantity": "1 tbsp" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Milk (Plant-Based Optional for Vegan)", "quantity": "1/2 cup" },
+        { "name": "Mustard Oil", "quantity": "2 tbsp" }
+    ],
+    "instructions": [
+        "Step 1: Heat mustard oil, add mustard seeds, and sauté bitter gourd and drumsticks until lightly browned.",
+        "Step 2: Add remaining vegetables, turmeric powder, and salt. Stir well and cook until tender.",
+        "Step 3: Mix in milk and simmer for 5 minutes. Serve warm with steamed rice."
+    ],
+    "nutritional_info": {
+        "calories": 200,
+        "protein": 7,
+        "carbs": 30,
+        "fat": 5,
+        "fiber": 7
+    },
+    "approx_price_per_portion": 1.8,
+    "spice_level": "🌶️"
+}
+,
+{
+  "recipe_id": "24",
+  "name": "Lahori Murgh Cholay",
+  "image_url": "url_to_image",
+  "time_required": 50,
+  "tags": {
+    "dietary_preferences": ["Non-Vegetarian", "Gluten-Free", "Lactose-Free"],
+    "health_goal": [
+      { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+      { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+      { "main": "Digestive Health", "sub": ["High-Fiber"] }
+    ],
+    "meal_type": ["Lunch", "Dinner"],
+    "cultural": {
+      "main": "Authentic",
+      "sub": "Pakistani 🇵🇰"
+    }
+  },
+  "introduction": "Lahori Murgh Cholay is a hearty dish of chicken and chickpeas in a spiced gravy. This version uses lean chicken and minimal oil, making it high in protein for muscle building, fiber-rich for digestive health, and low in saturated fat for heart health. Chickpeas and chicken also provide essential heme iron, supporting cellular health.",
+  "ingredients": [
+    { "name": "Chicken (Skinless, Bone-In)", "quantity": "500g" },
+    { "name": "Chickpeas (Boiled)", "quantity": "1 cup" },
+    { "name": "Onion", "quantity": "1, finely chopped" },
+    { "name": "Tomato", "quantity": "1, pureed" },
+    { "name": "Garlic", "quantity": "3 cloves, minced" },
+    { "name": "Ginger", "quantity": "1 inch, grated" },
+    { "name": "Garam Masala", "quantity": "1 tsp" },
+    { "name": "Coriander Powder", "quantity": "1 tsp" },
+    { "name": "Cumin Powder", "quantity": "1 tsp" },
+    { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+    { "name": "Red Chili Powder", "quantity": "1 tsp" },
+    { "name": "Bay Leaf", "quantity": "1" },
+    { "name": "Green Chili", "quantity": "1, slit" },
+    { "name": "Olive Oil (or Avocado Oil)", "quantity": "1 tbsp" },
+    { "name": "Salt", "quantity": "To taste" }
+  ],
+  "instructions": [
+    "Step 1: Marinate the chicken with turmeric, cumin, coriander, red chili powder, and salt. Let it rest for 20 minutes.",
+    "Step 2: Heat olive oil in a large pot. Add the bay leaf, chopped onion, garlic, and ginger. Sauté until the onions turn golden brown.",
+    "Step 3: Add the marinated chicken and cook on medium heat for 6-8 minutes until the chicken is lightly browned on all sides.",
+    "Step 4: Stir in the tomato puree and slit green chili. Cook for 5 minutes until the oil begins to separate from the mixture.",
+    "Step 5: Add the boiled chickpeas and garam masala. Pour in 1 cup of water, cover, and simmer for 25-30 minutes until the chicken is tender and the gravy thickens.",
+    "Step 6: Adjust salt to taste, garnish with fresh coriander leaves, and serve hot with whole-grain roti or brown rice or quinoa."
+  ],
+  "nutritional_info": {
+        "calories": 280,
+        "protein": 32,
+        "carbs": 16,
+        "fat": 8,
+        "fiber": 6
+    },
+  "approx_price_per_portion": 3.5,
+  "spice_level": "🌶️🌶️"
+}
+,
+  {
+    "recipe_id": "25",
+    "name": "Assamese Fish Tenga",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+      "dietary_preferences": ["Pescatarian", "Non-Vegetarian", "Gluten-Free", "Lactose-Free"],
+      "health_goal": [
+        { "main": "Heart-Healthy", "sub": ["Omega-3 Rich", "Low-Saturated Fat"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory", "Antioxidant-Rich"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North-Eastern Indian 🇮🇳"
+      }
+    },
+    "introduction": "Fish Tenga is a traditional Assamese tangy fish curry made with tomatoes and lemon, offering a light yet flavorful meal. This version uses air-frying to reduce saturated fat while preserving authentic flavors. Rich in omega-3 fatty acids, antioxidants, and anti-inflammatory ingredients, it supports heart health, boosts immunity, and enhances overall well-being.",
+    "ingredients": [
+      { "name": "Freshwater Fish (Rohu/Katla/Carp)", "quantity": "500g, cleaned and cut into pieces" },
+      { "name": "Tomato", "quantity": "2, chopped" },
+      { "name": "Lemon Juice", "quantity": "2 tbsp" },
+      { "name": "Mustard Seeds", "quantity": "1 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Mustard Oil (or Avocado Oil)", "quantity": "1 tbsp" },
+      { "name": "Green Chilies", "quantity": "2, slit" },
+      { "name": "Fenugreek Seeds (Methi)", "quantity": "1/4 tsp" },
+      { "name": "Coriander Leaves", "quantity": "For garnish" },
+      { "name": "Water", "quantity": "3 cups" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Marinate fish with turmeric powder and salt. Let it sit for 15 minutes.",
+      "Step 2: Preheat the air fryer to 375°F (190°C). Brush fish lightly with mustard or avocado oil and air-fry for 10-12 minutes until golden. Alternatively, pan-sear with minimal oil.",
+      "Step 3: Heat mustard or avocado oil in a pan. Add mustard and fenugreek seeds. Let them splutter.",
+      "Step 4: Add tomatoes and green chilies. Cook until tomatoes break down into a paste.",
+      "Step 5: Add water and bring to a boil. Simmer for 5 minutes.",
+      "Step 6: Place the air-fried fish gently into the simmering tomato broth. Cook for 10 minutes on low heat.",
+      "Step 7: Add lemon juice and adjust salt to taste. Simmer for another 2 minutes.",
+      "Step 8: Garnish with coriander leaves and serve with steamed rice."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 26,
+      "carbs": 5,
+      "fat": 9,
+      "fiber": 2
+    },
+    "approx_price_per_portion": 3.0,
+    "spice_level": "🌶️"
+  }  
+,
+{
+    "recipe_id": "26",
+    "name": "Gujarati Undhiyu",
+    "image_url": "url_to_image",
+    "time_required": 60,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+        "health_goal": [
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "Western Indian 🇮🇳"
+        }
+    },
+    "introduction": "Undhiyu is a wholesome Gujarati curry made with a medley of seasonal vegetables. This version uses minimal oil and swaps traditional potatoes with sweet potatoes for added beta-carotene, promoting digestive health, boosting immunity, and supporting heart health with low-sodium and antioxidant-rich ingredients.",
+    "ingredients": [
+        { "name": "Eggplant", "quantity": "2, quartered" },
+        { "name": "Sweet Potato", "quantity": "2, diced" },
+        { "name": "Green Beans", "quantity": "1 cup, trimmed" },
+        { "name": "Fenugreek Leaves", "quantity": "1/2 cup, chopped" },
+        { "name": "Groundnut Oil (or Avocado Oil)", "quantity": "1 tbsp" },
+        { "name": "Coriander Powder", "quantity": "1 tsp" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Heat oil, add cumin seeds, turmeric powder, and coriander powder. Sauté until aromatic.",
+        "Step 2: Add vegetables and coat them well with spices.",
+        "Step 3: Add 1/2 cup water, cover, and cook on low heat for 30 minutes or until vegetables are tender.",
+        "Step 4: Garnish with fresh coriander leaves and serve warm with gluten-free flatbread or quinoa."
+    ],
+    "nutritional_info": {
+        "calories": 220,
+        "protein": 8,
+        "carbs": 32,
+        "fat": 6,
+        "fiber": 9
+    },
+    "approx_price_per_portion": 2.8,
+    "spice_level": "🌶️"
+}
+,
+  {
+    "recipe_id": "27",
+    "name": "Aloo Pitika (Mashed Potatoes)",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Vegetarian", "Lactose-Free", "Gluten-Free"],
+        "health_goal": [
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+        ],
+        "meal_type": ["Lunch", "Dinner"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "North-Eastern Indian 🇮🇳"
+        }
+    },
+    "introduction": "Aloo Pitika is a comforting Assamese mashed potato dish enhanced with the anti-inflammatory properties of mustard oil and green chilies. Rich in resistant starch from cooled potatoes, it supports gut health and aids digestion, while its simplicity makes it a perfect side dish.",
+    "ingredients": [
+        { "name": "Potatoes", "quantity": "2, boiled and cooled, then mashed" },
+        { "name": "Mustard Oil", "quantity": "1 tbsp" },
+        { "name": "Green Chilies", "quantity": "2, chopped" },
+        { "name": "Onion", "quantity": "1, finely chopped" },
+        { "name": "Salt", "quantity": "To taste" },
+        { "name": "Coriander Leaves", "quantity": "1 tbsp, chopped (optional)" }
+    ],
+    "instructions": [
+        "Step 1: Mash the boiled and cooled potatoes in a bowl.",
+        "Step 2: Mix in mustard oil, green chilies, onion, and salt.",
+        "Step 3: Garnish with coriander leaves, if desired, and serve as a side dish or with plain rice."
+    ],
+    "nutritional_info": {
+        "calories": 150,
+        "protein": 3,
+        "carbs": 30,
+        "fat": 5,
+        "fiber": 3
+    },
+    "approx_price_per_portion": 1.0,
+    "spice_level": "🌶️"
+},
+  {
+    "recipe_id": "28",
+    "name": "Dhakai Morog Polao",
+    "image_url": "url_to_image",
+    "time_required": 60,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Energy-Boosting","Muscle-Building"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Bengali 🇧🇩"
+      }
+    },
+    "introduction": "Dhakai Morog Polao is a rich Bangladeshi dish of spiced chicken cooked with brown basmati rice for higher fiber content. This version uses lean chicken and heart-healthy oils, making it a flavorful yet lower-fat, protein-rich choice.",
+    "ingredients": [
+      { "name": "Chicken", "quantity": "500g" },
+      { "name": "Brown Basmati Rice", "quantity": "2 cups" },
+      { "name": "Yogurt", "quantity": "1/2 cup" },
+      { "name": "Onion", "quantity": "1, sliced and fried" },
+      { "name": "Ginger-Garlic Paste", "quantity": "1 tbsp" },
+      { "name": "Cardamom Pods", "quantity": "3" },
+      { "name": "Cinnamon Stick", "quantity": "1" },
+      { "name": "Cloves", "quantity": "3" },
+      { "name": "Bay Leaf", "quantity": "1" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Coriander Powder", "quantity": "1 tsp" },
+      { "name": "Cumin Powder", "quantity": "1 tsp" },
+      { "name": "Black Pepper", "quantity": "1/2 tsp" },
+      { "name": "Olive Oil (or Avocado Oil)", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Marinate chicken with yogurt, ginger-garlic paste, turmeric, cumin, coriander powder, black pepper, cardamom, cinnamon, cloves, and bay leaf for 30 minutes.",
+      "Step 2: Preheat oven to 375°F (190°C). Place marinated chicken on a baking tray and lightly brush with olive oil. Bake for 25-30 minutes until golden and cooked through.",
+      "Step 3: In a pot, add basmati rice, water (1:2 ratio), and fried onions. Place the baked chicken over the rice and simmer until the rice is fully cooked and fluffy.",
+      "Step 4: Garnish with fried onions and serve warm."
+    ],
+    "nutritional_info": {
+      "calories": 390,
+      "protein": 26,
+      "carbs": 50,
+      "fat": 10,
+      "fiber": 2
+    },
+    "approx_price_per_portion": 4.0,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "29",
+    "name": "Ragi Idli",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+        "dietary_preferences": ["Vegan", "Vegetarian", "Lactose-Free", "Gluten-Free"],
+        "health_goal": [
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+        ],
+        "meal_type": ["Breakfast", "Snacks/In-Between Meals"],
+        "cultural": {
+            "main": "Authentic",
+            "sub": "South Indian 🇮🇳"
+        }
+    },
+    "introduction": "Ragi Idli is a South Indian delicacy made with nutrient-rich finger millet. Packed with calcium for strong bones and fiber for digestion, it also supports heart health with its low-sodium and low-fat profile. Fermentation enhances nutrient absorption, adding folate for cardiovascular benefits, and fenugreek seeds provide anti-inflammatory properties.",
+    "ingredients": [
+        { "name": "Ragi Flour (Finger Millet)", "quantity": "1 cup" },
+        { "name": "Idli Rice", "quantity": "1/2 cup" },
+        { "name": "Urad Dal", "quantity": "1/4 cup" },
+        { "name": "Fenugreek Seeds", "quantity": "1 tsp" },
+        { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+        "Step 1: Soak rice, urad dal, and fenugreek seeds for 4 hours.",
+        "Step 2: Grind soaked ingredients into a smooth batter and mix with ragi flour. Ferment overnight.",
+        "Step 3: Add low-sodium salt to the batter, pour into idli molds, and steam for 10–12 minutes. Serve with your choice of chutney."
+    ],
+    "nutritional_info": {
+        "calories": 120,
+        "protein": 4,
+        "carbs": 20,
+        "fat": 1,
+        "fiber": 3
+    },
+    "approx_price_per_portion": 0.8,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "30",
+    "name": "Mishti Doi (Sweetened Yogurt)",
+    "image_url": "url_to_image",
+    "time_required": 120,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Bengali 🇧🇩"
+      }
+    },
+    "introduction": "Mishti Doi is a traditional Bengali dessert made by fermenting milk and jaggery. Packed with probiotics, it supports gut health and boosts immunity while offering a natural sweetness.",
+    "ingredients": [
+      { "name": "Milk", "quantity": "1 liter" },
+      { "name": "Jaggery", "quantity": "1/2 cup" },
+      { "name": "Yogurt", "quantity": "2 tbsp (starter culture)" }
+    ],
+    "instructions": [
+      "Step 1: Boil milk until it reduces slightly, then cool to lukewarm temperature.",
+      "Step 2: Dissolve jaggery in the milk and mix well.",
+      "Step 3: Add yogurt starter and mix. Set in a warm place for 6–8 hours to ferment. Serve chilled."
+    ],
+    "nutritional_info": {
+        "calories": 160,
+        "protein": 8,
+        "carbs": 22,
+        "fat": 5,
+        "fiber": 0
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "31",
+    "name": "Spinach and Banana Smoothie",
+    "image_url": "url_to_image",
+    "time_required": 5,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Gluten-Free","Lactose-Free"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+        { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] },
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] }
+      ],
+      "meal_type": ["Breakfast", "Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This nutrient-packed smoothie blends spinach and banana with chia seeds for fiber, almond milk for vitamin E, and lemon juice for a vitamin C boost. It enhances iron absorption, supports skin elasticity, and strengthens immunity with its antioxidant-rich profile.",
+    "ingredients": [
+      { "name": "Spinach", "quantity": "1 cup" },
+      { "name": "Banana", "quantity": "1, sliced" },
+      { "name": "Almond Milk", "quantity": "1 cup" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Lemon Juice", "quantity": "1 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Combine all ingredients in a blender.",
+      "Step 2: Blend until smooth. Serve chilled."
+    ],
+    "nutritional_info": {
+        "calories": 140,
+        "protein": 4,
+        "carbs": 22,
+        "fat": 4,
+        "fiber": 6
+  },
+  "approx_price_per_portion": 1.3,
+  "spice_level": null
+},
+  {
+    "recipe_id": "32",
+    "name": "Besan Chilla",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Gluten-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+      ],
+      "meal_type": ["Breakfast"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "Besan Chilla is a North Indian savory pancake made with gram flour. Naturally low in saturated fat and high in fiber, it supports blood sugar control and heart health while providing plant-based protein with added cumin for flavor and digestion benefits.",
+    "ingredients": [
+      { "name": "Gram Flour (Besan)", "quantity": "1 cup" },
+      { "name": "Onion", "quantity": "1, finely chopped" },
+      { "name": "Green Chillies", "quantity": "2, chopped" },
+      { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Water", "quantity": "As needed" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Mix all ingredients in a bowl to form a batter.",
+      "Step 2: Heat a non-stick pan and pour a ladle of batter. Spread into a thin pancake.",
+      "Step 3: Cook on both sides until golden brown. Serve with chutney."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 8,
+      "carbs": 25,
+      "fat": 4,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 0.8,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "33",
+    "name": "Gajar Ka Halwa",
+    "image_url": "url_to_image",
+    "time_required": 45,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Vegan", "Non-Vegetarian", "Pescatarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Skin & Joint Health", "sub": ["Vitamin D Rich", "Collagen Boosting"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat","Low-Sodium"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "This healthier version of Gajar Ka Halwa uses almond milk and jaggery instead of condensed milk and sugar, reducing the saturated fat and refined sugar content. Carrots are rich in beta-carotene, a precursor to vitamin A, promoting skin health, while almonds offer anti-inflammatory properties that boost immunity.",
+    "ingredients": [
+      { "name": "Carrots", "quantity": "500g, grated" },
+      { "name": "Almond Milk", "quantity": "2 cups" },
+      { "name": "Jaggery", "quantity": "1/2 cup" },
+      { "name": "Cardamom Powder", "quantity": "1/2 tsp" },
+      { "name": "Ghee", "quantity": "1 tbsp" },
+      { "name": "Almonds and Pistachios", "quantity": "2 tbsp, chopped" }
+    ],
+    "instructions": [
+      "Step 1: Heat ghee in a pan and sauté grated carrots for 5 minutes.",
+      "Step 2: Add almond milk and simmer until fully absorbed.",
+      "Step 3: Stir in jaggery and cardamom powder. Cook until thickened.",
+      "Step 4: Garnish with almonds and pistachios. Serve warm."
+    ],
+    "nutritional_info": {
+      "calories": 230,
+      "protein": 6,
+      "carbs": 33,
+      "fat": 7,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "34",
+    "name": "Golden Turmeric Smoothie",
+    "image_url": "url_to_image",
+    "time_required": 5,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Lactose-Free","Gluten-Free","Vegetarian","Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+        { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+        
+      ],
+      "meal_type": ["Breakfast","Desserts/Sweet Treats","Snacks/In-Between Meals"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This creamy Golden Turmeric Smoothie blends the anti-inflammatory benefits of turmeric with the collagen-boosting properties of vitamin C from orange juice and a pinch of black pepper to enhance the absorption of curcumin in turmeric. Chia seeds add omega-3 fatty acids for skin and joint health, making it a nutrient-dense option to start your day or energize between meals.",
+    "ingredients": [
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Frozen Mango", "quantity": "1 cup" },
+      { "name": "Orange Juice", "quantity": "1/2 cup" },
+      { "name": "Light Coconut Milk", "quantity": "1/2 cup" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Black Pepper", "quantity": "A pinch" }
+    ],
+    "instructions": [
+      "Step 1: Blend all ingredients until smooth.",
+      "Step 2: Serve chilled."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 3,
+      "carbs": 30,
+      "fat": 5,
+      "fiber": 4
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "35",
+    "name": "Ragi Banana Pancakes",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Breakfast"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "These fluffy Ragi Banana Pancakes are rich in fiber and natural sweetness, combining ragi flour and banana with chia seeds for added texture and health benefits. The batter is designed to improve digestion and provide long-lasting energy, perfect for a wholesome start to your day.",
+    "ingredients": [
+      { "name": "Ragi Flour", "quantity": "1 cup" },
+      { "name": "Banana", "quantity": "1, mashed" },
+      { "name": "Almond Milk", "quantity": "1/2 cup" },
+      { "name": "Baking Powder", "quantity": "1 tsp" },
+      { "name": "Cinnamon Powder", "quantity": "1/2 tsp" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Ground Flaxseeds", "quantity": "1 tbsp" },
+      { "name": "Maple Syrup (optional)", "quantity": "1 tbsp" },
+      { "name": "Vanilla Extract", "quantity": "1/2 tsp" },
+      { "name": "Salt", "quantity": "A pinch" }
+    ],
+    "instructions": [
+      "Step 1: In a bowl, mash the banana and whisk together with almond milk, vanilla extract, and maple syrup.",
+      "Step 2: In a separate bowl, mix ragi flour, baking powder, cinnamon, chia seeds, flaxseeds, and salt.",
+      "Step 3: Gradually add the wet mixture to the dry ingredients. Stir until you achieve a smooth batter. Let it sit for 5-10 minutes to allow the chia seeds to expand, improving the texture.",
+      "Step 4: Heat a non-stick pan over medium heat. Pour batter onto the pan, forming small pancakes. Cook for 2-3 minutes until bubbles form on the surface, then flip and cook the other side until golden brown.",
+      "Step 5: Serve warm with honey, maple syrup, or fresh fruit."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 6,
+      "carbs": 32,
+      "fat": 5,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "36",
+    "name": "Date & Almond Energy Balls",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free", "Vegetarian", "Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Fusion 🥘"
+      }
+    },
+    "introduction": "These Date and Almond Energy Balls are naturally sweetened and packed with energy-boosting nutrients. Almonds and dates make them a heart-healthy, on-the-go snack.",
+    "ingredients": [
+      { "name": "Dates (Pitted)", "quantity": "1 cup" },
+      { "name": "Almonds", "quantity": "1/2 cup" },
+      { "name": "Cocoa Powder", "quantity": "1 tbsp" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Blend all ingredients into a sticky mixture.",
+      "Step 2: Roll into small balls and refrigerate for 1 hour before serving."
+    ],
+    "nutritional_info": {
+      "calories": 120,
+      "protein": 3,
+      "carbs": 18,
+      "fat": 5,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 0.8,
+    "spice_level": null
+  },  
+  {
+    "recipe_id": "37",
+    "name": "Almond & Jaggery Ladoos",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free","Vegetarian", "Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources", "Folate-Heavy"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "These ladoos combine roasted almonds and jaggery, offering plant-based iron and natural sweetness without processed sugars. The inclusion of sesame seeds enhances iron absorption, while cardamom provides antioxidant benefits, making this dessert ideal for heart health and individuals prone to anemia.",
+    "ingredients": [
+      { "name": "Almonds", "quantity": "1 cup, roasted" },
+      { "name": "Sesame Seeds", "quantity": "1/4 cup" },
+      { "name": "Jaggery", "quantity": "1/2 cup, grated" },
+      { "name": "Cardamom Powder", "quantity": "1/2 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Blend roasted almonds and sesame seeds into a coarse powder.",
+      "Step 2: Heat jaggery in a pan until it melts, then mix in the almond-sesame powder and cardamom.",
+      "Step 3: Shape the mixture into small balls. Allow to cool before serving."
+    ],
+    "nutritional_info": {
+      "calories": 150,
+      "protein": 4,
+      "carbs": 20,
+      "fat": 8,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "38",
+    "name": "Dark Chocolate Orange Mousse",
+    "image_url": "url_to_image",
+    "time_required": 15,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Gluten-Free", "Lactose-Free", "Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] },
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This luxurious mousse uses dark chocolate for its rich antioxidants and orange zest for natural sweetness. Replacing traditional heavy cream with coconut cream provides healthy fats, making it ideal for improving heart health and boosting immunity. Cinnamon is added to support blood sugar control, ensuring a guilt-free dessert.",
+    "ingredients": [
+      { "name": "Dark Chocolate (70% or more)", "quantity": "100g" },
+      { "name": "Coconut Cream", "quantity": "1/2 cup, chilled" },
+      { "name": "Orange Zest", "quantity": "1 tsp" },
+      { "name": "Cinnamon Powder", "quantity": "1/4 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Melt dark chocolate in a double boiler until smooth.",
+      "Step 2: Whisk chilled coconut cream until fluffy.",
+      "Step 3: Fold melted chocolate, orange zest, and cinnamon powder into whipped coconut cream.",
+      "Step 4: Chill for 2 hours and serve garnished with extra orange zest if desired."
+    ],
+    "nutritional_info": {
+      "calories": 190,
+      "protein": 3,
+      "carbs": 14,
+      "fat": 15,
+      "fiber": 4
+    },
+    "approx_price_per_portion": 2.0,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "39",
+    "name": "Citrus Beet Smoothie",
+    "image_url": "url_to_image",
+    "time_required": 5,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Vegetarian","Gluten-Free", "Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources", "Folate-Heavy"] },
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Breakfast", "Desserts/Sweet Treats","Snacks/In-Between Meals"],
+      "cultural": {
+        "main": "Fusion 🥘"
+      }
+    },
+    "introduction": "This vibrant smoothie pairs the iron-rich benefits of beetroot with vitamin C from oranges to enhance absorption. Spinach and chia seeds provide additional folate and omega-3s, making it excellent for red blood cell production, immunity, and digestive health.",
+    "ingredients": [
+      { "name": "Beetroot", "quantity": "1 small, cooked and diced" },
+      { "name": "Orange Juice (Freshly Squeezed)", "quantity": "1/2 cup" },
+      { "name": "Spinach", "quantity": "1/2 cup" },
+      { "name": "Banana", "quantity": "1, sliced" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Ginger", "quantity": "1/2 tsp, grated" }
+    ],
+    "instructions": [
+      "Step 1: Add all ingredients to a blender.",
+      "Step 2: Blend until smooth and creamy.",
+      "Step 3: Serve chilled, garnished with extra chia seeds if desired."
+    ],
+    "nutritional_info": {
+      "calories": 155,
+      "protein": 4,
+      "carbs": 28,
+      "fat": 4,
+      "fiber": 7
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "40",
+    "name": "Date and Walnut Laddoos",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free","Lactose-Free","Vegetarian", "Non-Vegetarian", "Pescatarian"],
+      "health_goal": [
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "These naturally sweetened Date and Walnut Laddoos are packed with fiber for better digestion and iron to support cellular health. Walnuts add heart-healthy omega-3 fats.",
+    "ingredients": [
+      { "name": "Dates (Pitted)", "quantity": "1 cup" },
+      { "name": "Walnuts", "quantity": "1/2 cup" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Cinnamon Powder", "quantity": "1/2 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Blend dates and walnuts into a sticky paste.",
+      "Step 2: Mix in chia seeds and cinnamon powder.",
+      "Step 3: Roll the mixture into small balls and refrigerate for 30 minutes before serving."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 4,
+      "carbs": 28,
+      "fat": 8,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "41",
+    "name": "Fenugreek and Almond Phirni",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Gluten-Free","Lactose-Free"],
+      "health_goal": [
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Iron & Folate Rich", "sub": ["Folate-Heavy"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "This creamy Fenugreek and Almond Phirni uses jaggery for sweetness and fenugreek for blood sugar control. Almonds provide heart-healthy fats and support skin health.",
+    "ingredients": [
+      { "name": "Rice Flour", "quantity": "2 tbsp" },
+      { "name": "Milk (Low-Fat or Almond)", "quantity": "2 cups" },
+      { "name": "Fenugreek Powder", "quantity": "1/2 tsp" },
+      { "name": "Jaggery", "quantity": "1/4 cup" },
+      { "name": "Almonds", "quantity": "2 tbsp, chopped" }
+    ],
+    "instructions": [
+      "Step 1: Heat almond or low-fat milk in a saucepan and simmer until reduced slightly.",
+      "Step 2: Stir in rice flour and cook until thickened.",
+      "Step 3: Add jaggery and fenugreek powder. Mix well.",
+      "Step 4: Serve chilled, garnished with chopped almonds."
+    ],
+    "nutritional_info": {
+      "calories": 190,
+      "protein": 6,
+      "carbs": 18,
+      "fat": 10,
+      "fiber": 3
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "42",
+    "name": "Green Immunity Smoothie",
+    "image_url": "url_to_image",
+    "time_required": 5,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] }
+      ],
+      "meal_type": ["Breakfast", "Desserts/Sweet Treats", "Snacks/In-Between Meals"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This vibrant smoothie blends spinach, citrus fruits, and pineapple for a nutrient-dense drink. Packed with iron, fiber, and vitamin C, it boosts immunity, supports digestion, and promotes collagen production for skin and joint health.",
+    "ingredients": [
+      { "name": "Spinach", "quantity": "1 cup, fresh" },
+      { "name": "Orange Juice", "quantity": "1/2 cup, freshly squeezed" },
+      { "name": "Banana", "quantity": "1, sliced" },
+      { "name": "Pineapple", "quantity": "1/3 cup, diced" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Combine all ingredients in a blender.",
+      "Step 2: Blend until smooth. Serve chilled."
+    ],
+    "nutritional_info": {
+      "calories": 160,
+      "protein": 3,
+      "carbs": 32,
+      "fat": 2,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": null
+},
+{
+    "recipe_id": "43",
+    "name": "Bajra Khichdi",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free", "Lactose-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low-Saturated Fat"] }
+      ],
+      "meal_type": ["Breakfast","Lunch"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "Bajra Khichdi is a North Indian classic crafted with pearl millet and lentils. This version replaces ghee with olive oil for a healthier fat alternative while maintaining its rich, nutty flavor. Packed with dietary fiber for digestion, non-heme iron for boosting cellular health, and low in sodium and saturated fat for heart health, it’s a perfect light breakfast or lunch.",
+    "ingredients": [
+      { "name": "Bajra (Pearl Millet)", "quantity": "1/2 cup" },
+      { "name": "Yellow Moong Dal", "quantity": "1/4 cup" },
+      { "name": "Carrot", "quantity": "1/2 cup, diced" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+      { "name": "Salt", "quantity": "To taste" },
+      { "name": "Olive Oil", "quantity": "1 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Wash and soak bajra and moong dal separately for 30 minutes.",
+      "Step 2: Heat olive oil in a pressure cooker. Add cumin seeds and sauté until aromatic.",
+      "Step 3: Add carrots, bajra, moong dal, turmeric, and salt. Stir well.",
+      "Step 4: Add 3 cups of water and pressure cook for 3 whistles. Serve hot."
+    ],
+    "nutritional_info": {
+      "calories": 230,
+      "protein": 8,
+      "carbs": 40,
+      "fat": 3,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 0.9,
+    "spice_level": null
+  },
+  
+  {
+    "recipe_id": "44",
+    "name": "Masala Moong Dal Cheela",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+      ],
+      "meal_type": ["Breakfast", "Snacks/In-Between Meals"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "Masala Moong Dal Cheela is a protein-packed North Indian pancake made with lentils, perfect for muscle-building and supporting digestion with its high fiber content. Using a non-stick pan eliminates the need for excessive oil, keeping it low in saturated fat and ideal for heart health. The slow-digesting lentils help regulate blood sugar levels, making it a great Low-Sugar option.",
+    "ingredients": [
+      { "name": "Yellow Moong Dal", "quantity": "1 cup, soaked" },
+      { "name": "Onion", "quantity": "1, finely chopped" },
+      { "name": "Green Chili", "quantity": "1, finely chopped" },
+      { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Black Salt", "quantity": "To taste" },
+      { "name": "Turmeric Powder", "quantity": "1/4 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Blend soaked moong dal with turmeric into a smooth batter.",
+      "Step 2: Mix in onion, chili, coriander, cumin, and black salt.",
+      "Step 3: Heat a non-stick pan, spread the batter thinly, and cook both sides until golden.",
+      "Step 4: Serve hot with mint or tamarind chutney."
+    ],
+    "nutritional_info": {
+      "calories": 170,
+      "protein": 10,
+      "carbs": 18,
+      "fat": 2,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 0.8,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "45",
+    "name": "Muri Ghonto",
+    "image_url": "url_to_image",
+    "time_required": 45,
+    "tags": {
+      "dietary_preferences": ["Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Bengali 🇧🇩"
+      }
+    },
+    "introduction": "Muri Ghonto is a traditional Bengali dish made by cooking fish head with lentils and aromatic spices. This version air-fries the fish head instead of deep frying, reducing excess oil while preserving authentic flavors. Mustard oil adds to the rich, traditional taste, making this dish heart-healthy and full of nutrients.",
+    "ingredients": [
+      { "name": "Fish Head (Rohu or Katla)", "quantity": "1, cleaned and halved" },
+      { "name": "Yellow Moong Dal", "quantity": "1/2 cup, dry roasted" },
+      { "name": "Potato", "quantity": "1, diced" },
+      { "name": "Tomato", "quantity": "1, chopped" },
+      { "name": "Mustard Oil", "quantity": "1 tbsp" },
+      { "name": "Bay Leaf", "quantity": "1" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Green Chili", "quantity": "1, slit" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Salt", "quantity": "To taste" },
+      { "name": "Water", "quantity": "3 cups" },
+      { "name": "Fresh Coriander (optional)", "quantity": "For garnish" }
+    ],
+    "instructions": [
+      "Step 1: Preheat the air fryer to 375°F (190°C). Lightly brush the fish head with mustard oil and air-fry for 12-15 minutes until golden and crisp. Set aside.",
+      "Step 2: In a pan, heat the remaining mustard oil. Add bay leaf, cumin seeds, and slit green chili. Sauté for 30 seconds until aromatic.",
+      "Step 3: Add diced potatoes and turmeric. Cook for 5 minutes until lightly browned.",
+      "Step 4: Stir in roasted moong dal, tomato, and salt. Cook for 2-3 minutes.",
+      "Step 5: Add 3 cups of water and bring to a boil. Lower heat and simmer for 15-20 minutes until the lentils and potatoes are tender.",
+      "Step 6: Gently place the air-fried fish head into the stew. Simmer for another 5-7 minutes to allow the flavors to meld.",
+      "Step 7: Garnish with fresh coriander and serve warm with steamed rice."
+    ],
+    "nutritional_info": {
+      "calories": 270,
+      "protein": 22,
+      "carbs": 25,
+      "fat": 6,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 2,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "46",
+    "name": "Green Smoothie Bowl",
+    "image_url": "url_to_image",
+    "time_required": 10,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Breakfast", "Snacks/In-Between Meals","Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "This vibrant Green Smoothie Bowl is loaded with antioxidants and fiber, making it perfect for immunity and gut health. Topped with fruits and seeds, it’s a refreshing way to start the day.",
+    "ingredients": [
+      { "name": "Spinach", "quantity": "1 cup" },
+      { "name": "Banana", "quantity": "1, sliced" },
+      { "name": "Almond Milk", "quantity": "1/2 cup" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Mixed Berries", "quantity": "1/2 cup" },
+      { "name": "Granola", "quantity": "1/4 cup" }
+    ],
+    "instructions": [
+      "Step 1: Blend spinach, banana, almond milk, chia seeds and ice cubes into a smooth base.",
+      "Step 2: Pour into a bowl and top with berries and granola."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 6,
+      "carbs": 30,
+      "fat": 4,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "47",
+    "name": "Avocado Paratha",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegetarian"],
+      "health_goal": [
+        { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+        { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": ["Breakfast"],
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "Avocado Paratha combines the creaminess of avocado with whole wheat flour for a heart-healthy and energy-boosting breakfast. Avocado provides unsaturated fats that support heart health, while whole wheat and coriander add fiber for digestive health and sustained energy. Green chilies bring capsaicin, which may boost metabolism and immunity.",
+    "ingredients": [
+      { "name": "Whole Wheat Flour", "quantity": "2 cups" },
+      { "name": "Avocado", "quantity": "1 large, mashed" },
+      { "name": "Green Chilies", "quantity": "2, finely chopped" },
+      { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+      { "name": "Salt", "quantity": "To taste" },
+      { "name": "Water", "quantity": "As needed" }
+    ],
+    "instructions": [
+      "Step 1: Mix flour, mashed avocado, green chilies, coriander leaves, and salt to form a soft dough.",
+      "Step 2: Divide into balls and roll out into flat discs.",
+      "Step 3: Cook on a hot skillet until golden brown on both sides.",
+      "Step 4: Serve warm with mint chutney or low-fat yogurt."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 6,
+      "carbs": 32,
+      "fat": 8,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 1.2,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "48",
+    "name": "Sindhi Sai Bhaji",
+    "image_url": "url_to_image",
+    "time_required": 45,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources", "Folate-Heavy"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
+      ],
+      "meal_type": ["Lunch"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Pakistani 🇵🇰"
+      }
+    },
+    "introduction": "Sindhi Sai Bhaji is a nutrient-dense dish combining spinach and lentils, providing non-heme iron and folate essential for cellular health. The dish uses **rapeseed oil**, a heart-healthy alternative that adds omega-3s while maintaining traditional flavors. This wholesome lunch pairs well with brown rice or millet roti.",
+    "ingredients": [
+      { "name": "Spinach", "quantity": "300g, chopped" },
+      { "name": "Split Bengal Gram (Chana Dal)", "quantity": "1/2 cup, soaked for 1 hour" },
+      { "name": "Tomato", "quantity": "1, diced" },
+      { "name": "Garlic", "quantity": "3 cloves, minced" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+      { "name": "Rapeseed Oil", "quantity": "1 tbsp" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Pressure cook soaked chana dal, spinach, turmeric, and 3 cups of water for 4-5 whistles until soft.",
+      "Step 2: Heat rapeseed oil in a pan. Sauté cumin seeds, garlic, and tomato until aromatic.",
+      "Step 3: Mash the dal-spinach mixture and combine with the sautéed tomato. Simmer for 5 minutes. Add salt to taste.",
+      "Step 4: Serve hot with brown rice or millet roti or quinoa."
+    ],
+    "nutritional_info": {
+      "calories": 180,
+      "protein": 8,
+      "carbs": 20,
+      "fat": 4,
+      "fiber": 7
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": "Mild"
+  }
+  ,
+  {
+    "recipe_id": "49",
+    "name": "Ragi & Almond Ladoo",
+    "image_url": "url_to_image",
+    "time_required": 20,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Non-Vegetarian","Pescatarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] }
+      ],
+      "meal_type": ["Desserts/Sweet Treats"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Ragi & Almond Ladoo is a calcium-rich South Indian dessert sweetened with dates. Ragi (finger millet) and almonds boost skin and joint health, while fiber supports blood sugar control.",
+    "ingredients": [
+      { "name": "Ragi Flour", "quantity": "1 cup" },
+      { "name": "Almonds", "quantity": "1/4 cup, chopped" },
+      { "name": "Dates", "quantity": "1/4 cup, pitted" },
+      { "name": "Coconut Oil", "quantity": "2 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Dry roast ragi flour until aromatic.",
+      "Step 2: Blend dates into a paste with a little water.",
+      "Step 3: Mix roasted ragi, dates, and almonds. Add melted coconut oil.",
+      "Step 4: Shape into bite-sized balls and refrigerate."
+    ],
+    "nutritional_info": {
+      "calories": 120,
+      "protein": 3,
+      "carbs": 16,
+      "fat": 6,
+      "fiber": 4
+    },
+    "approx_price_per_portion": 1.0,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "50",
+    "name": "Kolhapuri Misal Pav",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": "Lunch",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South-Western Indian 🇮🇳"
+      }
+    },
+    "introduction": "Kolhapuri Misal Pav is a spicy Maharashtrian curry made with sprouted legumes. This version replaces heavy oils with cold-pressed coconut oil and uses freshly ground spices, enhancing its fiber content and anti-inflammatory properties for digestive and immune health.",
+    "ingredients": [
+      { "name": "Sprouted Moong Dal", "quantity": "1 cup" },
+      { "name": "Onion", "quantity": "1, finely chopped" },
+      { "name": "Tomato", "quantity": "1, pureed" },
+      { "name": "Kolhapuri Masala", "quantity": "1 tbsp" },
+      { "name": "Garlic", "quantity": "2 cloves, minced" },
+      { "name": "Coconut Milk", "quantity": "1/2 cup" },
+      { "name": "Low-Sodium Salt", "quantity": "To taste" },
+      { "name": "Dry Coconut", "quantity": "2 tbsp, grated" },
+      { "name": "Sesame Seeds", "quantity": "1 tsp" },
+      { "name": "Coriander Seeds", "quantity": "1 tsp" },
+      { "name": "Red Chilies", "quantity": "2, dried" },
+      { "name": "Cold-Pressed Coconut Oil", "quantity": "1 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Heat oil, sauté onion, garlic, and Kolhapuri masala.",
+      "Step 2: Add sprouted dal, tomato puree, and coconut milk. Simmer for 15 mins.",
+      "Step 3: Serve with gluten-free bread or rice, garnish with coriander."
+    ],
+    "nutritional_info": {
+      "calories": 240,
+      "protein": 12,
+      "carbs": 34,
+      "fat": 7,
+      "fiber": 7
+    },
+    "approx_price_per_portion": 2.5,
+    "spice_level": "🌶️🌶️"
+  }
+  ,
+  {
+    "recipe_id": "51",
+    "name": "Banana Stem Curry)",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+      "dietary_preferences": ["Vegan","Vegetarian","Lactose-Free","Gluten-Free"],
+      "health_goal": [
+        { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+        { "main": "Digestive Health", "sub": ["High-Fiber"] }
+      ],
+      "meal_type": "Dinner",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "South Indian 🇮🇳"
+      }
+    },
+    "introduction": "Packed with fiber and non-heme iron, this banana stem curry promotes digestion and cellular health, offering a nutrient-dense dinner option.",
+    "ingredients": [
+      { "name": "Banana Stem", "quantity": "1 cup, sliced" },
+      { "name": "Onion", "quantity": "1, finely chopped" },
+      { "name": "Tomato", "quantity": "1, diced" },
+      { "name": "Garlic", "quantity": "2 cloves, minced" },
+      { "name": "Cumin Powder", "quantity": "1 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Coconut Milk", "quantity": "1/2 cup" },
+      { "name": "Cold-Pressed Mustard Oil", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+      "Step 1: Sauté onion, garlic, and spices in minimal mustard oil until fragrant.",
+      "Step 2: Add banana stem, tomato, and coconut milk. Simmer for 25 minutes.",
+      "Step 3: Optional: Garnish with fresh coriander leaves and serve with gluten-free flatbread or rice."
+    ],
+    "nutritional_info": {
+      "calories": 220,
+      "protein": 5,
+      "carbs": 30,
+      "fat": 10,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 2.2,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "52",
+    "name": "Rajasthani Bajra Khichdi",
+    "image_url": "url_to_image",
+    "time_required": 30,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Gluten-Free"],
+      "health_goal": [
+        { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+        { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] }
+      ],
+      "meal_type": "Breakfast",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North-Western Indian 🇮🇳"
+      }
+    },
+    "introduction": "This Bajra Khichdi uses pearl millet, a rich source of fiber and calcium, making it ideal for supporting blood sugar control and enhancing joint health. It’s a traditional North-Western Indian dish often enjoyed during colder months, now made with heart-healthy **rapeseed oil** for additional omega-3 benefits.",
+    "ingredients": [
+      { "name": "Pearl Millet (Bajra)", "quantity": "1 cup, soaked for 6 hours or overnight" },
+      { "name": "Moong Dal", "quantity": "1/4 cup, rinsed" },
+      { "name": "Garlic", "quantity": "2 cloves, minced" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Rapeseed Oil", "quantity": "1 tsp" },
+      { "name": "Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Drain and rinse the soaked bajra.",
+      "Step 2: In a pressure cooker or pot, combine bajra, moong dal, turmeric, and 3 cups of water. Pressure cook for 4-5 whistles (or simmer for 25-30 minutes) until soft and creamy.",
+      "Step 3: In a small pan, heat rapeseed oil and sauté the minced garlic until golden and fragrant.",
+      "Step 4: Mix the sautéed garlic into the cooked khichdi. Adjust salt to taste and stir well.",
+      "Step 5: Serve hot with dairy-free yogurt."
+    ],
+    "nutritional_info": {
+      "calories": 200,
+      "protein": 8,
+      "carbs": 35,
+      "fat": 3,
+      "fiber": 7
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": "Mild"
+  }
+  ,
+  {
+    "recipe_id": "53",
+    "name": "Balochi Sajji",
+    "image_url": "url_to_image",
+    "time_required": 90,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
+      ],
+      "meal_type": ["Lunch", "Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Pakistani 🇵🇰"
+      }
+    },
+    "introduction": "Balochi Sajji is a traditional Pakistani dish featuring whole roasted chicken. This version uses minimal seasoning to enhance the natural flavors, making it high in protein and heart-healthy with low sodium.",
+    "ingredients": [
+      { "name": "Whole Chicken", "quantity": "1, cleaned and trimmed" },
+      { "name": "Salt", "quantity": "1 tsp" },
+      { "name": "Lemon Juice", "quantity": "2 tbsp" },
+      { "name": "Black Pepper", "quantity": "1 tsp" },
+      { "name": "Garlic", "quantity": "3 cloves, minced" },
+      { "name": "Mustard Oil", "quantity": "2 tbsp" } 
+    ],
+    "instructions": [
+      "Step 1: Rub the chicken with lemon juice, salt, black pepper, and garlic. Marinate for 2 hours.",
+      "Step 2: Brush the chicken with mustard oil and roast at 180°C for 60–70 minutes.",
+      "Step 3: Serve with baked potatoes or brown rice."
+    ],
+    "nutritional_info": {
+      "calories": 400,
+      "protein": 40,
+      "carbs": 0,
+      "fat": 25,
+      "fiber": 0
+    },
+    "approx_price_per_portion": 4.5,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "54",
+    "name": "Lactose-Free Butter Chicken",
+    "image_url": "url_to_image",
+    "time_required": 60,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
+      ],
+      "meal_type": ["Lunch","Dinner"],
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "This reinvented Butter Chicken replaces butter with heart-healthy extra virgin olive oil and light coconut cream for a creamy texture, making it both lactose-free and healthier. Added garlic and ginger enhance flavor and immunity, while lean chicken thighs provide muscle-building protein. Using low-sodium salt ensures it’s heart-friendly.",
+    "ingredients": [
+      { "name": "Chicken Thighs", "quantity": "500g, boneless" },
+      { "name": "Tomato Puree", "quantity": "1 cup" },
+      { "name": "Light Coconut Cream", "quantity": "1/2 cup" },
+      { "name": "Garlic", "quantity": "4 cloves, minced" },
+      { "name": "Ginger", "quantity": "1 tbsp, grated" },
+      { "name": "Garam Masala", "quantity": "1 tsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Cumin Powder", "quantity": "1 tsp" },
+      { "name": "Extra Virgin Olive Oil", "quantity": "1 tbsp" },
+      { "name": "Low-Sodium Salt", "quantity": "To taste" },
+      { "name": "Fresh Coriander", "quantity": "2 tbsp, chopped (for garnish)" }
+    ],
+    "instructions": [
+      "Step 1: Marinate chicken with garlic, ginger, garam masala, turmeric, cumin powder, and low-sodium salt for 30 minutes.",
+      "Step 2: Heat olive oil in a pan and sauté the marinated chicken until golden brown on all sides. Remove and set aside.",
+      "Step 3: In the same pan, cook tomato puree on medium heat until it thickens and darkens slightly, about 10 minutes.",
+      "Step 4: Stir in the coconut cream and mix well to create a creamy sauce.",
+      "Step 5: Return the chicken to the pan, cover, and simmer for 15 minutes, ensuring the chicken is cooked through.",
+      "Step 6: Garnish with fresh coriander and serve hot with steamed brown rice, quinoa, or whole wheat roti."
+    ],
+    "nutritional_info": {
+      "calories": 310,
+      "protein": 29,
+      "carbs": 9,
+      "fat": 16,
+      "fiber": 2
+    },
+    "approx_price_per_portion": 4.8,
+    "spice_level": "🌶️"
+  },
+  {
+    "recipe_id": "55",
+    "name": "Masala Chai Overnight Oats",
+    "image_url": "url_to_image",
+    "time_required": 10,
+    "tags": {
+      "dietary_preferences": ["Vegan", "Lactose-Free"],
+      "health_goal": [
+        { "main": "Digestive Health", "sub": ["High-Fiber"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": "Breakfast",
+      "cultural": {
+        "main": "Fusion 🥘",
+        "sub": null
+      }
+    },
+    "introduction": "These masala chai-inspired oats combine the anti-inflammatory benefits of cinnamon, cardamom, and ginger with fiber-rich oats for a digestion-friendly and immunity-boosting breakfast.",
+    "ingredients": [
+      { "name": "Rolled Oats", "quantity": "1/2 cup" },
+      { "name": "Almond Milk", "quantity": "1/2 cup" },
+      { "name": "Chia Seeds", "quantity": "1 tbsp" },
+      { "name": "Cinnamon", "quantity": "1/2 tsp" },
+      { "name": "Cardamom Powder", "quantity": "1/4 tsp" },
+      { "name": "Fresh Ginger", "quantity": "1/2 tsp, grated" },
+      { "name": "Maple Syrup", "quantity": "1 tsp" }
+    ],
+    "instructions": [
+      "Step 1: Combine all ingredients in a jar or bowl.",
+      "Step 2: Mix well, cover, and refrigerate overnight.",
+      "Step 3: Serve chilled or warm with a sprinkle of nuts or blueberries."
+    ],
+    "nutritional_info": {
+      "calories": 220,
+      "protein": 6,
+      "carbs": 38,
+      "fat": 5,
+      "fiber": 6
+    },
+    "approx_price_per_portion": 1.5,
+    "spice_level": null
+  },
+  {
+    "recipe_id": "56",
+    "name": "Shahi Tofu",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+      "dietary_preferences": ["Vegetarian", "Vegan", "Lactose-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
+        { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
+      ],
+      "meal_type": "Dinner",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "North Indian 🇮🇳"
+      }
+    },
+    "introduction": "This Shahi Tofu recipe uses firm tofu and cashew cream for a rich, creamy texture. Rapeseed oil enhances the flavor while contributing heart-healthy omega-3 fatty acids. Packed with plant-based protein and anti-inflammatory spices, it’s perfect for a nutritious yet indulgent dinner.",
+    "ingredients": [
+      { "name": "Firm Tofu", "quantity": "250g, cubed" },
+      { "name": "Tomato Puree", "quantity": "1 cup" },
+      { "name": "Cashew Cream or Paste", "quantity": "1/2 cup" },
+      { "name": "Ginger-Garlic Paste", "quantity": "1 tbsp" },
+      { "name": "Cardamom Pods", "quantity": "2" },
+      { "name": "Cinnamon Stick", "quantity": "1" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Spinach or Peas (optional)", "quantity": "1/2 cup" },
+      { "name": "Rapeseed Oil", "quantity": "1 tbsp" },
+      { "name": "Low-Sodium Salt", "quantity": "To taste" }
+    ],
+    "instructions": [
+      "Step 1: Lightly pan-fry or grill tofu until golden using half of the rapeseed oil. Set aside.",
+      "Step 2: Heat the remaining rapeseed oil and sauté ginger-garlic paste, cardamom, and cinnamon until fragrant.",
+      "Step 3: Add tomato puree, turmeric, and cashew cream. Simmer for 10 minutes.",
+      "Step 4: Add tofu cubes (and spinach or peas, if using) and cook for another 10 minutes.",
+      "Step 5: Optional - Sprinkle a pinch of garam masala before serving for enhanced aroma."
+    ],
+    "nutritional_info": {
+      "calories": 320,
+      "protein": 18,
+      "carbs": 14,
+      "fat": 20,
+      "fiber": 5
+    },
+    "approx_price_per_portion": 3.5,
+    "spice_level": "🌶️"
+  },  
+  {
+    "recipe_id": "57",
+    "name": "Chicken Korma",
+    "image_url": "url_to_image",
+    "time_required": 60,
+    "tags": {
+      "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+      "health_goal": [
+        { "main": "High-Protein", "sub": ["Muscle-Building"] },
+        { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+      ],
+      "meal_type": "Dinner",
+      "cultural": {
+        "main": "Authentic",
+        "sub": "Pakistani 🇵🇰"
+      }
+    },
+    "introduction": "This lactose-free chicken korma uses light coconut or cashew yogurt for a creamy texture, paired with turmeric, ginger, and spinach for added anti-inflammatory benefits. High in protein and iron, it’s a nutritious twist on a classic dish that supports muscle growth and immunity.",
+    "ingredients": [
+      { "name": "Chicken Thighs or Breast", "quantity": "500g" },
+      { "name": "Light Coconut Yogurt or Cashew Yogurt", "quantity": "1 cup" },
+      { "name": "Onion", "quantity": "1, sliced" },
+      { "name": "Ginger-Garlic Paste", "quantity": "1 tbsp" },
+      { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+      { "name": "Garam Masala", "quantity": "1 tsp" },
+      { "name": "Spinach (optional)", "quantity": "1 cup" },
+      { "name": "Green Chilies (optional)", "quantity": "2-3" }
+    ],
+    "instructions": [
+      "Step 1: Marinate chicken with yogurt, ginger-garlic paste, turmeric, and garam masala for 30 minutes.",
+      "Step 2: Cook onions until caramelized. Add marinated chicken along with remaining marinade and cook until tender.",
+      "Step 3: Add spinach and green chilies in the last 5 minutes of cooking for added nutrition and spice.",
+      "Step 4: Optional - Sprinkle a pinch of garam masala just before serving for enhanced aroma."
+    ],
+    "nutritional_info": {
+      "calories": 400,
+      "protein": 35,
+      "carbs": 8,
+      "fat": 18,
+      "fiber": 4
+    },
+    "approx_price_per_portion": 4.8,
+    "spice_level": "🌶️🌶️"
+  },
+  {
+    "recipe_id": "58",
+    "name": "Kerala Fish Moilee",
+    "image_url": "url_to_image",
+    "time_required": 40,
+    "tags": {
+        "dietary_preferences": ["Pescatarian", "Non-Vegetarian", "Gluten-Free"],
+        "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Omega-3 Rich", "Low-Sodium"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] }
+        ],
+        "meal_type": "Lunch",
+        "cultural": {
+            "main": "Authentic",
+            "sub": "South Indian 🇮🇳"
+        }
+    },
+    "introduction": "Kerala Fish Moilee is a fragrant coconut milk-based curry infused with turmeric and green chilies. Using olive oil and fresh fish, this heart-healthy dish is rich in omega-3 fatty acids and probiotics, supporting cardiovascular and digestive health.",
+    "ingredients": [
+        { "name": "Fresh Fish (Pomfret or Kingfish)", "quantity": "500g" },
+        { "name": "Coconut Milk (Light)", "quantity": "1 cup" },
+        { "name": "Onion", "quantity": "1, sliced" },
+        { "name": "Green Chilies", "quantity": "2, slit" },
+        { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+        { "name": "Ginger-Garlic Paste", "quantity": "1 tsp" },
+        { "name": "Olive Oil", "quantity": "1 tbsp" }
+    ],
+    "instructions": [
+        "Step 1: Heat olive oil in a pan, sauté onions, green chilies, and ginger-garlic paste.",
+        "Step 2: Add turmeric powder and mix well.",
+        "Step 3: Add fish and gently coat with spices.",
+        "Step 4: Pour coconut milk, cover, and simmer for 15 minutes.",
+        "Step 5: Serve hot with steamed rice."
+    ],
+    "nutritional_info": {
+        "calories": 280,
+        "protein": 25,
+        "carbs": 8,
+        "fat": 18,
+        "fiber": 1
+    },
+    "approx_price_per_portion": 4.0,
+    "spice_level": "🌶️🌶️"
+},
+{
+        "recipe_id": "59",
+        "name": "Masala Egg Bhurji",
+        "image_url": "url_to_image",
+        "time_required": 15,
+        "tags": {
+            "dietary_preferences": ["Non-Vegetarian", "Gluten-Free"],
+            "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium"] },
+            { "main": "Iron & Folate Rich", "sub": ["Heme Iron Sources"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+            
+            ],
+            "meal_type": ["Breakfast"],
+            "cultural": {
+                "main": "Authentic",
+                "sub": "Indian 🇮🇳"
+            }
+        },
+        "introduction": "Masala Egg Bhurji is a protein-packed Indian breakfast made with scrambled eggs and aromatic spices. High in protein and iron for muscle and cellular health, it also contains turmeric for its anti-inflammatory benefits, making it ideal for immunity, energy, and digestion.",
+        "ingredients": [
+            { "name": "Eggs", "quantity": "3" },
+            { "name": "Onion", "quantity": "1, finely chopped" },
+            { "name": "Tomato", "quantity": "1, diced" },
+            { "name": "Green Chili", "quantity": "1, finely chopped" },
+            { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+            { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+            { "name": "Olive Oil", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+            "Step 1: Heat oil in a pan, add cumin seeds, and sauté onion and green chili.",
+            "Step 2: Add tomato and turmeric. Cook until softened.",
+            "Step 3: Beat eggs, pour into the pan, and scramble gently. Serve hot with gluten-free toast."
+        ],
+        "nutritional_info": {
+            "calories": 220,
+            "protein": 14,
+            "carbs": 4,
+            "fat": 16,
+            "fiber": 1
+        },
+        "approx_price_per_portion": 1.8,
+        "spice_level": "🌶️"
+    },
+    {
+        "recipe_id": "60",
+        "name": "Smoked Salmon & Avocado Flatbread",
+        "image_url": "url_to_image",
+        "time_required": 10,
+        "tags": {
+            "dietary_preferences": ["Pescatarian"],
+            "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] }
+            ],
+            "meal_type": ["Breakfast","Snacks/In-Between Meals"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": null
+            }
+        },
+        "introduction": "This smoked salmon and avocado flatbread combines heart-healthy omega-3 fats with fiber-rich avocado and whole grain flatbread for better digestion. Lemon juice adds antioxidants for immunity support, making it a nutrient-packed breakfast.",
+        "ingredients": [
+            { "name": "Whole Grain Flatbread", "quantity": "1" },
+            { "name": "Smoked Salmon", "quantity": "50g" },
+            { "name": "Avocado", "quantity": "1/2, sliced" },
+            { "name": "Lemon Juice", "quantity": "1 tsp" },
+            { "name": "Dill Leaves", "quantity": "1 tsp, chopped" }
+        ],
+        "instructions": [
+            "Step 1: Spread avocado slices on the flatbread and drizzle with lemon juice.",
+            "Step 2: Top with smoked salmon and sprinkle with dill. Serve immediately with optional red onions."
+        ],
+        "nutritional_info": {
+            "calories": 250,
+            "protein": 12,
+            "carbs": 18,
+            "fat": 15,
+            "fiber": 3
+        },
+        "approx_price_per_portion": 3.5,
+        "spice_level": null
+    },
+    {
+        "recipe_id": "61",
+        "name": "Tuna Patties & Green Chutney",
+        "image_url": "url_to_image",
+        "time_required": 20,
+        "tags": {
+            "dietary_preferences": ["Pescatarian", "Non-Vegetarian", "Lactose-Free"],
+            "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat", "Omega-3 Rich"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] }
+
+            ],
+            "meal_type": ["Snacks/In-Between Meals","Dinner"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": "Pakistani 🇵🇰"
+            }
+        },
+        "introduction": "Tuna Patties with Green Chutney are a protein-packed snack or light dinner enriched with omega-3 fats and fiber from oat flour. They also support iron absorption, better digestion, and immunity with the inclusion of coriander and probiotics in the chutney.",
+        "ingredients": [
+            { "name": "Canned Tuna", "quantity": "200g, drained" },
+            { "name": "Onion", "quantity": "1 small, finely chopped" },
+            { "name": "Green Chilies", "quantity": "2, finely chopped" },
+            { "name": "Egg", "quantity": "1, beaten" },
+            { "name": "Oat Flour", "quantity": "2 tbsp" },
+            { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+            { "name": "Avocado Oil", "quantity": "1 tbsp (for frying)" }
+        ],
+        "instructions": [
+            "Step 1: Mix tuna, onion, chilies, egg, oat flour, and coriander into a firm mixture.",
+            "Step 2: Shape into small patties.",
+            "Step 3: Heat avocado oil in a pan and fry patties on medium heat until golden brown on both sides. Alternatively, air-dry or oven bake the patties",
+            "Step 4: Serve warm with green chutney."
+        ],
+        "nutritional_info": {
+            "calories": 170,
+            "protein": 20,
+            "carbs": 5,
+            "fat": 7,
+            "fiber": 2
+        },
+        "approx_price_per_portion": 3.5,
+        "spice_level": "🌶️🌶️"
+    },
+    {
+        "recipe_id": "62",
+        "name": "Fish Cutlets & Mint Yogurt",
+        "image_url": "url_to_image",
+        "time_required": 25,
+        "tags": {
+            "dietary_preferences": ["Pescatarian", "Gluten-Free","Lactose-Free","Non-Vegetarian"],
+            "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] },
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] }
+            ],
+            "meal_type": ["Snacks/In-Between Meals"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": null
+            }
+        },
+        "introduction": "These fish cutlets combine omega-3-rich fish with chickpea flour for a gluten-free, protein-packed snack. The mint yogurt dip adds probiotics for gut health and antioxidants for immunity support, making it an ideal heart-healthy option.",
+        "ingredients": [
+            { "name": "Cooked Fish (e.g., Mackerel or Tilapia)", "quantity": "200g" },
+            { "name": "Chickpea Flour (Besan)", "quantity": "3 tbsp" },
+            { "name": "Onion", "quantity": "1 small, finely chopped" },
+            { "name": "Green Chilies", "quantity": "1, finely chopped" },
+            { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+            { "name": "Egg", "quantity": "1, beaten" },
+            { "name": "Avocado Oil", "quantity": "1 tbsp (for frying)" }
+        ],
+        "instructions": [
+            "Step 1: Mash fish and mix with chickpea flour, onion, chilies, coriander, and egg.",
+            "Step 2: Shape into small patties.",
+            "Step 3: Heat avocado oil and shallow fry until golden brown on both sides.Alternatively, air-dry or oven bake the patties",
+            "Step 4: Serve with a mint yogurt dip."
+        ],
+        "nutritional_info": {
+            "calories": 200,
+            "protein": 22,
+            "carbs": 8,
+            "fat": 8,
+            "fiber": 2
+        },
+        "approx_price_per_portion": 3.0,
+        "spice_level": "🌶️"
+    },
+    {
+        "recipe_id": "63",
+        "name": "Egg Keema Sandwich",
+        "image_url": "url_to_image",
+        "time_required": 20,
+        "tags": {
+            "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+            "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly"] }
+            ],
+            "meal_type": ["Breakfast"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": null
+            }
+        },
+        "introduction": "Egg Keema Sandwich combines spiced scrambled eggs with whole grain bread for a high-protein, fiber-rich breakfast. Rich in iron and folate for cellular health, and anti-inflammatory properties for immunity, it’s a perfect start to your day.",
+        "ingredients": [
+            { "name": "Eggs", "quantity": "2, beaten" },
+            { "name": "Onion", "quantity": "1 small, finely chopped" },
+            { "name": "Tomato", "quantity": "1 small, diced" },
+            { "name": "Green Chilies", "quantity": "1, finely chopped" },
+            { "name": "Coriander Leaves", "quantity": "1 tbsp, chopped" },
+            { "name": "Whole-Grain Bread", "quantity": "2 slices" },
+            { "name": "Olive Oil", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+            "Step 1: Heat olive oil in a pan and sauté onion, tomato, and chilies.",
+            "Step 2: Add eggs and scramble gently until cooked. Stir in coriander.",
+            "Step 3: Stuff inside toasted whole-grain bread."
+        ],
+        "nutritional_info": {
+            "calories": 280,
+            "protein": 15,
+            "carbs": 20,
+            "fat": 12,
+            "fiber": 4
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+    },
+    {
+        "recipe_id": "64",
+        "name": "Smoked Salmon Paratha Rolls",
+        "image_url": "url_to_image",
+        "time_required": 15,
+        "tags": {
+            "dietary_preferences": ["Pescatarian","Non-Vegetarian"],
+            "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] },
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] }
+            ],
+            "meal_type": ["Breakfast","Snacks/In-Between Meals"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": null
+            }
+        },
+        "introduction": "These smoked salmon paratha rolls are a fusion of South Asian flatbreads with nutrient-rich smoked salmon and dill. Packed with omega-3s, fiber, and Vitamin C, they support heart health, collagen production, and blood sugar control.",
+        "ingredients": [
+            { "name": "Whole-Wheat Paratha", "quantity": "2" },
+            { "name": "Smoked Salmon", "quantity": "100g" },
+            { "name": "Cream Cheese (Low-Fat)", "quantity": "2 tbsp" },
+            { "name": "Cucumber", "quantity": "1/2, sliced" },
+            { "name": "Dill Leaves", "quantity": "1 tsp, chopped" }
+        ],
+        "instructions": [
+            "Step 1: Spread cream cheese over parathas.",
+            "Step 2: Add smoked salmon, cucumber slices, and dill.",
+            "Step 3: Roll tightly and slice into bite-sized pieces."
+        ],
+        "nutritional_info": {
+            "calories": 250,
+            "protein": 15,
+            "carbs": 20,
+            "fat": 10,
+            "fiber": 3
+        },
+        "approx_price_per_portion": 3.5,
+        "spice_level": null
+    },
+    {
+        "recipe_id": "65",
+        "name": "Seer Fish Lettuce Wraps",
+        "image_url": "url_to_image",
+        "time_required": 20,
+        "tags": {
+            "dietary_preferences": ["Pescatarian", "Non-Vegetarian","Gluten-Free", "Lactose-Free"],
+            "health_goal": [
+                { "main": "Low-Sugar", "sub": ["Keto-Friendly"] },
+                { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
+                { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] }
+            ],
+            "meal_type": ["Breakfast","Snacks/In-Between Meals"],
+            "cultural": {
+                "main": "Authentic",
+                "sub": "South Indian 🇮🇳"
+            }
+        },
+        "introduction": "Seer Fish Lettuce Wraps bring the rich flavors of South India into a keto-friendly dish. Packed with omega-3 fatty acids, protein, and low-carb almond flour, this dish is perfect for muscle-building, heart health, and energy while keeping carbs to a minimum.",
+        "ingredients": [
+            { "name": "Seer Fish (Surmai)", "quantity": "200g, filleted" },
+            { "name": "Butterhead Lettuce", "quantity": "6 leaves" },
+            { "name": "Almond Flour", "quantity": "2 tbsp" },
+            { "name": "Coconut Oil", "quantity": "1 tbsp" },
+            { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+            { "name": "Red Chili Powder", "quantity": "1/2 tsp" },
+            { "name": "Lemon Juice", "quantity": "1 tsp" },
+            { "name": "Coriander Leaves", "quantity": "2 tbsp, chopped" },
+            { "name": "Salt", "quantity": "To taste" }
+        ],
+        "instructions": [
+            "Step 1: Marinate fish with turmeric, red chili powder, lemon juice, and salt for 10 minutes.",
+            "Step 2: Coat fish lightly with almond flour.",
+            "Step 3: Heat coconut oil in a pan and sear fish until cooked and golden on both sides.",
+            "Step 4: Place cooked fish pieces on lettuce leaves. Garnish with coriander and serve immediately."
+        ],
+        "nutritional_info": {
+            "calories": 190,
+            "protein": 22,
+            "carbs": 3,
+            "fat": 10,
+            "fiber": 2
+        },
+        "approx_price_per_portion": 3.8,
+        "spice_level": "🌶️"
+    },
+    {
+        "recipe_id": "66",
+        "name": "Lentil & Sweet Potato Stew",
+        "image_url": "url_to_image",
+        "time_required": 40,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian","Lactose-Free","Gluten-Free"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium", "Low Saturated Fat"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] }
+          ],
+          "meal_type": ["Lunch","Dinner"],
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "This hearty stew combines iron-rich red lentils and nutrient-dense sweet potatoes to promote heart health with low sodium and saturated fat content. Packed with plant-based protein for muscle-building and energy-boosting, it also supports digestive health with its high fiber content. The addition of turmeric adds anti-inflammatory benefits, making it a versatile dish for holistic wellness.",
+        "ingredients": [
+          { "name": "Red Lentils", "quantity": "1 cup" },
+          { "name": "Sweet Potato", "quantity": "2 medium, diced" },
+          { "name": "Turmeric Powder", "quantity": "1 tsp" },
+          { "name": "Ground Cumin", "quantity": "1 tsp" },
+          { "name": "Coconut Milk", "quantity": "1 cup" },
+          { "name": "Spinach", "quantity": "2 cups" },
+          { "name": "Vegetable Broth", "quantity": "4 cups" },
+          { "name": "Garlic", "quantity": "2 cloves, minced" },
+          { "name": "Olive Oil", "quantity": "1 tbsp" }
+        ],
+        "instructions": [
+          "Step 1: Heat olive oil in a pot and sauté garlic until fragrant.",
+          "Step 2: Add sweet potatoes, turmeric, and cumin. Cook for 5 minutes.",
+          "Step 3: Stir in lentils, coconut milk, and vegetable broth. Simmer for 25 minutes.",
+          "Step 4: Add spinach and cook for 5 minutes until wilted. Serve hot."
+        ],
+        "nutritional_info": {
+          "calories": 320,
+          "protein": 14,
+          "carbs": 48,
+          "fat": 9,
+          "fiber": 12
+        },
+        "approx_price_per_portion": 2.5,
+        "spice_level": "🌶️"
+      },
+      {
+        "recipe_id": "67",
+        "name": "Coconut and Chickpea Curry",
+        "image_url": "url_to_image",
+        "time_required": 30,
+        "tags": {
+          "dietary_preferences": ["Vegan","Vegetarian", "Gluten-Free","Lactose-Free"],
+          "health_goal": [
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Iron & Folate Rich", "sub": ["Folate-Heavy"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] }
+          ],
+          "meal_type": "Lunch",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "Indian 🇮🇳"
+          }
+        },
+        "introduction": "This aromatic curry features chickpeas as a rich source of plant-based protein, promoting muscle-building and energy-boosting. Coconut milk and turmeric enhance antioxidant and anti-inflammatory properties, supporting immunity. Gut-friendly probiotics in this dish aid digestive health, while folate-rich ingredients like chickpeas and tomatoes contribute to cellular health and iron levels.",
+        "ingredients": [
+          { "name": "Chickpeas", "quantity": "1 can, drained" },
+          { "name": "Coconut Milk", "quantity": "1 cup" },
+          { "name": "Tomato", "quantity": "2, diced" },
+          { "name": "Onion", "quantity": "1, finely chopped" },
+          { "name": "Garlic", "quantity": "3 cloves, minced" },
+          { "name": "Turmeric Powder", "quantity": "1 tsp" },
+          { "name": "Cumin Seeds", "quantity": "1 tsp" },
+          { "name": "Fresh Coriander", "quantity": "1/4 cup, chopped" },
+          { "name": "Olive Oil", "quantity": "1 tbsp" }
+        ],
+        "instructions": [
+          "Step 1: Heat olive oil in a pan and toast cumin seeds until aromatic.",
+          "Step 2: Add onion and garlic, sauté until golden.",
+          "Step 3: Stir in tomatoes, turmeric, and chickpeas. Cook for 5 minutes.",
+          "Step 4: Add coconut milk and simmer for 10 minutes. Garnish with coriander."
+        ],
+        "nutritional_info": {
+          "calories": 280,
+          "protein": 9,
+          "carbs": 28,
+          "fat": 15,
+          "fiber": 7
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+      },
+      {
+        "recipe_id": "68",
+        "name": "Chickpea Coconut Laddu",
+        "image_url": "url_to_image",
+        "time_required": 30,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free","Lactose-Free","Non-Vegetarian","Pescatarian"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "Indian 🇮🇳"
+          }
+        },
+        "introduction": "A protein-packed take on a traditional Indian sweet, this laddu uses roasted chickpea flour for muscle-building benefits. It is sweetened with date paste, which supports blood sugar control, while desiccated coconut adds heart-healthy fats. With almonds providing additional protein and texture, it’s a delicious dessert for sustainable energy and improved cardiovascular health.",
+        "ingredients": [
+          { "name": "Roasted Chickpea Flour (Besan)", "quantity": "1 cup" },
+          { "name": "Desiccated Coconut", "quantity": "1/2 cup" },
+          { "name": "Date Paste", "quantity": "1/4 cup" },
+          { "name": "Cardamom Powder", "quantity": "1/2 tsp" },
+          { "name": "Almonds", "quantity": "2 tbsp, crushed" }
+        ],
+        "instructions": [
+          "Step 1: Dry roast chickpea flour in a pan until aromatic.",
+          "Step 2: Mix roasted chickpea flour with desiccated coconut and cardamom powder.",
+          "Step 3: Add date paste and crushed almonds. Knead into a dough.",
+          "Step 4: Shape into small laddus and refrigerate for 30 minutes before serving."
+        ],
+        "nutritional_info": {
+          "calories": 180,
+          "protein": 7,
+          "carbs": 20,
+          "fat": 8,
+          "fiber": 5
+        },
+        "approx_price_per_portion": 1.5,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "69",
+        "name": "Almond Pistachio Protein Barfi",
+        "image_url": "url_to_image",
+        "time_required": 40,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Gluten-Free","Vegetarian","Lactose-Free","Non-Vegetarian","Pescatarian"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Low-Sugar", "sub": ["Keto-Friendly"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "This fusion dessert incorporates almond and pistachio flours for a rich source of healthy fats and plant-based protein, ideal for energy-boosting. Pea protein adds muscle-building benefits, while the low-sugar profile supports blood sugar control. It also contains non-heme iron sources, making it a nutrient-dense choice for promoting cellular health.",
+        "ingredients": [
+          { "name": "Almond Flour", "quantity": "1 cup" },
+          { "name": "Pistachio Flour", "quantity": "1/2 cup" },
+          { "name": "Pea Protein Powder", "quantity": "1/4 cup" },
+          { "name": "Agave Nectar", "quantity": "2 tbsp" },
+          { "name": "Cardamom Powder", "quantity": "1/4 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Mix almond flour, pistachio flour, and protein powder in a bowl.",
+          "Step 2: Heat agave nectar and cardamom powder in a pan until warm.",
+          "Step 3: Combine warm agave nectar with the dry ingredients to form a dough.",
+          "Step 4: Press into a greased tray and refrigerate for 1 hour. Cut into squares to serve."
+        ],
+        "nutritional_info": {
+          "calories": 200,
+          "protein": 10,
+          "carbs": 12,
+          "fat": 14,
+          "fiber": 3
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "70",
+        "name": "Mango Saffron Chia Pudding",
+        "image_url": "url_to_image",
+        "time_required": 20,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Gluten-Free","Non-Vegetarian","Lactose-Free","Vegetarian","Pescatarian"],
+          "health_goal": [
+            { "main": "Immunity Boosting", "sub": ["Antioxidant-Rich"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "Infused with saffron and mango, this pudding boosts immunity with antioxidant-rich ingredients and provides high fiber for digestive health. Chia seeds deliver plant-based protein for energy-boosting, while their omega-3 content supports heart health. The naturally sweetened profile ensures blood sugar control, making it a well-rounded dessert option.",
+        "ingredients": [
+          { "name": "Chia Seeds", "quantity": "1/4 cup" },
+          { "name": "Unsweetened Almond Milk", "quantity": "1 cup" },
+          { "name": "Saffron Strands", "quantity": "A pinch" },
+          { "name": "Mango", "quantity": "1, pureed" },
+          { "name": "Vanilla Extract", "quantity": "1/2 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Soak chia seeds in almond milk with saffron strands for 10 minutes.",
+          "Step 2: Stir in vanilla extract and refrigerate for an additional 10 minutes.",
+          "Step 3: Layer chia pudding with mango puree in a serving glass and enjoy."
+        ],
+        "nutritional_info": {
+          "calories": 170,
+          "protein": 6,
+          "carbs": 20,
+          "fat": 7,
+          "fiber": 8
+        },
+        "approx_price_per_portion": 1.8,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "71",
+        "name": "Spiced Lentil Coconut Kheer",
+        "image_url": "url_to_image",
+        "time_required": 35,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Gluten-Free", "Non-Vegetarian", "Pescatarian","Lactose-Free"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "Indian 🇮🇳"
+          }
+        },
+        "introduction": "A unique take on kheer, this dessert uses protein-rich moong dal cooked in coconut milk, flavored with cinnamon and nutmeg, and sweetened with a small amount of date paste. Perfect for a nourishing treat.",
+        "ingredients": [
+          { "name": "Moong Dal", "quantity": "1/2 cup" },
+          { "name": "Coconut Milk", "quantity": "1 cup" },
+          { "name": "Date Paste", "quantity": "2 tbsp" },
+          { "name": "Cinnamon Powder", "quantity": "1/2 tsp" },
+          { "name": "Nutmeg", "quantity": "A pinch" }
+        ],
+        "instructions": [
+          "Step 1: Rinse moong dal and cook with water until soft.",
+          "Step 2: Add coconut milk, date paste, cinnamon, and nutmeg. Simmer for 10 minutes.",
+          "Step 3: Serve warm, garnished with toasted coconut flakes or cashews"
+        ],
+        "nutritional_info": {
+          "calories": 200,
+          "protein": 8,
+          "carbs": 25,
+          "fat": 8,
+          "fiber": 4
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "72",
+        "name": "Black Sesame Tofu Pudding",
+        "image_url": "url_to_image",
+        "time_required": 25,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian","Gluten-Free", "Non-Vegetarian", "Pescatarian","Lactose-Free"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "Silken tofu provides high-quality protein for energy and muscle-building, while black sesame is rich in calcium for skin and joint health. This dessert also contains iron, making it a great option for preventing deficiencies. Sweetened lightly with maple syrup, it supports blood sugar control, offering a balanced and nutritious treat.",
+        "ingredients": [
+          { "name": "Silken Tofu", "quantity": "1 cup" },
+          { "name": "Black Sesame Paste", "quantity": "2 tbsp" },
+          { "name": "Maple Syrup", "quantity": "1 tbsp" },
+          { "name": "Vanilla Extract", "quantity": "1/2 tsp" },
+          { "name": "Toasted Sesame Seeds", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Blend silken tofu, black sesame paste, maple syrup, and vanilla extract until smooth.",
+          "Step 2: Pour the mixture into serving bowls and chill for 20 minutes.",
+          "Step 3: Garnish with toasted sesame seeds before serving."
+        ],
+        "nutritional_info": {
+          "calories": 150,
+          "protein": 9,
+          "carbs": 10,
+          "fat": 8,
+          "fiber": 3
+        },
+        "approx_price_per_portion": 1.8,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "73",
+        "name": "Rosewater Almond Halwa",
+        "image_url": "url_to_image",
+        "time_required": 30,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Non-Vegetarian", "Pescatarian", "Lactose-Free"],
+          "health_goal": [
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "This fragrant dessert blends almond flour for heart-healthy fats and iron-rich pistachios to support cellular health. Date paste adds natural sweetness while aiding blood sugar control, and rosewater brings anti-inflammatory benefits. This Middle Eastern-inspired halwa is a perfect immunity-boosting and nutrient-packed dessert.",
+        "ingredients": [
+          { "name": "Almond Flour", "quantity": "1 cup" },
+          { "name": "Coconut Oil", "quantity": "2 tbsp" },
+          { "name": "Date Paste", "quantity": "2 tbsp" },
+          { "name": "Rosewater", "quantity": "1 tsp" },
+          { "name": "Pistachios", "quantity": "2 tbsp, chopped" }
+        ],
+        "instructions": [
+          "Step 1: Heat coconut oil in a pan and lightly toast the almond flour until golden.",
+          "Step 2: Add date paste and rosewater, mixing well to form a dough.",
+          "Step 3: Press the mixture into a tray and top with chopped pistachios. Cool before serving."
+        ],
+        "nutritional_info": {
+          "calories": 180,
+          "protein": 6,
+          "carbs": 12,
+          "fat": 14,
+          "fiber": 4
+        },
+        "approx_price_per_portion": 2.2,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "74",
+        "name": "Amaranth & Coconut Porridge",
+        "image_url": "url_to_image",
+        "time_required": 30,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free","Non-Vegetarian", "Pescatarian"],
+          "health_goal": [
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] }
+          ],
+          "meal_type": "Breakfast",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "This creamy porridge made from amaranth and coconut milk is rich in calcium, promoting strong bones and joint health. High in fiber for digestive wellness and plant-based protein for sustained energy, it’s a wholesome and heart-healthy breakfast option.",
+        "ingredients": [
+          { "name": "Amaranth Seeds", "quantity": "1/2 cup" },
+          { "name": "Coconut Milk", "quantity": "1 cup" },
+          { "name": "Water", "quantity": "1 cup" },
+          { "name": "Maple Syrup", "quantity": "1 tbsp" },
+          { "name": "Chia Seeds", "quantity": "1 tbsp" },
+          { "name": "Toasted Almonds", "quantity": "2 tbsp" },
+          { "name": "Fresh Berries", "quantity": "1/2 cup" }
+        ],
+        "instructions": [
+          "Step 1: Rinse amaranth seeds and cook with water and coconut milk for 20 minutes.",
+          "Step 2: Stir in chia seeds and maple syrup. Simmer for 5 minutes.",
+          "Step 3: Serve in bowls topped with toasted almonds and fresh berries."
+        ],
+        "nutritional_info": {
+          "calories": 250,
+          "protein": 8,
+          "carbs": 30,
+          "fat": 10,
+          "fiber": 7
+        },
+        "approx_price_per_portion": 1.8,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "75",
+        "name": "Sesame & Beetroot Kebabs",
+        "image_url": "url_to_image",
+        "time_required": 45,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium"] },
+            { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building"] }
+          ],
+          "meal_type": "Snacks/In-Between Meals",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": "Middle Eastern"
+          }
+        },
+        "introduction": "These vibrant kebabs combine beetroot and sesame seeds for a collagen-boosting, heart-healthy snack. High in plant-based protein and fiber, they support digestive health and muscle-building, offering a colorful and nutritious twist on a traditional dish.",
+        "ingredients": [
+          { "name": "Beetroot", "quantity": "2 medium, grated" },
+          { "name": "Cooked Quinoa", "quantity": "1 cup" },
+          { "name": "Sesame Seeds", "quantity": "2 tbsp" },
+          { "name": "Chickpea Flour", "quantity": "2 tbsp" },
+          { "name": "Ground Cumin", "quantity": "1 tsp" },
+          { "name": "Garlic Powder", "quantity": "1/2 tsp" },
+          { "name": "Olive Oil", "quantity": "1 tbsp" }
+        ],
+        "instructions": [
+          "Step 1: Mix grated beetroot, cooked quinoa, sesame seeds, chickpea flour, and spices in a bowl.",
+          "Step 2: Shape into small kebabs and refrigerate for 15 minutes.",
+          "Step 3: Heat olive oil in a pan and cook kebabs until golden on both sides. Serve warm."
+        ],
+        "nutritional_info": {
+          "calories": 200,
+          "protein": 10,
+          "carbs": 18,
+          "fat": 8,
+          "fiber": 6
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+      },
+      {
+        "recipe_id": "76",
+        "name": "Turmeric Ginger Lentil Soup",
+        "image_url": "url_to_image",
+        "time_required": 40,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Skin & Joint Health", "sub": ["Collagen Boosting"] },
+            { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+            { "main": "Immunity Boosting", "sub": ["Anti-Inflammatory"] }
+          ],
+          "meal_type": "Lunch",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "South Asian"
+          }
+        },
+        "introduction": "This warm, spiced lentil soup combines turmeric and ginger for anti-inflammatory and collagen-boosting benefits, making it ideal for skin and joint health. Lentils provide high protein and fiber, promoting muscle-building and digestive health, while the low-sodium profile supports heart wellness.",
+        "ingredients": [
+          { "name": "Red Lentils", "quantity": "1 cup" },
+          { "name": "Turmeric Powder", "quantity": "1 tsp" },
+          { "name": "Fresh Ginger", "quantity": "1 tbsp, grated" },
+          { "name": "Garlic", "quantity": "3 cloves, minced" },
+          { "name": "Vegetable Broth", "quantity": "4 cups" },
+          { "name": "Coconut Milk", "quantity": "1/2 cup" },
+          { "name": "Spinach", "quantity": "2 cups" },
+          { "name": "Olive Oil", "quantity": "1 tbsp" },
+          { "name": "Cumin Seeds", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Heat olive oil in a pot and toast cumin seeds until aromatic.",
+          "Step 2: Add garlic, ginger, and turmeric. Sauté for 2 minutes.",
+          "Step 3: Stir in lentils, vegetable broth, and coconut milk. Simmer for 20 minutes.",
+          "Step 4: Add spinach and cook for 5 minutes. Serve hot"
+        ],
+        "nutritional_info": {
+          "calories": 280,
+          "protein": 14,
+          "carbs": 30,
+          "fat": 9,
+          "fiber": 10
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+      },
+      {
+        "recipe_id": "77",
+        "name": "Bhapa Doi",
+        "image_url": "url_to_image",
+        "time_required": 60,
+        "tags": {
+          "dietary_preferences": ["Vegetarian", "Gluten-Free", "Non-Vegetarian", "Pescatarian"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building", "Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "Bengali 🇧🇩"
+          }
+        },
+        "introduction": "Bhapa Doi is a traditional Bengali steamed yogurt dessert. This healthier version uses Greek yogurt for a protein boost, contributing to muscle-building and energy. It is sweetened with honey for blood sugar control, while probiotics in yogurt improve digestive health.",
+        "ingredients": [
+          { "name": "Greek Yogurt", "quantity": "2 cups" },
+          { "name": "Honey", "quantity": "2 tbsp" },
+          { "name": "Saffron Strands", "quantity": "A pinch" },
+          { "name": "Warm Milk", "quantity": "2 tbsp" },
+          { "name": "Cardamom Powder", "quantity": "1/4 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Preheat oven to 350°F (175°C).",
+          "Step 2: Soak saffron strands in warm milk for 10 minutes.",
+          "Step 3: In a bowl, mix Greek yogurt, honey, saffron milk, and cardamom powder until smooth.",
+          "Step 4: Pour the mixture into individual ramekins.",
+          "Step 5: Place ramekins in a baking dish filled with hot water halfway up the sides.",
+          "Step 6: Bake for 30-35 minutes until set.",
+          "Step 7: Allow to cool, then refrigerate for at least 2 hours before serving."
+        ],
+        "nutritional_info": {
+          "calories": 150,
+          "protein": 10,
+          "carbs": 18,
+          "fat": 4,
+          "fiber": 0
+        },
+        "approx_price_per_portion": 1.5,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "78",
+        "name": "Steamed Coconut Date Pudding",
+        "image_url": "url_to_image",
+        "time_required": 50,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free", "Non-Vegetarian", "Pescatarian"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] },
+            { "main": "Iron & Folate Rich", "sub": ["Non-Heme Iron Sources"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": "South Asian"
+          }
+        },
+        "introduction": "This steamed pudding combines the richness of coconut milk with the natural sweetness of dates, providing a heart-healthy dessert that's also high in fiber and iron. The steaming process preserves nutrients, making it a wholesome treat.",
+        "ingredients": [
+          { "name": "Dates, pitted and chopped", "quantity": "1 cup" },
+          { "name": "Coconut Milk", "quantity": "1 cup" },
+          { "name": "Rice Flour", "quantity": "1/2 cup" },
+          { "name": "Baking Powder", "quantity": "1 tsp" },
+          { "name": "Cardamom Powder", "quantity": "1/2 tsp" },
+          { "name": "Chopped Nuts (Optional)", "quantity": "2 tbsp" }
+        ],
+        "instructions": [
+          "Step 1: Blend dates and coconut milk into a smooth paste.",
+          "Step 2: In a bowl, mix rice flour, baking powder, and cardamom powder.",
+          "Step 3: Combine the dry ingredients with the date-coconut paste to form a batter.",
+          "Step 4: Pour into a greased steaming dish, sprinkle chopped nuts on top, and steam for 25-30 minutes.",
+          "Step 5: Allow to cool slightly before serving warm."
+        ],
+        "nutritional_info": {
+          "calories": 220,
+          "protein": 5,
+          "carbs": 28,
+          "fat": 9,
+          "fiber": 6
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "79",
+        "name": "Rosewater Phirni",
+        "image_url": "url_to_image",
+        "time_required": 60,
+        "tags": {
+          "dietary_preferences": ["Vegetarian", "Gluten-Free", "Non-Vegetarian", "Pescatarian"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Heart-Healthy", "sub": ["Low-Sodium"] }
+          ],
+          "meal_type": "Desserts/Sweet Treats",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "Pakistani 🇵🇰"
+          }
+        },
+        "introduction": "Phirni, a popular Pakistani dessert, is transformed into a healthier version by using brown rice flour and rosewater. Greek yogurt adds probiotics and protein, making it a heart-healthy and digestive-friendly treat. This dessert is lightly sweetened and naturally flavored with cardamom and rosewater.",
+        "ingredients": [
+          { "name": "Brown Rice Flour", "quantity": "1/2 cup" },
+          { "name": "Greek Yogurt", "quantity": "1 cup" },
+          { "name": "Honey", "quantity": "2 tbsp" },
+          { "name": "Rosewater", "quantity": "1 tsp" },
+          { "name": "Warm Milk", "quantity": "2 cups" },
+          { "name": "Cardamom Powder", "quantity": "1/2 tsp" },
+          { "name": "Chopped Pistachios", "quantity": "2 tbsp" }
+        ],
+        "instructions": [
+          "Step 1: Heat milk in a saucepan and slowly whisk in the brown rice flour, stirring constantly to avoid lumps.",
+          "Step 2: Cook on low heat until the mixture thickens, about 10-15 minutes.",
+          "Step 3: Stir in honey, rosewater, and cardamom powder. Cook for another 2 minutes.",
+          "Step 4: Remove from heat and let cool slightly. Fold in Greek yogurt until smooth.",
+          "Step 5: Pour into serving bowls and chill for at least 2 hours. Garnish with chopped pistachios before serving."
+        ],
+        "nutritional_info": {
+          "calories": 180,
+          "protein": 7,
+          "carbs": 25,
+          "fat": 6,
+          "fiber": 2
+        },
+        "approx_price_per_portion": 2.5,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "80",
+        "name": "Baked Vegetable Samosas",
+        "image_url": "url_to_image",
+        "time_required": 60,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Lactose-Free"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] }
+          ],
+          "meal_type": "Snacks/In-Between Meals",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "South Asian"
+          }
+        },
+        "introduction": "A healthier twist on the classic samosa, these baked vegetable samosas are filled with a spiced mix of potatoes, peas, and carrots, offering a low-fat, high-fiber snack option that promotes heart health and digestive wellness.",
+        "ingredients": [
+          { "name": "Whole Wheat Flour", "quantity": "2 cups" },
+          { "name": "Olive Oil", "quantity": "2 tbsp" },
+          { "name": "Water", "quantity": "As needed" },
+          { "name": "Potatoes", "quantity": "2 medium, boiled and diced" },
+          { "name": "Green Peas", "quantity": "1/2 cup, boiled" },
+          { "name": "Carrots", "quantity": "1/2 cup, diced and boiled" },
+          { "name": "Cumin Seeds", "quantity": "1 tsp" },
+          { "name": "Garam Masala", "quantity": "1 tsp" },
+          { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+          { "name": "Red Chili Powder", "quantity": "1/2 tsp" },
+          { "name": "Salt", "quantity": "To taste" },
+          { "name": "Fresh Coriander", "quantity": "2 tbsp, chopped" }
+        ],
+        "instructions": [
+          "Step 1: Prepare the dough by mixing whole wheat flour, olive oil, and water to form a firm dough. Cover and set aside.",
+          "Step 2: In a pan, heat a teaspoon of olive oil and add cumin seeds until they splutter.",
+          "Step 3: Add boiled potatoes, peas, and carrots. Mix in garam masala, turmeric, red chili powder, and salt. Cook for 5 minutes.",
+          "Step 4: Stir in chopped coriander and remove from heat. Let the filling cool.",
+          "Step 5: Divide the dough into equal portions, roll into circles, and cut each in half. Form cones, fill with the vegetable mixture, and seal the edges.",
+          "Step 6: Preheat the oven to 180°C (356°F). Place samosas on a baking tray lined with parchment paper.",
+          "Step 7: Brush the samosas with a little olive oil and bake for 25-30 minutes, turning halfway, until golden brown."
+        ],
+        "nutritional_info": {
+          "calories": 150,
+          "protein": 4,
+          "carbs": 25,
+          "fat": 4,
+          "fiber": 4
+        },
+        "approx_price_per_portion": 1.0,
+        "spice_level": "🌶️🌶️"
+      },
+      {
+        "recipe_id": "81",
+        "name": "Air-Fried Pakoras",
+        "image_url": "url_to_image",
+        "time_required": 45,
+        "tags": {
+          "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+          "health_goal": [
+            { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] }
+          ],
+          "meal_type": "Snacks/In-Between Meals",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "South Asian"
+          }
+        },
+        "introduction": "Enjoy the crispy delight of pakoras without the excess oil. These air-fried vegetable pakoras are made with chickpea flour and assorted vegetables, providing a gluten-free, heart-healthy snack that's high in fiber for digestive health.",
+        "ingredients": [
+          { "name": "Chickpea Flour (Besan)", "quantity": "1 cup" },
+          { "name": "Water", "quantity": "As needed to make a batter" },
+          { "name": "Spinach Leaves", "quantity": "1 cup, chopped" },
+          { "name": "Onion", "quantity": "1 medium, thinly sliced" },
+          { "name": "Potato", "quantity": "1 medium, thinly sliced" },
+          { "name": "Green Chilies", "quantity": "2, finely chopped" },
+          { "name": "Cumin Seeds", "quantity": "1 tsp" },
+          { "name": "Turmeric Powder", "quantity": "1/2 tsp" },
+          { "name": "Red Chili Powder", "quantity": "1/2 tsp" },
+          { "name": "Salt", "quantity": "To taste" },
+          { "name": "Olive Oil Spray", "quantity": "As needed" }
+        ],
+        "instructions": [
+          "Step 1: In a bowl, mix chickpea flour with water to create a thick batter.",
+          "Step 2: Add chopped spinach, sliced onion, potato, green chilies, cumin seeds, turmeric, red chili powder, and salt to the batter. Mix well.",
+          "Step 3: Preheat the air fryer to 180°C (356°F).",
+          "Step 4: Drop spoonfuls of the batter mixture onto the air fryer basket, shaping them into small fritters.",
+          "Step 5: Lightly spray the pakoras with olive oil.",
+          "Step 6: Air-fry for 15-20 minutes, turning halfway through, until golden and crispy.",
+          "Step 7: Serve hot with mint chutney."
+        ],
+        "nutritional_info": {
+          "calories": 100,
+          "protein": 3,
+          "carbs": 15,
+          "fat": 2,
+          "fiber": 3
+        },
+        "approx_price_per_portion": 0.8,
+        "spice_level": "🌶️🌶️"
+      },
+      {
+        "recipe_id": "82",
+        "name": "Spiced Greek Yogurt Parfait",
+        "image_url": "url_to_image",
+        "time_required": 10,
+        "tags": {
+          "dietary_preferences": ["Vegetarian", "Gluten-Free", "Lactose-Free"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+            { "main": "Skin & Joint Health", "sub": ["Calcium Rich"] }
+        ],
+        "meal_type": "Breakfast",
+        "cultural": {
+          "main": "Fusion 🥘",
+          "sub": null
+        }
+      },
+      "introduction": "This spiced parfait combines Greek yogurt, chia seeds, and a drizzle of jaggery syrup, layered with fresh mango and pomegranate seeds. With probiotics for gut health, calcium for bone strength, and natural sweetness from jaggery, it’s a refreshing and nutritious breakfast option.",
+      "ingredients": [
+          { "name": "Greek Yogurt", "quantity": "1 cup" },
+          { "name": "Chia Seeds", "quantity": "2 tbsp" },
+          { "name": "Jaggery Syrup", "quantity": "1 tbsp" },
+          { "name": "Mango", "quantity": "1/2 cup, diced" },
+          { "name": "Pomegranate Seeds", "quantity": "1/4 cup" },
+          { "name": "Cardamom Powder", "quantity": "1/4 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Mix Greek yogurt with cardamom powder and set aside.",
+          "Step 2: Layer the yogurt, chia seeds, mango, and pomegranate seeds in a glass.",
+          "Step 3: Drizzle with jaggery syrup before serving."
+        ],
+        "nutritional_info": {
+          "calories": 200,
+          "protein": 10,
+          "carbs": 25,
+          "fat": 4,
+          "fiber": 5
+        },
+        "approx_price_per_portion": 1.8,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "83",
+        "name": "Spinach Egg Burji & Roti",
+        "image_url": "url_to_image",
+        "time_required": 15,
+        "tags": {
+          "dietary_preferences": ["Vegetarian", "Lactose-Free", "Non-Vegetarian", "Pescatarian"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Muscle-Building"] },
+            { "main": "Digestive Health", "sub": ["High-Fiber"] }
+          ],
+          "meal_type": "Breakfast",
+          "cultural": {
+            "main": "Authentic",
+            "sub": "South Asian"
+          }
+        },
+        "introduction": "This protein-packed masala egg scramble with sautéed spinach is spiced with cumin and turmeric and served with a whole wheat roti. It’s a fiber-rich breakfast that supports digestion and muscle health.",
+        "ingredients": [
+          { "name": "Eggs", "quantity": "2, beaten" },
+          { "name": "Spinach", "quantity": "1 cup, chopped" },
+          { "name": "Cumin Seeds", "quantity": "1/2 tsp" },
+          { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+          { "name": "Olive Oil", "quantity": "1 tsp" },
+          { "name": "Whole Wheat Roti", "quantity": "1" },
+          { "name": "Salt", "quantity": "To taste" }
+        ],
+        "instructions": [
+          "Step 1: Heat olive oil in a pan and toast cumin seeds.",
+          "Step 2: Add spinach and cook until wilted.",
+          "Step 3: Add turmeric and beaten eggs. Scramble until cooked.",
+          "Step 4: Serve with a warm whole wheat roti."
+        ],
+        "nutritional_info": {
+          "calories": 250,
+          "protein": 14,
+          "carbs": 18,
+          "fat": 10,
+          "fiber": 4
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+      },
+      {
+        "recipe_id": "84",
+        "name": "Kefir Overnight Oats",
+        "image_url": "url_to_image",
+        "time_required": 10,
+        "tags": {
+          "dietary_preferences": ["Vegetarian", "Gluten-Free", "Lactose-Free"],
+          "health_goal": [
+            { "main": "High-Protein", "sub": ["Energy-Boosting"] },
+            { "main": "Digestive Health", "sub": ["Probiotic-Rich"] },
+            { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+          ],
+          "meal_type": "Breakfast",
+          "cultural": {
+            "main": "Fusion 🥘",
+            "sub": null
+          }
+        },
+        "introduction": "This creamy overnight oats recipe combines kefir with cardamom for a subtle spice. Topped with toasted nuts and desiccated coconut, it’s a high-protein, gut-friendly breakfast option with natural sweetness.",
+        "ingredients": [
+          { "name": "Rolled Oats", "quantity": "1/2 cup" },
+          { "name": "Kefir", "quantity": "1 cup" },
+          { "name": "Cardamom Powder", "quantity": "1/4 tsp" },
+          { "name": "Toasted Almonds", "quantity": "2 tbsp" },
+          { "name": "Desiccated Coconut", "quantity": "1 tbsp" },
+          { "name": "Honey", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+          "Step 1: Combine rolled oats, kefir, and cardamom in a jar. Mix well.",
+          "Step 2: Refrigerate overnight.",
+          "Step 3: In the morning, top with toasted almonds, desiccated coconut, and a drizzle of honey."
+        ],
+        "nutritional_info": {
+          "calories": 230,
+          "protein": 10,
+          "carbs": 28,
+          "fat": 8,
+          "fiber": 5
+        },
+        "approx_price_per_portion": 2.5,
+        "spice_level": null
+      },
+      {
+        "recipe_id": "85",
+        "name": "Mathi Puttu",
+        "image_url": "url_to_image",
+        "time_required": 20,
+        "tags": {
+            "dietary_preferences": ["Pescatarian", "Non-Vegetarian","Lactose-Free","Gluten-Free"],
+            "health_goal": [
+                { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+                { "main": "Heart-Healthy", "sub": ["Omega-3 Rich"] }
+            ],
+            "meal_type": ["Breakfast"],
+            "cultural": {
+                "main": "Authentic",
+                "sub": "South Indian 🇮🇳"
+            }
+        },
+        "introduction": "Mathi Puttu combines South Indian steamed rice cakes with omega-3-rich sardines. A nutritious and flavorful breakfast for muscle-building and heart health.",
+        "ingredients": [
+            { "name": "Rice Flour", "quantity": "1 cup" },
+            { "name": "Coconut", "quantity": "1/4 cup, grated" },
+            { "name": "Canned Sardines", "quantity": "100g, drained" },
+            { "name": "Onion", "quantity": "1, finely chopped" },
+            { "name": "Green Chilies", "quantity": "2, chopped" },
+            { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+            { "name": "Salt", "quantity": "To taste" },
+            { "name": "Sesame Oil", "quantity": "1 tbsp" }
+        ],
+        "instructions": [
+            "Step 1: Mix rice flour with water and salt to form a crumbly texture.",
+            "Step 2: Layer rice flour and coconut in a steamer. Steam for 10 minutes.",
+            "Step 3: Heat sesame oil, sauté onions, sardines, chilies, and turmeric. Serve with puttu."
+        ],
+        "nutritional_info": {
+            "calories": 260,
+            "protein": 15,
+            "carbs": 25,
+            "fat": 10,
+            "fiber": 3
+        },
+        "approx_price_per_portion": 2.5,
+        "spice_level": "🌶️🌶️"
+    },
+    {
+        "recipe_id": "86",
+        "name": "Egg Masala Roll",
+        "image_url": "url_to_image",
+        "time_required": 15,
+        "tags": {
+            "dietary_preferences": ["Non-Vegetarian", "Lactose-Free"],
+            "health_goal": [
+                { "main": "High-Protein", "sub": ["Muscle-Building","Energy-Boosting"] },
+                { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] }
+            ],
+            "meal_type": ["Breakfast"],
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": null
+            }
+        },
+        "introduction": "Egg Masala Roll combines spiced boiled eggs with fresh veggies, wrapped in a whole-wheat flatbread. High in protein and low in sugar, it’s a balanced breakfast for sustained energy.",
+        "ingredients": [
+            { "name": "Boiled Eggs", "quantity": "2" },
+            { "name": "Whole-Wheat Flatbread", "quantity": "1" },
+            { "name": "Onion", "quantity": "1 small, sliced" },
+            { "name": "Tomato", "quantity": "1 small, diced" },
+            { "name": "Green Chili", "quantity": "1, finely chopped" },
+            { "name": "Coriander Leaves", "quantity": "1 tbsp, chopped" },
+            { "name": "Olive Oil", "quantity": "1 tsp" }
+        ],
+        "instructions": [
+            "Step 1: Sauté onion, tomato, and chili in oil until softened.",
+            "Step 2: Cut boiled eggs in half and add to the pan. Stir gently.",
+            "Step 3: Place the mixture on a flatbread, sprinkle with coriander, and roll tightly."
+        ],
+        "nutritional_info": {
+            "calories": 280,
+            "protein": 15,
+            "carbs": 20,
+            "fat": 10,
+            "fiber": 3
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+    },
+    {
+        "recipe_id": "87",
+        "name": "Oven-Baked Banana Chips",
+        "image_url": "url_to_image",
+        "time_required": 30,
+        "tags": {
+            "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free", "Lactose-Free"],
+            "health_goal": [
+                { "main": "Low-Sugar", "sub": ["Blood Sugar Control"] },
+                { "main": "Digestive Health", "sub": ["High-Fiber"] },
+                { "main": "Heart-Healthy", "sub": ["Potassium-Rich","Low Saturated Fat"] }
+            ],
+            "meal_type": "Snacks/In-Between Meals",
+            "cultural": {
+                "main": "Authentic",
+                "sub": "South Indian 🇮🇳"
+            }
+        },
+        "introduction": "Oven-Baked Banana Chips are a fiber-rich, potassium-packed snack that supports heart health and digestion. This version uses minimal oil and no added sugar, making it a healthier alternative to store-bought options.",
+        "ingredients": [
+            { "name": "Raw Bananas (Green)", "quantity": "2" },
+            { "name": "Olive Oil Spray", "quantity": "Light Spray" },
+            { "name": "Sea Salt", "quantity": "1/4 tsp" },
+            { "name": "Black Pepper", "quantity": "1/4 tsp" }
+        ],
+        "instructions": [
+            "Step 1: Peel and thinly slice bananas.",
+            "Step 2: Preheat oven to 375°F (190°C). Line a baking tray with parchment paper.",
+            "Step 3: Arrange banana slices in a single layer. Lightly spray with olive oil and sprinkle with salt and pepper.",
+            "Step 4: Bake for 15-20 minutes, flipping halfway, until crisp.",
+            "Step 5: Let cool and serve."
+        ],
+        "nutritional_info": {
+            "calories": 120,
+            "protein": 1,
+            "carbs": 30,
+            "fat": 2,
+            "fiber": 3
+        },
+        "approx_price_per_portion": 1.5,
+        "spice_level": null
+    },
+    {
+        "recipe_id": "88",
+        "name": "Air-Fried Dried Fish Chips",
+        "image_url": "url_to_image",
+        "time_required": 15,
+        "tags": {
+            "dietary_preferences": ["Pescatarian", "Lactose-Free", "Gluten-Free","Non-Vegetarian"],
+            "health_goal": [
+                { "main": "Heart-Healthy", "sub": ["Low-Saturated Fat","Low-Sodium","Omega-3 Rich"] },
+                { "main": "High-Protein", "sub": ["Muscle-Building"] }
+            ],
+            "meal_type": "Snacks/In-Between Meals",
+            "cultural": {
+                "main": "Fusion 🥘",
+                "sub": "Sri Lankan"
+            }
+        },
+        "introduction": "Air-Fried Dried Fish Chips are a crunchy, high-protein snack. Rich in omega-3 fatty acids and low in sodium, these chips promote heart health. Air frying reduces the need for oil, making them a guilt-free indulgence.",
+        "ingredients": [
+            { "name": "Dried Fish (e.g., Anchovies)", "quantity": "200g" },
+            { "name": "Olive Oil Spray", "quantity": "Light Spray" },
+            { "name": "Black Pepper", "quantity": "1/2 tsp" },
+            { "name": "Turmeric Powder", "quantity": "1/4 tsp" },
+            { "name": "Lemon Juice", "quantity": "1 tbsp" }
+        ],
+        "instructions": [
+            "Step 1: Rinse dried fish thoroughly to reduce salt content. Pat dry.",
+            "Step 2: Preheat air fryer to 375°F (190°C).",
+            "Step 3: Toss fish with turmeric, black pepper, and a light spray of olive oil.",
+            "Step 4: Air fry for 8-10 minutes until crispy, shaking the basket halfway.",
+            "Step 5: Drizzle lemon juice and serve."
+        ],
+        "nutritional_info": {
+            "calories": 100,
+            "protein": 18,
+            "carbs": 1,
+            "fat": 3,
+            "fiber": 0
+        },
+        "approx_price_per_portion": 2.0,
+        "spice_level": "🌶️"
+    }
+
+]
+  
+  

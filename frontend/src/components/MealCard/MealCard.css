@@ -1,0 +1,428 @@
+.meal-card {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(39, 39, 42);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.meal-card-header {
+  padding: 1rem;
+}
+
+.meal-card-content {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.meal-card-image {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.meal-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meal-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.meal-card-title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.meal-card-time {
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+  white-space: nowrap;
+}
+
+.meal-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meal-card-tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(24, 24, 27, 0.7);
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem;
+  color: rgb(161, 161, 170);
+  transition: all 0.2s ease-in-out;
+  border-radius: 0.375rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.meal-card-view-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.meal-card-view-button .chevron {
+  transition: transform 0.2s ease-in-out;
+}
+
+.meal-card-view-button .chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.meal-card-details {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.meal-card-details.expanded {
+  max-height: none;
+  opacity: 1;
+}
+
+.meal-card-details.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.meal-card-details-content {
+  padding: 1rem;
+  border-top: 1px solid rgb(39, 39, 42);
+}
+
+.meal-card-section {
+  margin-bottom: 1.5rem;
+}
+
+.meal-card-section:last-child {
+  margin-bottom: 0;
+}
+
+.meal-card-section-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.meal-card-nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.meal-card-nutrition-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-balance {
+  width: 100%;
+}
+
+.meal-card-balance-bar {
+  height: 0.5rem;
+  background-color: rgb(39, 39, 42);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.meal-card-balance-protein {
+  position: absolute;
+  height: 100%;
+  background-color: rgb(34, 197, 94);
+  left: 0;
+}
+
+.meal-card-balance-carbs {
+  position: absolute;
+  height: 100%;
+  background-color: rgb(59, 130, 246);
+}
+
+.meal-card-balance-fats {
+  position: absolute;
+  height: 100%;
+  background-color: rgb(234, 179, 8);
+}
+
+.meal-card-balance-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.score-label {
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+}
+
+.score-bar {
+  width: 100%;
+  height: 0.5rem;
+  background-color: rgba(24, 24, 27, 0.7);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease-in-out;
+}
+
+.digestive-score-fill {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.micronutrient-score-fill {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.meal-card-health-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-card-health-score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meal-card-health-score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.meal-card-health-score-bar {
+  width: 100%;
+  height: 0.35rem;
+  background-color: rgba(24, 24, 27, 0.7);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.meal-card-health-score-progress {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease-in-out;
+}
+
+.meal-card-health-score-progress.good {
+  background-color: rgb(34, 197, 94);
+}
+
+.meal-card-health-score-progress.warning {
+  background-color: rgb(234, 179, 8);
+}
+
+.meal-card-health-score-progress.poor {
+  background-color: rgb(239, 68, 68);
+}
+
+.meal-card-health-score-tooltip {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.health-score-card:hover .meal-card-health-score-tooltip {
+  display: block;
+  transition: width 0.3s ease;
+}
+
+.meal-card-health-score-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: help;
+}
+
+.meal-card-health-score-label .help-icon {
+  width: 16px;
+  height: 16px;
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgb(39, 39, 42);
+}
+
+.meal-card-delete-button {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  z-index: 2;
+}
+
+.meal-card-delete-button:hover {
+  color: rgb(239, 68, 68);
+}
+
+.meal-card-actions .meal-card-delete-button {
+  position: static;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.meal-card-actions .meal-card-delete-button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Micronutrient Balance Styles */
+.meal-card-micronutrient-balance {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(39, 39, 42);
+}
+
+.meal-card-micronutrient-balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.meal-card-micronutrient-balance-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.meal-card-micronutrient-balance-score {
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-micronutrient-balance-bar {
+  height: 0.35rem;
+  background-color: rgb(39, 39, 42);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.meal-card-micronutrient-balance-progress {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.meal-card-micronutrient-balance-progress.good {
+  background-color: rgb(34, 197, 94);
+}
+
+.meal-card-micronutrient-balance-progress.warning {
+  background-color: rgb(234, 179, 8);
+}
+
+.meal-card-micronutrient-balance-progress.poor {
+  background-color: rgb(239, 68, 68);
+}
+
+.meal-card-micronutrient-balance-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.meal-card-micronutrient-balance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: rgb(161, 161, 170);
+}
+
+.meal-card-micronutrient-balance-item-name {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.meal-card-micronutrient-balance-item-percentage {
+  font-weight: 500;
+}

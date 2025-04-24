@@ -1,0 +1,174 @@
+/* General Styling */
+
+  .home-container {
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: url("../images/main_background.webp") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+  }
+  
+  /* Navigation Bar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 40px 8px;
+    background: rgba(0, 0, 0, 0.9);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 90px;
+  }
+  
+  .nav-links li {
+    display: inline;
+  }
+  
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .nav-links a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Center Content */
+  .center-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 35%; /* Ensures text fits inside the circle */
+  }
+  
+  .center-content h1 {
+    font-size: 3.2rem; /* Adjust size for the circle */
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+  
+  .center-content .subtext {
+    background: rgba(0, 0, 0, 0.5); /* Partially opaque background */
+    border-radius: 10px;
+    padding: 11px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    width: 94%;
+    margin: 0 auto; /* Center within the circle */
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .center-content .subtext:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 0, 0, 0.6);
+    text-shadow: 0 0 1px #ffffff, 0 0 0px #ffffff;
+    color: #ffffff; /* Optional: Change color slightly for emphasis */
+  }
+ /* Feature Buttons */
+.feature-buttons {
+    position: relative;
+    display: grid;
+    grid-template-areas:
+      "log-your-meal dashboard"
+      "eatwell-guide browse-recipes";
+    gap: 40px; /* Space between the buttons */
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 50px;
+    justify-items: center;
+  }
+  
+  /* Individual Button Positions */
+  .top-left {
+    grid-area: log-your-meal;
+    position: relative;
+    top: 80px; /* Slightly above the central text */
+    right: 160px;
+  }
+  
+  .top-right {
+    grid-area: dashboard;
+    position: relative;
+    top: 70px; /* Slightly above the central text */
+    left: 160px;
+  }
+  
+  .bottom-left {
+    grid-area: eatwell-guide;
+    position: relative;
+    top: 200px; /* Slightly below the central subtext */
+    right: 200px;
+  }
+  
+  .bottom-right {
+    grid-area: browse-recipes;
+    position: relative;
+    top: 200px; /* Slightly below the central subtext */
+    left: 200px;
+  }
+  
+  .button-card {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: 280px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+ /* Button hover effect */
+.button-card:hover {
+  transform: translateY(-5px);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.button-card:hover h2 {
+  text-shadow: 0 0 1px #acdf8f, 0 0 0px #acdf8f;
+  color: #acdf8f; /* Optional: Change color slightly for emphasis */
+}
+
+.button-card:hover p {
+  text-shadow: 0 0 1px #ffffff, 0 0 0px #ffffff;
+  color: #ffffff; /* Optional: Change color slightly for emphasis */
+}
+
+/* Button text styles */
+.button-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #acdf8f; /* Default color */
+  transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.button-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ddd; /* Default color */
+  transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+  

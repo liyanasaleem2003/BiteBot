@@ -1,0 +1,28 @@
+# Use the official Python image as the base
+FROM python:3.13-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install system dependencies required for building Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    && apt-get clean
+
+# Copy the backend dependencies
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the backend source code
+COPY . .
+
+# Expose the port FastAPI will run on
+EXPOSE 8000
+
+# Command to start the FastAPI application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

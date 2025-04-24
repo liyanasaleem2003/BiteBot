@@ -1,0 +1,833 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.dashboard-container {
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('../images/recipepage_background.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px; /* Add space for footer */
+}
+
+.dashboard-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgba(24, 24, 27, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgb(39, 39, 42);
+  z-index: 50;
+}
+
+.dashboard-nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dashboard-content {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 5rem 1rem 4rem;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  height: auto;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto auto;
+    align-items: start;
+  }
+}
+
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.dashboard-card {
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Meal Diary and Saved Recipes specific styles */
+.dashboard-main .dashboard-card {
+  flex: 1;
+  min-height: 0; /* Important for nested scrolling */
+}
+
+.meal-diary-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.saved-recipes-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 8px;
+}
+
+/* Update the empty states to fill available space */
+.empty-recipes-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgb(161, 161, 170);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  justify-content: center;
+}
+
+/* Ensure the meal cards and recipe cards fill available space */
+.meal-card, .recipe-card {
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.meal-card:last-child, .recipe-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Update the saved recipes grid to fill available space */
+.saved-recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 0.5rem;
+  height: auto;
+}
+
+/* Ensure the supplement form container doesn't overflow */
+.supplement-form-container {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+/* Update the health scores container */
+.dashboard-health-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+/* Update the micronutrient balance section */
+.dashboard-micronutrient-balance {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+/* Ensure the progress circles container fills space */
+.dashboard-macros-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Update responsive breakpoints */
+@media (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-sidebar,
+  .dashboard-main {
+    height: auto;
+  }
+  
+  .dashboard-card {
+    height: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .dashboard-macros-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .saved-recipes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-macros-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dashboard-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: rgba(146, 64, 14, 0.3);
+  color: rgb(253, 224, 71);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.dashboard-supplements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-supplement-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgb(63, 63, 70);
+}
+
+.dashboard-supplement-name {
+  margin-left: 0.5rem;
+}
+
+.dashboard-supplement-dose {
+  margin-left: auto;
+  font-size: 0.75rem;
+}
+
+.dashboard-add-supplement-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-supplement-inputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5rem;
+}
+
+.dashboard-supplement-input {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(63, 63, 70);
+  background-color: rgb(24, 24, 27);
+}
+
+/* Progress Circle Styles */
+.progress-circle {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.progress-circle svg {
+  transform: rotate(-90deg);
+}
+
+.progress-circle circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.progress-circle circle.exceeded {
+  stroke: rgb(239, 68, 68); /* Red color for exceeded values */
+}
+
+/* Health Score Bar Styles */
+.health-score-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-score-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.health-score-bar-fill.exceeded {
+  background-color: rgb(239, 68, 68); /* Red color for exceeded values */
+}
+
+/* Calories Bar Styles */
+.calories-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.calories-bar.exceeded {
+  background-color: rgb(239, 68, 68); /* Red color for exceeded values */
+}
+
+/* Micronutrient Balance Styles for Dashboard */
+.dashboard-micronutrient-balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-micronutrient-balance-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-micronutrient-balance-title .help-icon {
+  width: 16px;
+  height: 16px;
+  color: rgb(161, 161, 170);
+  cursor: help;
+}
+
+.dashboard-micronutrient-balance-score {
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+}
+
+.dashboard-micronutrient-balance-bar {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-micronutrient-balance-progress {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.dashboard-micronutrient-balance-progress.good {
+  background-color: rgb(34, 197, 94);
+}
+
+.dashboard-micronutrient-balance-progress.warning {
+  background-color: rgb(234, 179, 8);
+}
+
+.dashboard-micronutrient-balance-progress.poor {
+  background-color: rgb(239, 68, 68);
+}
+
+.dashboard-micronutrient-balance-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-micronutrient-balance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: rgb(161, 161, 170);
+}
+
+.dashboard-micronutrient-balance-item-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-micronutrient-balance-item-name .help-icon {
+  width: 14px;
+  height: 14px;
+  color: rgb(161, 161, 170);
+  cursor: help;
+}
+
+.dashboard-micronutrient-balance-item-percentage {
+  font-weight: 500;
+  min-width: 3rem;
+  text-align: right;
+}
+
+.dashboard-micronutrient-balance-item-bar {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0.25rem 0;
+}
+
+.dashboard-micronutrient-balance-item-progress {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.dashboard-micronutrient-balance-item-progress.good {
+  background-color: rgb(34, 197, 94);
+}
+
+.dashboard-micronutrient-balance-item-progress.warning {
+  background-color: rgb(234, 179, 8);
+}
+
+.dashboard-micronutrient-balance-item-progress.poor {
+  background-color: rgb(239, 68, 68);
+}
+
+/* Tooltip styles for micronutrient balance */
+.dashboard-micronutrient-tooltip {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.dashboard-micronutrient-balance-item-name:hover .dashboard-micronutrient-tooltip {
+  display: block;
+}
+
+/* Meal Card Styles */
+.meal-card {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.meal-card:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.meal-card-header {
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.meal-card-content {
+  padding: 0 1rem 1rem;
+}
+
+/* Recipe Card Styles */
+.recipe-card {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.recipe-card-image {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.recipe-card-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recipe-card-content {
+  padding: 1rem;
+}
+
+.recipe-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.recipe-card-tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: rgba(34, 197, 94, 0.2);
+  color: rgb(34, 197, 94);
+}
+
+.saved-recipes-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.saved-recipes-container::-webkit-scrollbar-thumb {
+  background: rgba(172, 223, 143, 0.3);
+  border-radius: 3px;
+}
+
+.saved-recipes-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.empty-recipes-state .heart-icon {
+  color: rgb(239, 68, 68);
+  margin-bottom: 1rem;
+}
+
+.empty-recipes-state h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.empty-recipes-state p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.saved-recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.supplement-form-container.show {
+  max-height: 300px;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+.supplement-form {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  border: 1px solid rgb(63, 63, 70);
+  padding: 1rem;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.supplement-form.show {
+  transform: translateY(0);
+}
+
+/* Update footer styles */
+.footer {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px 20px;
+  font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgb(39, 39, 42);
+  z-index: 40;
+}
+
+.footer p {
+  margin: 0;
+  color: rgb(161, 161, 170);
+}
+
+.footer a {
+  color: rgb(161, 161, 170);
+  text-decoration: none;
+  margin: 0 10px;
+  transition: color 0.2s ease;
+}
+
+.footer a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/* Health Score Tooltip Styles */
+.meal-card-health-score-tooltip {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.health-score-label:hover .meal-card-health-score-tooltip {
+  display: block;
+}
+
+.health-score-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: help;
+}
+
+.health-score-label .help-icon {
+  width: 16px;
+  height: 16px;
+  color: rgb(161, 161, 170);
+}
+
+.health-score-label:hover .help-icon {
+  color: white;
+}
+
+/* Date Button Styles */
+.date-button {
+  min-width: 250px;
+  width: 250px;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgb(63, 63, 70);
+  color: white;
+  height: 32px;
+}
+
+.date-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Calendar Styles */
+.calendar-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  margin-top: 8px;
+  background: transparent;
+}
+
+.calendar {
+  width: 250px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Popover Content Styles */
+.popover-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.popover-content > div {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-nav-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.calendar-nav-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-month {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.calendar-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day-other-month {
+  color: #6b7280;
+}
+
+.calendar-day-today {
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+}
+
+.calendar-day-selected {
+  background: #22c55e;
+  color: #fff;
+}
+
+.calendar-day-selected:hover {
+  background: #16a34a;
+}
+
+/* Info Icon Button Styles */
+.info-icon-button {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.info-icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tooltip Styles */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
+}
+
+[data-radix-popper-content-wrapper] > div {
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgb(63, 63, 70);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="left"] {
+  margin-right: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="right"] {
+  margin-left: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="top"] {
+  margin-bottom: 8px;
+}
+
+[data-radix-popper-content-wrapper] > div[data-side="bottom"] {
+  margin-top: 8px;
+}
