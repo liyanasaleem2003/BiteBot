@@ -170,11 +170,11 @@ const meals = [
 
 // Add default empty values for health scores
 const defaultHealthScores = [
-  { score: 0, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
-  { score: 0, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
-  { score: 0, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
-  { score: 0, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
-  { score: 0, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" },
+  { score: 55, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
+  { score: 20, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
+  { score: 85, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
+  { score: 80, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
+  { score: 85, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" },
 ];
 
 export default function Dashboard() {
@@ -364,33 +364,52 @@ export default function Dashboard() {
       } else {
         // For non-today dates, show placeholder meals
         console.log('Using placeholder meals for non-today date');
-        const placeholderMeals = meals.map(meal => ({
-          id: `${meal.id}-${formattedDate}`,
-          meal_name: meal.name,
-          timestamp: `${formattedDate}T${meal.time}`,
-          image_url: meal.image,
-          health_tags: meal.tags || [],
-          macronutrients: {
-            calories: meal.macros.calories || 0,
-            protein: meal.macros.protein || 0,
-            carbs: meal.macros.carbs || 0,
-            fats: meal.macros.fats || 0,
-            fiber: meal.macros.fiber || 0,
-            sugar: meal.macros.sugar || 0,
-            sodium: meal.macros.sodium || 0
-          },
-          scores: {
-            glycemic_index: meal.healthScores.glycemic || 0,
-            inflammatory: meal.healthScores.inflammatory || 0,
-            heart_health: meal.healthScores.heart || 0,
-            digestive: meal.healthScores.digestive || 0,
-            meal_balance: meal.healthScores.balance || 0
-          },
-          micronutrient_balance: meal.micronutrient_balance || {
-            score: 0,
-            priority_nutrients: []
+        const placeholderMeals = meals.map(meal => {
+          // Parse the time string (e.g., '8:30 AM') to a Date object for the given date
+          let timeParts = meal.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+          let hours = 12, minutes = 0;
+          if (timeParts) {
+            hours = parseInt(timeParts[1], 10);
+            minutes = parseInt(timeParts[2], 10);
+            if (/PM/i.test(timeParts[3]) && hours !== 12) hours += 12;
+            if (/AM/i.test(timeParts[3]) && hours === 12) hours = 0;
           }
-        }));
+          const dateObj = new Date(formattedDate);
+          dateObj.setHours(hours, minutes, 0, 0);
+          const isoTimestamp = dateObj.toISOString();
+
+          return {
+            id: `${meal.id}-${formattedDate}`,
+            meal_name: meal.name,
+            timestamp: isoTimestamp,
+            image_url: meal.image,
+            health_tags: meal.tags || [],
+            macronutrients: {
+              calories: meal.macros.calories || 0,
+              protein: meal.macros.protein || 0,
+              carbs: meal.macros.carbs || 0,
+              fats: meal.macros.fats || 0,
+              fiber: meal.macros.fiber || 0,
+              sugar: meal.macros.sugar || 0,
+              sodium: meal.macros.sodium || 0
+            },
+            scores: {
+              glycemic_index: meal.healthScores?.glycemic ?? 55,
+              inflammatory: meal.healthScores?.inflammatory ?? 20,
+              heart_health: meal.healthScores?.heart ?? 85,
+              digestive: meal.healthScores?.digestive ?? 80,
+              meal_balance: meal.healthScores?.balance ?? 85
+            },
+            micronutrient_balance: meal.micronutrient_balance || {
+              score: 80,
+              priority_nutrients: [
+                { name: "Iron", percentage: 75 },
+                { name: "Fiber", percentage: 90 },
+                { name: "B12", percentage: 60 }
+              ]
+            }
+          };
+        });
         
         setUserMeals(placeholderMeals);
       }
@@ -908,61 +927,61 @@ export default function Dashboard() {
     return processedTags;
   };
 
-  // Update the getHealthScores function to calculate scores from meals
+  // Corrected getHealthScores function
   const getHealthScores = () => {
     const today = new Date();
     const isToday = currentDate.toDateString() === today.toDateString();
-    
-    if (isToday && userMeals.length > 0) {
-      // Calculate average scores from today's meals
-      const scores = userMeals.reduce((acc, meal) => {
-        if (meal.healthScores) {
-          acc.glycemic += meal.healthScores.glycemic || 0;
-          acc.inflammatory += meal.healthScores.inflammatory || 0;
-          acc.heart += meal.healthScores.heart || 0;
-          acc.digestive += meal.healthScores.digestive || 0;
-          acc.balance += meal.healthScores.balance || 0;
-        }
-        return acc;
-      }, { glycemic: 0, inflammatory: 0, heart: 0, digestive: 0, balance: 0 });
 
-      // Calculate averages
-      const mealCount = userMeals.length;
-      return [
-        { 
-          score: Math.round(scores.glycemic / mealCount), 
-          label: "Glycemic Index", 
-          info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", 
-          colorScale: "lowGood" 
-        },
-        { 
-          score: Math.round(scores.inflammatory / mealCount), 
-          label: "Inflammatory Score", 
-          info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", 
-          colorScale: "lowGood" 
-        },
-        { 
-          score: Math.round(scores.heart / mealCount), 
-          label: "Heart Health Score", 
-          info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", 
-          colorScale: "highGood" 
-        },
-        { 
-          score: Math.round(scores.digestive / mealCount), 
-          label: "Digestive Score", 
-          info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", 
-          colorScale: "highGood" 
-        },
-        { 
-          score: Math.round(scores.balance / mealCount), 
-          label: "Meal Balance Score", 
-          info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", 
-          colorScale: "highGood" 
-        }
-      ];
+    if (isToday) {
+      if (userMeals.length > 0) {
+        // Calculate average scores from today's meals
+        const scores = userMeals.reduce((acc, meal) => {
+          if (meal.scores) {
+            acc.glycemic_index += meal.scores.glycemic_index || 0;
+            acc.inflammatory += meal.scores.inflammatory || 0;
+            acc.heart_health += meal.scores.heart_health || 0;
+            acc.digestive += meal.scores.digestive || 0;
+            acc.meal_balance += meal.scores.meal_balance || 0;
+          }
+          return acc;
+        }, { glycemic_index: 0, inflammatory: 0, heart_health: 0, digestive: 0, meal_balance: 0 });
+        const mealCount = userMeals.length;
+        return [
+          { score: Math.round(scores.glycemic_index / mealCount), label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
+          { score: Math.round(scores.inflammatory / mealCount), label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
+          { score: Math.round(scores.heart_health / mealCount), label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
+          { score: Math.round(scores.digestive / mealCount), label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
+          { score: Math.round(scores.meal_balance / mealCount), label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" }
+        ];
+      } else {
+        // No meals today, show zeros
+        return [
+          { score: 0, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
+          { score: 0, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
+          { score: 0, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
+          { score: 0, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
+          { score: 0, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" }
+        ];
+      }
     }
-    
+    // For non-today dates, show default placeholder health scores
     return defaultHealthScores;
+  };
+
+  // Helper for micronutrient balance placeholder for non-today dates
+  const getMicronutrientBalanceValue = (nutrient) => {
+    const today = new Date();
+    const isToday = currentDate.toDateString() === today.toDateString();
+    if (isToday) {
+      // For today, use actual value if available, else 0
+      if (userMeals.length > 0) {
+        return Math.round(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length);
+      }
+      return 0;
+    } else {
+      // For non-today, use placeholder value
+      return 80;
+    }
   };
 
   // Add loading state display
@@ -1240,18 +1259,18 @@ export default function Dashboard() {
                         </div>
                         <div className="dashboard-micronutrient-balance-item-value">
                           <span>{userMeals.length > 0 ? 
-                            `${Math.round(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length)}%` 
+                            `${Math.round(getMicronutrientBalanceValue(nutrient))}%` 
                             : '0%'}</span>
                           <div className="dashboard-micronutrient-balance-item-bar">
                             <div 
                               className={`dashboard-micronutrient-balance-item-progress ${
                                 userMeals.length > 0 && 
-                                (userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 70 ? 'good' :
-                                userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 40 ? 'warning' : 'poor')
+                                (getMicronutrientBalanceValue(nutrient) >= 70 ? 'good' :
+                                getMicronutrientBalanceValue(nutrient) >= 40 ? 'warning' : 'poor')
                               }`}
                               style={{ 
                                 width: `${userMeals.length > 0 ? 
-                                  Math.min(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length, 100) : 0}%` 
+                                  Math.min(getMicronutrientBalanceValue(nutrient), 100) : 0}%` 
                               }}
                             />
                           </div>
