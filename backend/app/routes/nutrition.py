@@ -49,7 +49,7 @@ async def calculate_nutritional_needs(
 async def analyze_meal_photo(
     file: UploadFile = File(...),
     current_user: UserProfile = Depends(get_current_user),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ) -> Dict[str, Any]:
     """
     Analyze a meal photo and return nutritional information
@@ -58,9 +58,23 @@ async def analyze_meal_photo(
         print("\n=== Starting Meal Photo Analysis ===")
         print(f"Received file: {file.filename}, content_type: {file.content_type}")
         
+        # Validate file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(
+                status_code=422,
+                detail="Invalid file type. Please upload an image file."
+            )
+        
         # Read the image content
         image_content = await file.read()
         print(f"Read {len(image_content)} bytes from file")
+        
+        # Validate file size (max 5MB)
+        if len(image_content) > 5 * 1024 * 1024:
+            raise HTTPException(
+                status_code=422,
+                detail="File size too large. Maximum size is 5MB."
+            )
         
         # Store the image in the database
         image_id = await db.images.insert_one({
@@ -86,6 +100,9 @@ async def analyze_meal_photo(
             "status": "success",
             "data": analysis
         }
+    except HTTPException as he:
+        # Re-raise HTTP exceptions
+        raise he
     except Exception as e:
         print(f"Error in analyze_meal_photo endpoint: {str(e)}")
         print(f"Error type: {type(e).__name__}")
