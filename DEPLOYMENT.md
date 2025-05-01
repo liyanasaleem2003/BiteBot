@@ -26,37 +26,27 @@ docker-compose up -d --build
 ### 3. Deployment to Render
 
 #### Backend Deployment
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Configure the following:
-   - Name: bitebot-backend
-   - Environment: Docker
-   - Branch: main
-   - Root Directory: backend
-   - Environment Variables: Add all variables from .env
-   - Build Command: docker build -t bitebot-backend .
-   - Start Command: docker run -p 8000:8000 bitebot-backend
+- Deployed at: https://bitebot.onrender.com
+- Service: Render Web Service (Python)
+- Environment Variables: Set in Render dashboard (see below)
 
 #### Frontend Deployment
-1. Create a new Static Site on Render
-2. Connect your GitHub repository
-3. Configure the following:
-   - Name: bitebot-frontend
-   - Environment: Node
-   - Branch: main
-   - Root Directory: frontend
-   - Build Command: npm install && npm run build
-   - Publish Directory: build
-   - Environment Variables:
-     - REACT_APP_API_BASE_URL: Your backend URL
+- Deployed at: https://bitebot-frontend.onrender.com
+- Service: Render Web Service (Node)
+- Environment Variables:
+  - REACT_APP_API_BASE_URL: https://bitebot.onrender.com
 
 ### 4. MongoDB Setup
-1. Use MongoDB Atlas for production
-2. Create a new cluster
-3. Set up proper security rules
-4. Update the MONGODB_URL in your environment variables
+- Use MongoDB Atlas for production
+- Connection string must use SSL/TLS (no ssl=false or tls=false)
+- Example: mongodb+srv://<user>:<pass>@<cluster-url>.mongodb.net/<dbname>?retryWrites=true&w=majority
+- Update the MONGO_URI in your Render backend environment variables
 
-### 5. Domain and SSL Setup
+### 5. CI/CD
+- Both GitHub Actions and GitLab CI/CD are supported
+- Pushing to either platform will trigger builds and deployments to Render
+
+### 6. Domain and SSL Setup
 1. Configure custom domain in Render
 2. Set up SSL certificates
 3. Update CORS settings in backend if needed

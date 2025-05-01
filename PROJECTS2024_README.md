@@ -30,4 +30,9 @@ For contributions, please push to the original repositories and the changes will
 2. Commit to your local branch
 3. Use `git pushall` to update all repositories
 
-Please see the main README.md for more detailed information about the project features and setup instructions. 
+Please see the main README.md for more detailed information about the project features and setup instructions.
+
+## Deployment
+- Frontend: https://bitebot-frontend.onrender.com
+- Backend: https://bitebot.onrender.com
+- Both are deployed on Render with CI/CD via GitHub Actions and GitLab CI/CD. 

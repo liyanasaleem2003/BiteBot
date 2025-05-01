@@ -92,7 +92,7 @@ cp .env.example .env.local
 
 npm start
 ```
-The frontend will be available at http://localhost:3000
+The frontend is deployed at: https://bitebot-frontend.onrender.com
 
 3. Backend Setup:
 ```bash
@@ -107,7 +107,7 @@ cp .env.example .env
 
 uvicorn app.main:app --reload
 ```
-The backend API will be available at http://localhost:8000
+The backend is deployed at: https://bitebot.onrender.com
 
 ### Docker Setup (Alternative)
 ```bash
@@ -154,18 +154,14 @@ BiteBot/
 
 ## Environment Variables 🔐
 
-### Backend (.env)
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-OPENAI_API_KEY=your_openai_api_key
-DATABASE_URL=your_database_url
-```
+### Backend (Render Environment)
+- MONGO_URI: your MongoDB Atlas connection string (must use SSL/TLS)
+- JWT_SECRET: your JWT secret
+- OPENAI_API_KEY: your OpenAI API key
+- DATABASE_URL: your database URL (if used)
 
-### Frontend (.env.local)
-```env
-REACT_APP_API_BASE_URL=http://localhost:8000
-```
+### Frontend (Render Environment)
+- REACT_APP_API_BASE_URL: https://bitebot.onrender.com
 
 ## Contributing 🤝
 
@@ -179,3 +175,9 @@ REACT_APP_API_BASE_URL=http://localhost:8000
 
 Your Name - liyanasaleem0@gmail.com
 Project Link: https://github.com/liyanasaleem2003/BiteBot
+
+### Deployment (Production)
+- Both frontend and backend are deployed on Render:
+  - Frontend: https://bitebot-frontend.onrender.com
+  - Backend: https://bitebot.onrender.com
+- CI/CD is set up for both GitHub Actions and GitLab CI/CD. Pushing to either platform will trigger builds and deployments.
