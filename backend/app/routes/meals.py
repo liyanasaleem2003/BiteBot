@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 import json
 from app.database import get_db
+from bson import ObjectId
 
 router = APIRouter()
 
@@ -55,43 +56,57 @@ async def analyze_meal_details_endpoint(
         scores = calculate_meal_scores(analysis)
         analysis["health_scores"] = scores
         
-        # Create meal entry
-        meal_entry = {
-            "user_id": current_user.id,
-            "timestamp": datetime.utcnow(),
-            "date": datetime.utcnow().strftime("%Y-%m-%d"),
-            "image_url": data.get("image_url", ""),
-            "meal_name": analysis.get("meal_name", "Analyzed Meal"),
-            "ingredients": analysis["ingredients"],
-            "cooking_method": analysis["cooking_method"],
-            "serving_size": analysis["serving_size"],
-            "macronutrients": {
-                "calories": analysis["calories"],
-                "protein": analysis["protein"],
-                "carbs": analysis["carbs"],
-                "fats": analysis["fats"],
-                "fiber": analysis["fiber"],
-                "sugar": analysis["sugar"],
-                "sodium": analysis["sodium"]
-            },
-            "scores": scores,
-            "health_tags": analysis["health_tags"],
-            "suggestions": analysis["suggestions"],
-            "recommended_recipes": analysis["recommended_recipes"]
-        }
-        
-        # Store meal entry in database
-        db = get_db()
-        result = await db.meals.insert_one(meal_entry)
-        meal_entry["id"] = str(result.inserted_id)
-        
+        # Do NOT create or store a meal entry here
         return {
             "status": "success",
-            "data": meal_entry
+            "data": analysis
         }
         
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"Failed to analyze meal details: {str(e)}"
+        )
+
+@router.delete("/meals/{meal_id}")
+async def delete_meal(
+    meal_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Delete a meal from the database.
+    """
+    try:
+        db = get_db()
+        
+        # Convert string ID to ObjectId
+        try:
+            meal_object_id = ObjectId(meal_id)
+        except:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid meal ID format"
+            )
+        
+        # Find and delete the meal
+        result = await db.meals.delete_one({
+            "_id": meal_object_id,
+            "user_id": current_user.id
+        })
+        
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Meal not found or you don't have permission to delete it"
+            )
+        
+        return {
+            "status": "success",
+            "message": "Meal deleted successfully"
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to delete meal: {str(e)}"
         ) 

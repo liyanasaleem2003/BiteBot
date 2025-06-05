@@ -191,6 +191,8 @@ const Signup = () => {
   const [activeTab, setActiveTab] = useState("login");
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
   const [error, setError] = useState(null);
   
   // Signup form data
@@ -295,6 +297,8 @@ const Signup = () => {
   // Handle login submission
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoginLoading(true);
+    setError(null);
     
     const formData = new URLSearchParams();
     formData.append('username', loginForm.email);
@@ -324,6 +328,8 @@ const Signup = () => {
     } catch (error) {
         console.error('Login error:', error);
         setError(error.message);
+    } finally {
+        setLoginLoading(false);
     }
   };
 
@@ -339,6 +345,8 @@ const Signup = () => {
   // Handle final signup submission
   const handleSignupComplete = async (e) => {
     e.preventDefault();
+    setSignupLoading(true);
+    setError(null);
     console.log("Starting registration process...");
     
     try {
@@ -467,7 +475,9 @@ const Signup = () => {
         navigate('/');
     } catch (error) {
         console.error("Registration error:", error);
-        alert(error.message || "Registration failed. Please try again.");
+        setError(error.message || "Registration failed. Please try again.");
+    } finally {
+        setSignupLoading(false);
     }
   };
 
@@ -564,8 +574,19 @@ const Signup = () => {
                   </div>
                 </div>
                 
-                <Button type="submit" className="w-full mt-6">
-                  Login
+                <Button 
+                  type="submit" 
+                  className="w-full bg-[#D4E157] hover:bg-[#DCE775] text-black font-medium"
+                  disabled={loginLoading}
+                >
+                  {loginLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Logging in...
+                    </div>
+                  ) : (
+                    'Login'
+                  )}
                 </Button>
               </form>
               <p
@@ -1228,8 +1249,19 @@ const Signup = () => {
                     >
                       Back
                     </Button>
-                    <Button type="submit">
-                      Create Account
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-[#D4E157] hover:bg-[#DCE775] text-black font-medium"
+                      disabled={signupLoading}
+                    >
+                      {signupLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Creating account...
+                        </div>
+                      ) : (
+                        'Create Account'
+                      )}
                     </Button>
                   </div>
                 </form>

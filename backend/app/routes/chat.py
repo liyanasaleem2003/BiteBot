@@ -66,7 +66,6 @@ async def create_chat_history(
             "timestamp": now,
             "image_url": chat_data.get("image_url"),
             "messages": chat_data.get("messages", []),
-            "meal_analysis": chat_data.get("meal_analysis"),
             "created_at": now,
             "updated_at": now
         }
@@ -115,7 +114,6 @@ async def update_chat_history(
         update_data = {
             "title": chat_data.get("title", chat.get("title", "Chat")),
             "messages": chat_data.get("messages", chat["messages"]),
-            "meal_analysis": chat_data.get("meal_analysis", chat["meal_analysis"]),
             "updated_at": datetime.utcnow()
         }
         
@@ -140,7 +138,7 @@ async def update_chat_history(
         raise HTTPException(
             status_code=500,
             detail=f"Failed to update chat history: {str(e)}"
-        ) 
+        )
 
 @router.delete("/history/{chat_id}")
 async def delete_chat_history(

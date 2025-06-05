@@ -274,67 +274,11 @@ async def analyze_meal_details_endpoint(
         # Extract image URL from the analysis if it exists
         image_url = analysis.get("image_url", "")
         
-        # Create meal entry
-        meal_entry = {
-            "user_id": str(current_user.id),  # Convert ObjectId to string
-            "timestamp": datetime.utcnow(),
-            "date": datetime.utcnow().strftime("%Y-%m-%d"),  # Convert date to string format
-            "image_url": analysis.get("image_url") or "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",  # Use default image if none provided
-            "meal_name": analysis.get("meal_name", "Analyzed Meal"),
-            "ingredients": analysis.get("ingredients", []),
-            "cooking_method": analysis.get("cooking_method", ""),
-            "serving_size": analysis.get("serving_size", ""),
-            "macronutrients": analysis.get("macronutrients", {
-                "calories": 0,
-                "protein": 0,
-                "carbs": 0,
-                "fats": 0,
-                "fiber": 0,
-                "sugar": 0,
-                "sodium": 0
-            }),
-            "micronutrients": analysis.get("micronutrients", {}),
-            "scores": {
-                "glycemic_index": scores.get("glycemic_index", 0),
-                "inflammatory": scores.get("inflammatory", 0),
-                "heart_health": scores.get("heart_health", 0),
-                "digestive": scores.get("digestive", 0),
-                "meal_balance": scores.get("meal_balance", 0),
-                "micronutrient_balance": scores.get("micronutrient_balance", 0)
-            },
-            "individual_micronutrients": scores.get("individual_micronutrients", {}),
-            "health_tags": analysis.get("health_tags", []),
-            "suggestions": analysis.get("suggestions", []),
-            "recommended_recipes": analysis.get("recommended_recipes", []),
-            "health_benefits": analysis.get("health_benefits", []),
-            "potential_concerns": analysis.get("potential_concerns", []),
-            "micronutrient_balance": analysis.get("micronutrient_balance", {})
-        }
-        
-        logger.info("Storing meal entry in database...")
-        # Store meal entry in database
-        result = await db.meals.insert_one(meal_entry)
-        
-        # Create a copy of meal_entry for response
-        response_data = meal_entry.copy()
-        
-        # Convert ObjectId to string for response
-        response_data["id"] = str(result.inserted_id)
-        
-        # Convert timestamp to ISO format string
-        response_data["timestamp"] = response_data["timestamp"].isoformat()
-        
-        logger.info(f"Successfully stored meal with ID: {response_data['id']}")
-        
-        # Format the response using the enhanced JSON serialization 
-        response = {
+        # Do NOT create or store a meal entry here
+        return {
             "status": "success",
-            "data": response_data
+            "data": analysis
         }
-        
-        # Use the enhanced JSON serialization utility to handle ObjectId objects
-        serialized_response = json_loads(json_dumps(response))
-        return serialized_response
         
     except Exception as e:
         logger.error(f"Error in analyze_meal_details_endpoint: {str(e)}")
@@ -552,7 +496,20 @@ async def delete_meal(
             )
         
         logger.info(f"Successfully deleted meal {meal_id}")
-        return {"message": "Meal deleted successfully"}
+        
+        # --- Add logic to delete the associated chat history entry ---
+        chat_delete_result = await db.chat_history.delete_one({
+            "meal_id": meal_id,  # Assuming chat history stores meal_id
+            "user_id": str(current_user.id)
+        })
+        
+        if chat_delete_result.deleted_count > 0:
+            logger.info(f"Successfully deleted associated chat history for meal {meal_id}")
+        else:
+            logger.warning(f"No associated chat history found for meal {meal_id}")
+        # --- End of added logic ---
+        
+        return {"message": "Meal and associated chat deleted successfully"}
         
     except Exception as e:
         logger.error(f"Error deleting meal: {str(e)}")

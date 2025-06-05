@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./LogMyMeal.css";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button-ui";
@@ -39,13 +39,45 @@ const LogMyMeal = () => {
   const [isAnalyzingMeal, setIsAnalyzingMeal] = useState(false);
   const [lastUploadedImageUrl, setLastUploadedImageUrl] = useState(null);
 
+  // --- Add ref for previous activeChat --- Add this section
+  const prevActiveChatRef = useRef();
+
+  // Add a mount ref
+  const isMounted = useRef(false);
+
+  // Add a ref to track the last saved meal
+  const lastSavedMealRef = useRef(null);
+
+  // Add loading state ref
+  const isLoadingRef = useRef(false);
+
+  // Add a ref to track if the current analysis result has been saved to backend
+  const hasSavedAnalysisRef = useRef(null);
+
+  // Add a ref to track the unique analysis session ID
+  const analysisSessionIdRef = useRef(null);
+
   // Load chat history on component mount
   useEffect(() => {
+    // Skip if already mounted or loading
+    if (isMounted.current || isLoadingRef.current) {
+      return;
+    }
+    isMounted.current = true;
+    isLoadingRef.current = true;
+
     const loadChatHistory = async () => {
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No authentication token found');
+          return;
+        }
+
+        console.log('Loading chat history...');
         const response = await fetch(`${API_BASE_URL}/api/chat/history`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           }
         });
         
@@ -54,40 +86,66 @@ const LogMyMeal = () => {
         }
         
         const data = await response.json();
-        setChatHistory(data.data);
+        console.log('Received chat history:', data);
         
-        // Check if we're starting a new chat or continuing an existing one
-        const urlParams = new URLSearchParams(window.location.search);
-        const chatId = urlParams.get('chatId');
-        
-        if (chatId && data.data.length > 0) {
-          // Find the specific chat if chatId is provided
-          const selectedChat = data.data.find(chat => chat._id === chatId);
-          if (selectedChat) {
-            console.log('Loading existing chat:', selectedChat);
-            setActiveChat(selectedChat._id);
-            setMessages(selectedChat.messages);
-            setMealAnalysis(selectedChat.meal_analysis);
-            
-            // Update the URL to remove the chatId parameter
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-            return;
+        if (data.data && Array.isArray(data.data)) {
+          // Process each chat to ensure proper formatting
+          const processedChats = data.data.map(chat => ({
+            ...chat,
+            _id: chat.id || chat._id, // Ensure we have a consistent ID field
+            title: chat.meal_analysis?.meal_name || chat.title || "Analyzed Meal",
+            timestamp: chat.timestamp || chat.created_at || new Date().toISOString(),
+            messages: chat.messages || [],
+            meal_analysis: chat.meal_analysis || null
+          }));
+          
+          console.log('Processed chat history:', processedChats);
+          setChatHistory(processedChats);
+          
+          // Check if we're starting a new chat or continuing an existing one
+          const urlParams = new URLSearchParams(window.location.search);
+          const chatId = urlParams.get('chatId');
+          
+          if (chatId && processedChats.length > 0) {
+            // Find the specific chat if chatId is provided
+            const selectedChat = processedChats.find(chat => chat._id === chatId);
+            if (selectedChat) {
+              console.log('Loading existing chat:', selectedChat);
+              setActiveChat(selectedChat._id);
+              setMessages(selectedChat.messages);
+              setMealAnalysis(selectedChat.meal_analysis);
+              
+              // Update the URL to remove the chatId parameter
+              const newUrl = window.location.pathname;
+              window.history.replaceState({}, document.title, newUrl);
+              return;
+            }
           }
+          
+          // If no chatId or chat not found, start a new chat
+          console.log('Starting a new chat session');
+          handleStartNewChat();
+        } else {
+          console.log('No chat history found, starting new chat');
+          handleStartNewChat();
         }
-        
-        // If no chatId or chat not found, start a new chat
-        console.log('Starting a new chat session');
-        handleStartNewChat();
       } catch (error) {
         console.error('Error loading chat history:', error);
         // If there's an error, still start a new chat
         handleStartNewChat();
+      } finally {
+        isLoadingRef.current = false;
       }
     };
     
     loadChatHistory();
-  }, []);
+
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+      isLoadingRef.current = false;
+    };
+  }, []); // Empty dependency array to run only once on mount
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -99,8 +157,23 @@ const LogMyMeal = () => {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  // Update where we create new messages
-  const handleStartNewChat = () => {
+  // Update handleStartNewChat to prevent multiple new chats
+  const handleStartNewChat = useCallback(() => {
+    // Prevent starting new chat during or after analysis
+    if (isAnalyzingMeal || mealAnalysis) {
+      console.log('Preventing new chat start: Analysis in progress or recently completed.');
+      return;
+    }
+
+    // Check if there's already a temporary chat
+    const existingTempChat = chatHistory.find(chat => chat._id?.startsWith('temp-'));
+    if (existingTempChat) {
+      console.log('Using existing temporary chat:', existingTempChat);
+      setActiveChat(existingTempChat._id);
+      setMessages(existingTempChat.messages);
+      return;
+    }
+
     const now = new Date();
     
     // Clear any previous state
@@ -108,51 +181,41 @@ const LogMyMeal = () => {
     setConversationHistory([]);
     setCurrentQuestion(null);
     setCurrentStep("initial");
-    
-    // Check if there's a previously analyzed meal name to restore
-    const lastMealName = localStorage.getItem('lastAnalyzedMealName');
-    const lastAnalyzedMeal = localStorage.getItem('lastAnalyzedMeal');
-    
-    if (lastAnalyzedMeal && lastMealName) {
-      try {
-        // Restore the meal analysis data
-        const mealData = JSON.parse(lastAnalyzedMeal);
-        setMealAnalysis(mealData);
-        console.log(`Restored previous meal analysis for: ${lastMealName}`);
-      } catch (error) {
-        console.error('Error restoring meal analysis:', error);
-        setMealAnalysis(null);
-      }
-    } else {
-      setMealAnalysis(null);
-    }
+    setMealAnalysis(null);
     
     // Set initial welcome message with unique ID
-    setMessages([{
+    const initialMessage = {
       id: generateUniqueId(),
       type: "bot",
       content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
-      timestamp: now,
-    }]);
+      timestamp: now.toISOString(),
+    };
+    
+    setMessages([initialMessage]);
 
     // Add a new chat entry with timestamp
-    setChatHistory(prev => [{
-      _id: `temp-${Date.now()}`, // Temporary ID for new chat
-      title: "New Meal Analysis",
-      messages: [{
-        id: generateUniqueId(),
-        type: "bot",
-        content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
-        timestamp: now,
-      }],
-      meal_analysis: null,
-      timestamp: now,
-      created_at: now,
-      updated_at: now
-    }, ...prev]);
+    const newChatId = `temp-${Date.now()}`;
+    setActiveChat(newChatId);
     
-    console.log('New chat started');
-  };
+    // Create new chat entry
+    const newChat = {
+      _id: newChatId,
+      title: "New Meal Analysis",
+      messages: [initialMessage],
+      meal_analysis: null,
+      timestamp: now.toISOString(),
+      created_at: now.toISOString(),
+      updated_at: now.toISOString()
+    };
+    
+    // Update chat history by replacing any existing temporary chats
+    setChatHistory(prev => {
+      const filteredChats = prev.filter(chat => !chat._id?.startsWith('temp-'));
+      return [newChat, ...filteredChats];
+    });
+    
+    console.log('New chat started:', newChat);
+  }, [chatHistory, isAnalyzingMeal, mealAnalysis]);
 
   // Handle deleting a chat
   const handleDeleteChat = async (chatId, event) => {
@@ -208,30 +271,70 @@ const LogMyMeal = () => {
       setIsLoading(true);
       console.log(`Attempting to delete chat with ID: ${chatId} from backend`);
       
+      // Get token and ensure it exists
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+
+      // Remove Bearer prefix if it exists
+      const cleanToken = token.replace('Bearer ', '');
+      
+      // Log the full URL and headers for debugging
+      const deleteUrl = `${API_BASE_URL}/api/chat/history/${chatId}`;
+      console.log('Delete URL:', deleteUrl);
+      console.log('Headers:', {
+        'Authorization': `Bearer ${cleanToken}`,
+        'Content-Type': 'application/json'
+      });
+      
       // Send a request to delete the chat from the backend
-      const response = await fetch(`${API_BASE_URL}/api/chat/history/${chatId}`, {
+      const response = await fetch(deleteUrl, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${cleanToken}`,
           'Content-Type': 'application/json'
         }
       });
 
+      console.log('Delete response status:', response.status);
+      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ detail: 'Failed to delete chat' }));
+        console.error('Delete error response:', errorData);
+        
+        if (response.status === 401) {
+          // Handle authentication error
+          localStorage.removeItem('token');
+          navigate('/signup');
+          throw new Error('Authentication error. Please log in again.');
+        }
         throw new Error(errorData.detail || 'Failed to delete chat from the backend');
       }
 
-      // Remove chat from local state
-      setChatHistory(prev => {
-        console.log(`Removing chat ${chatId} from state`);
-        return prev.filter(chat => chat._id !== chatId);
+      // Fetch updated chat history from the backend
+      const historyResponse = await fetch(`${API_BASE_URL}/api/chat/history`, {
+        headers: {
+          'Authorization': `Bearer ${cleanToken}`
+        }
       });
-      
-      // If the deleted chat was the active chat, reset the active chat and start a new chat
+
+      if (!historyResponse.ok) {
+        throw new Error('Failed to fetch updated chat history');
+      }
+
+      const historyData = await historyResponse.json();
+      setChatHistory(historyData.data);
+
+      // If the deleted chat was the active chat, start a new chat
       if (activeChat === chatId) {
         setActiveChat(null);
-        handleStartNewChat();
+        setMessages([{
+          id: generateUniqueId(),
+          type: "bot",
+          content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
+          timestamp: new Date(),
+        }]);
       }
       
       setNotification({
@@ -257,6 +360,9 @@ const LogMyMeal = () => {
 
   // Save chat to backend
   const saveChatToBackend = async (chatId, updatedMessages, updatedMealAnalysis) => {
+    // --- Add log at the beginning of saveChatToBackend --- Add this line
+    console.log("saveChatToBackend called with:", { chatId, updatedMessagesLength: updatedMessages.length });
+
     try {
       // Skip saving for temporary chats
       if (chatId && chatId.startsWith('temp-')) {
@@ -404,6 +510,13 @@ const LogMyMeal = () => {
       
       setMessages(prevMessages => [...prevMessages, userMessage, loadingMessage]);
       
+      // Scroll to the bottom after adding messages
+      setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      
       // Upload the image
       const uploadResponse = await fetch(`${API_BASE_URL}/api/nutrition/analyze-meal`, {
         method: 'POST',
@@ -499,7 +612,7 @@ const LogMyMeal = () => {
     return true;
   };
 
-  // Update handleUserMessage to handle undefined mealAnalysis
+  // Update handleUserMessage to pass updatedMessages to getFinalAnalysis
   const handleUserMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
@@ -546,17 +659,11 @@ const LogMyMeal = () => {
           q => q.question === currentQuestion.question
         ) ?? -1;
 
-        console.log('Current question index:', currentIndex);
-        console.log('Total questions:', mealAnalysis?.clarifying_questions?.length);
-
         // Check if there are more questions
         if (currentIndex !== -1 && currentIndex < (mealAnalysis?.clarifying_questions?.length ?? 0) - 1) {
           // Move to next question
           const nextQuestion = mealAnalysis.clarifying_questions[currentIndex + 1];
-          console.log('Next question:', nextQuestion);
-          
           setCurrentQuestion(nextQuestion);
-          
           // Add next question to messages
           setMessages(prev => [...prev, {
             id: generateUniqueId(),
@@ -568,13 +675,11 @@ const LogMyMeal = () => {
             validation: nextQuestion.validation_rules
           }]);
         } else {
-          console.log('No more questions, getting final analysis');
-          // No more questions, get final analysis
-          await getFinalAnalysis();
+          // No more questions, get final analysis using the up-to-date messages
+          await getFinalAnalysis(updatedMessages);
         }
       }
     } catch (error) {
-      console.error("Error handling user message:", error);
       setMessages(prev => [...prev, {
         id: generateUniqueId(),
         type: "bot",
@@ -584,7 +689,23 @@ const LogMyMeal = () => {
     }
   };
 
-  const getFinalAnalysis = async () => {
+  // Update getFinalAnalysis to accept messagesArg
+  const getFinalAnalysis = async (messagesArg) => {
+    // --- Add log at beginning of getFinalAnalysis --- Add this line
+    console.log("getFinalAnalysis entered.");
+    
+    // Generate a unique ID for this analysis session if it doesn't exist
+    if (!analysisSessionIdRef.current) {
+      analysisSessionIdRef.current = generateUniqueId();
+      console.log("New analysis session ID created:", analysisSessionIdRef.current);
+    }
+
+    // Prevent multiple analysis calls if already analyzing
+    if (isAnalyzingMeal) {
+      console.log("Analysis already in progress, skipping getFinalAnalysis call.");
+      return;
+    }
+
     try {
       setIsAnalyzingMeal(true);
       setIsAnalyzing(true);
@@ -592,7 +713,7 @@ const LogMyMeal = () => {
       
       // Add loading message
       const loadingMessage = {
-        id: `bot-${Date.now()}`,
+        id: `bot-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Unique ID
         type: "bot",
         content: "Analyzing your meal...",
         isLoading: true,
@@ -600,18 +721,16 @@ const LogMyMeal = () => {
       };
       
       // Add the loading message to the messages array
-      const updatedMessages = [...messages, loadingMessage];
+      const updatedMessages = [...messagesArg, loadingMessage];
       setMessages(updatedMessages);
       
       // Prepare conversation history
       const conversationHistory = [
-        ...messages.map(msg => ({
+        ...messagesArg.map(msg => ({
           role: msg.type === "user" ? "user" : "assistant",
           content: msg.content
         }))
       ];
-      
-      console.log("Sending analysis request with conversation history:", conversationHistory);
       
       const response = await fetch(`${API_BASE_URL}/api/nutrition/analyze-details`, {
         method: 'POST',
@@ -627,51 +746,96 @@ const LogMyMeal = () => {
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Analysis error response:", errorData);
         throw new Error(errorData.detail || `Failed to analyze meal: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log("Received analysis response:", data);
+      // Directly call handleAnalysisDone here after successful analysis fetch, passing the session ID
+      await handleAnalysisDone(data, analysisSessionIdRef.current);
       
-      // Call handleAnalysisDone with the analysis data
-      await handleAnalysisDone(data);
-      
-      setIsAnalyzing(false);
-      setIsAnalyzingMeal(false);
     } catch (error) {
-      console.error("Error in getFinalAnalysis:", error);
       setError(error.message || "Failed to analyze meal. Please try again.");
+      // Replace the loading message with an error
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.isLoading 
+            ? {
+                ...msg,
+                content: `Error analyzing meal: ${error.message}. Please try again.`, // Specific error
+                isLoading: false,
+                isError: true
+              }
+            : msg
+        )
+      );
+      console.error("Error in getFinalAnalysis:", error);
+      
+    } finally {
+      // Ensure loading states are reset in finally block
       setIsAnalyzing(false);
       setIsAnalyzingMeal(false);
+      console.log("getFinalAnalysis exited.");
     }
   };
 
-  // Update handleAnalysisDone to use unique IDs
-  const handleAnalysisDone = async (data) => {
+  // Update handleAnalysisDone to prevent duplicate meal entries and accept session ID
+  const handleAnalysisDone = async (data, sessionId) => {
+    console.log("=== MEAL SAVING PROCESS STARTED ===");
+    console.log("Session ID:", sessionId);
+    console.log("Raw analysis data:", data);
+
     try {
-      console.log("Handling analysis done with data:", data);
-      
       // Set the analysis results in state
       setMealAnalysis(data);
       
-      // Save to localStorage for persistence
-      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
-      if (data.meal_name) {
-        localStorage.setItem('lastAnalyzedMealName', data.meal_name);
+      // Get the meal name from the data
+      const mealName = data.meal_name || data.data?.meal_name || "Analyzed Meal";
+      console.log("Meal name extracted:", mealName);
+      
+      // Check for duplicate prevention
+      console.log("Checking for duplicate meals...");
+      console.log("Last saved meal ref:", lastSavedMealRef.current);
+      console.log("Has saved analysis ref:", hasSavedAnalysisRef.current);
+      
+      if (lastSavedMealRef.current &&
+        lastSavedMealRef.current.meal_name === mealName &&
+        hasSavedAnalysisRef.current === lastSavedMealRef.current.id) {
+        console.log('DUPLICATE PREVENTION: Analysis for this session already saved (checked by meal name and ID)');
+        return;
+      }
+
+      // Check for recent saves
+      const now = new Date();
+      const lastSavedMeal = lastSavedMealRef.current;
+      if (lastSavedMeal &&
+        lastSavedMeal.meal_name === mealName &&
+        now - lastSavedMeal.timestamp < 500) {
+        console.log('DUPLICATE PREVENTION: Meal was recently saved within 0.5s window');
+        if (lastSavedMeal.id) {
+          hasSavedAnalysisRef.current = lastSavedMeal.id;
+        }
+        return;
       }
       
-      // Get the uploaded image URL if available
-      const imageUrl = lastUploadedImageUrl || '';
-
-      // Format current date properly 
-      const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
-      const formattedTimestamp = today.toISOString(); // ISO format timestamp
+      // Save to localStorage
+      console.log("Saving to localStorage...");
+      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
+      localStorage.setItem('lastAnalyzedMealName', mealName);
       
-      // Prepare meal data for saving to the database
+      // Get image URL
+      const imageUrl = lastUploadedImageUrl || '';
+      console.log("Image URL for meal:", imageUrl);
+
+      // Generate timestamps
+      const saveTimestamp = new Date();
+      const formattedDate = saveTimestamp.toISOString().split('T')[0];
+      const formattedTimestamp = saveTimestamp.toISOString();
+      console.log("Generated timestamps:", { formattedDate, formattedTimestamp });
+
+      // Prepare meal data
+      console.log("Preparing meal data for database...");
       const mealData = {
-        meal_name: data.meal_name || "Analyzed Meal", // Ensure meal_name is present
+        meal_name: mealName,
         date: formattedDate,
         timestamp: formattedTimestamp,
         image_url: imageUrl,
@@ -705,9 +869,10 @@ const LogMyMeal = () => {
         }
       };
       
-      console.log("Saving meal with data:", mealData);
+      console.log("Prepared meal data:", mealData);
+      console.log("Sending POST request to /api/nutrition/meals...");
 
-      // Save the meal to the database
+      // Save meal to database
       const mealResponse = await fetch(`${API_BASE_URL}/api/nutrition/meals`, {
         method: 'POST',
         headers: {
@@ -716,6 +881,8 @@ const LogMyMeal = () => {
         },
         body: JSON.stringify(mealData)
       });
+
+      console.log("Meal save response status:", mealResponse.status);
 
       if (!mealResponse.ok) {
         const errorData = await mealResponse.json();
@@ -727,22 +894,34 @@ const LogMyMeal = () => {
       const savedMeal = await mealResponse.json();
       console.log("Meal saved successfully:", savedMeal);
 
-      // Generate unique IDs for each message
+      // Update refs
+      lastSavedMealRef.current = {
+        meal_name: mealName,
+        timestamp: now,
+        id: savedMeal.id
+      };
+      console.log("Updated lastSavedMealRef:", lastSavedMealRef.current);
+
+      // Store saved meal ID
+      const savedMealId = savedMeal.id;
+      console.log("Saved meal ID:", savedMealId);
+
+      // Prepare chat messages
+      console.log("Preparing chat messages...");
       const timestamp = Date.now();
       const analysisMessageId = `analysis-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
       const dashboardPromptId = `dashboard-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
       const recipePromptId = `recipe-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
 
-      // Add the analysis message to the chat with unique ID
+      // Create messages
       const analysisMessage = {
         id: analysisMessageId,
         type: "bot",
-        content: `${generateAnalysisContent(data)}`,
+        content: generateAnalysisContent(data),
         timestamp: new Date().toISOString(),
         isAnalysis: true,
       };
       
-      // Add the dashboard prompt message with unique ID
       const dashboardPromptMessage = {
         id: dashboardPromptId,
         type: "bot",
@@ -750,7 +929,6 @@ const LogMyMeal = () => {
         timestamp: new Date().toISOString(),
       };
       
-      // Add the recipe prompt message with unique ID
       const recipePromptMessage = {
         id: recipePromptId,
         type: "bot",
@@ -759,16 +937,66 @@ const LogMyMeal = () => {
         isRecipePrompt: true,
       };
       
-      // Update messages state with all new messages
+      // Update messages
       const updatedMessages = [...messages, analysisMessage, dashboardPromptMessage, recipePromptMessage];
+      console.log("Updated messages array length:", updatedMessages.length);
       setMessages(updatedMessages);
+
+      // Create new permanent chat
+      console.log('Creating new permanent chat...');
+      console.log("Chat creation params:", { activeChat, savedMealId, mealName });
       
-      // Save the chat with the meal analysis to the backend
-      await saveChatToBackend(activeChat, updatedMessages, data);
+      const newChatResponse = await fetch(`${API_BASE_URL}/api/chat/history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: mealName,
+          messages: updatedMessages,
+          image_url: imageUrl,
+          meal_id: savedMealId,
+          timestamp: formattedTimestamp
+        })
+      });
+
+      console.log("Chat creation response status:", newChatResponse.status);
+
+      if (!newChatResponse.ok) {
+        throw new Error('Failed to create new chat');
+      }
+
+      const newChat = await newChatResponse.json();
+      console.log('New chat created:', newChat);
+      
+      // Update flags and state
+      hasSavedAnalysisRef.current = savedMealId;
+      console.log("Updated hasSavedAnalysisRef:", hasSavedAnalysisRef.current);
+
+      // Update chat history
+      setChatHistory(prev => {
+        const filteredChats = prev.filter(chat => !chat._id?.startsWith('temp-'));
+        return [newChat.data, ...filteredChats];
+      });
+      
+      // Set active chat
+      setActiveChat(newChat.data._id);
+      console.log("Set active chat to:", newChat.data._id);
+
+      // Show success notification
+      setNotification({
+        message: 'Meal analysis completed successfully!',
+        type: 'success',
+        show: true
+      });
+      
+      console.log("=== MEAL SAVING PROCESS COMPLETED SUCCESSFULLY ===");
       
     } catch (error) {
-      console.error("Error handling analysis done:", error);
-      // Add error message to chat with more specific error information
+      console.error("=== MEAL SAVING PROCESS FAILED ===");
+      console.error("Error details:", error);
+      
       const errorMessage = {
         id: generateUniqueId(),
         type: "bot",
@@ -952,6 +1180,38 @@ const LogMyMeal = () => {
     formattedTime: new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   }));
 
+  // Add logs for state changes
+  useEffect(() => {
+    console.log("activeChat state changed:", activeChat);
+  }, [activeChat]);
+
+  useEffect(() => {
+    console.log("mealAnalysis state changed:", mealAnalysis);
+  }, [mealAnalysis]);
+
+  // Add cleanup effect for React Router state updates
+  useEffect(() => {
+    // Cleanup function to handle React Router state updates
+    return () => {
+      // Clear any pending state updates
+      setActiveChat(null);
+      setMessages([]);
+      setChatHistory([]);
+      setMealAnalysis(null);
+      setCurrentStep("initial");
+      setConversationHistory([]);
+      setCurrentQuestion(null);
+    };
+  }, []); // Empty dependency array to run only on unmount
+
+  // Add cleanup effect for temporary chats
+  useEffect(() => {
+    // Cleanup temporary chats on unmount
+    return () => {
+      setChatHistory(prev => prev.filter(chat => !chat._id?.startsWith('temp-')));
+    };
+  }, []); // Empty dependency array to run only on unmount
+
   return (
     <div className="log-meal-container">
       <Navbar />
@@ -967,9 +1227,9 @@ const LogMyMeal = () => {
           </Button>
           {chatHistory.map(chat => (
             <div
-              key={chat._id || `temp-${chat.timestamp}-${Math.random().toString(36).substring(2, 9)}`}
-              className={`chat-history-item ${activeChat === chat._id ? 'active' : ''}`}
-              onClick={() => handleChatSelect(chat._id)}
+              key={chat._id || chat.id || `temp-${chat.timestamp}-${Math.random().toString(36).substring(2, 9)}`}
+              className={`chat-history-item ${activeChat === (chat._id || chat.id) ? 'active' : ''}`}
+              onClick={() => handleChatSelect(chat._id || chat.id)}
             >
               <div className="chat-history-item-content">
                 <div className="chat-history-item-title">
@@ -979,8 +1239,10 @@ const LogMyMeal = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      console.log(`Deleting chat with ID: ${chat._id}`);
-                      handleDeleteChat(chat._id, e);
+                      const chatId = chat._id || chat.id;
+                      console.log(`Deleting chat with ID: ${chatId}`);
+                      console.log('Full chat object:', chat);
+                      handleDeleteChat(chatId, e);
                     }} 
                   />
                 </div>

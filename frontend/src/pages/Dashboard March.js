@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -47,30 +47,22 @@ const meals = [
     name: "Masala Oats with Vegetables Breakfast",
     time: "8:30 AM",
     image: "https://kiipfit.com/wp-content/uploads/2015/04/masala-oatmeal-5-2.0-1024x1024.jpg",
-    tags: ["High-Fiber", "Low-Sodium", "Plant-Based", "Iron-Rich"],
+    tags: ["High-Fiber", "Low-Sodium", "Plant-Based"],
     macros: {
-      calories: 380,
-      protein: 15,
-      carbs: 55,
-      fats: 10,
-      fiber: 8,
-      sugar: 5,
-      sodium: 220
+      calories: 320,
+      protein: 12,
+      carbs: 45,
+      fats: 8,
+      fiber: 6,
+      sugar: 4,
+      sodium: 180
     },
     healthScores: {
-      glycemic: 55,
-      inflammatory: 20,
-      heart: 95,
-      digestive: 90,
-      balance: 90
-    },
-    micronutrient_balance: {
-      score: 85,
-      priority_nutrients: [
-        { name: "Iron", percentage: 75 },
-        { name: "Fiber", percentage: 90 },
-        { name: "B12", percentage: 60 }
-      ]
+      glycemic: 65,
+      inflammatory: 25,
+      heart: 90,
+      digestive: 85,
+      balance: 85
     }
   },
   {
@@ -78,30 +70,22 @@ const meals = [
     name: "Tandoori Paneer Wrap Lunch",
     time: "1:15 PM",
     image: "https://ministryofcurry.com/wp-content/uploads/2019/10/paneer-kathi-rolls-1-1-850x1133.jpg",
-    tags: ["High-Protein", "Balanced-Meal", "Vegetarian", "Calcium-Rich"],
+    tags: ["High-Protein", "Balanced-Meal", "Vegetarian"],
     macros: {
-      calories: 620,
-      protein: 32,
-      carbs: 70,
-      fats: 25,
-      fiber: 6,
-      sugar: 6,
-      sodium: 580
+      calories: 580,
+      protein: 28,
+      carbs: 65,
+      fats: 22,
+      fiber: 4,
+      sugar: 8,
+      sodium: 640
     },
     healthScores: {
-      glycemic: 65,
-      inflammatory: 30,
-      heart: 85,
-      digestive: 80,
+      glycemic: 70,
+      inflammatory: 35,
+      heart: 80,
+      digestive: 75,
       balance: 85
-    },
-    micronutrient_balance: {
-      score: 80,
-      priority_nutrients: [
-        { name: "Calcium", percentage: 85 },
-        { name: "Protein", percentage: 90 },
-        { name: "Vitamin D", percentage: 65 }
-      ]
     }
   },
   {
@@ -109,30 +93,22 @@ const meals = [
     name: "Apple & Peanut Butter Snack",
     time: "4:00 PM",
     image: "https://i0.wp.com/images-prod.healthline.com/hlcmsresource/images/AN_images/apple-and-peanut-butter-1296x728-feature.jpg?w=1155&h=1528",
-    tags: ["Quick-Energy", "Heart-Healthy", "Low-Sodium", "Protein-Rich"],
+    tags: ["Quick-Energy", "Heart-Healthy", "Low-Sodium"],
     macros: {
-      calories: 280,
-      protein: 8,
-      carbs: 35,
-      fats: 15,
-      fiber: 6,
-      sugar: 20,
-      sodium: 45
+      calories: 210,
+      protein: 5,
+      carbs: 25,
+      fats: 12,
+      fiber: 4,
+      sugar: 18,
+      sodium: 40
     },
     healthScores: {
-      glycemic: 45,
-      inflammatory: 15,
-      heart: 90,
-      digestive: 85,
-      balance: 80
-    },
-    micronutrient_balance: {
-      score: 75,
-      priority_nutrients: [
-        { name: "Fiber", percentage: 80 },
-        { name: "Protein", percentage: 70 },
-        { name: "Healthy Fats", percentage: 85 }
-      ]
+      glycemic: 50,
+      inflammatory: 20,
+      heart: 85,
+      digestive: 80,
+      balance: 75
     }
   },
   {
@@ -140,52 +116,52 @@ const meals = [
     name: "Lentil Vegetable Curry & Rice Dinner",
     time: "7:30 PM",
     image: "https://cookingforpeanuts.com/wp-content/uploads/2021/09/15-Minute-Lentil-Veggie-Curry-1.jpg",
-    tags: ["Protein-Rich", "Plant-Based", "Iron-Rich", "High-Fiber"],
+    tags: ["Protein-Rich", "Plant-Based", "Iron-Rich"],
     macros: {
-      calories: 580,
-      protein: 28,
-      carbs: 90,
-      fats: 12,
-      fiber: 12,
-      sugar: 4,
-      sodium: 520
+      calories: 620,
+      protein: 24,
+      carbs: 85,
+      fats: 15,
+      fiber: 10,
+      sugar: 6,
+      sodium: 580
     },
     healthScores: {
-      glycemic: 55,
-      inflammatory: 25,
-      heart: 95,
-      digestive: 90,
-      balance: 95
-    },
-    micronutrient_balance: {
-      score: 90,
-      priority_nutrients: [
-        { name: "Iron", percentage: 85 },
-        { name: "Fiber", percentage: 95 },
-        { name: "Folate", percentage: 80 }
-      ]
+      glycemic: 60,
+      inflammatory: 30,
+      heart: 90,
+      digestive: 85,
+      balance: 90
     }
   }
 ];
 
 // Add default empty values for health scores
 const defaultHealthScores = [
-  { score: 55, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
-  { score: 20, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
-  { score: 85, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
-  { score: 80, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
-  { score: 85, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" },
+  { score: 0, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
+  { score: 0, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
+  { score: 0, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
+  { score: 0, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
+  { score: 0, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" },
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Initialize current date state
+  const [currentDate, setCurrentDate] = useState(() => {
+    // Check if there's a selected date in localStorage from meal logging
+    const savedDate = localStorage.getItem('selectedDashboardDate');
+    if (savedDate) {
+      console.log('Using saved date from localStorage:', savedDate);
+      return new Date(savedDate);
+    }
+    return new Date();
+  });
   const [showAddSupplement, setShowAddSupplement] = useState(false);
   const [newSupplementName, setNewSupplementName] = useState("");
   const [newSupplementDose, setNewSupplementDose] = useState("");
-  const [userSupplements, setUserSupplements] = useState([]);
-  const [supplementIds, setSupplementIds] = useState(new Map());
-  const [userMeals, setUserMeals] = useState([]);
+  const [userSupplements, setUserSupplements] = useState(supplements);
+  const [userMeals, setUserMeals] = useState(meals);
   const [expandedMealId, setExpandedMealId] = useState(null);
   const [lastFetchedDate, setLastFetchedDate] = useState(null);
   const [error, setError] = useState(null);
@@ -196,7 +172,6 @@ export default function Dashboard() {
   const [nutritionalNeeds, setNutritionalNeeds] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [showRealDataForAllDays, setShowRealDataForAllDays] = useState(true);
 
   // Add state for priority micronutrients
   const [priorityMicronutrients, setPriorityMicronutrients] = useState([]);
@@ -205,53 +180,47 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) {
-          console.error('No authentication token found');
-          setError('Authentication error. Please log in again.');
-          setLoading(false);
+          console.log("No token found");
+          navigate("/signup");
           return;
         }
 
-        // Remove Bearer prefix if it exists
-        const cleanToken = token.replace('Bearer ', '');
-
-        console.log('Fetching user profile with token:', cleanToken);
-        const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
           headers: {
-            'Authorization': `Bearer ${cleanToken}`,
-            'Content-Type': 'application/json'
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           }
         });
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            console.error('Authentication error. Token may be invalid or expired.');
-            localStorage.removeItem('token');
-            navigate('/signup');
-            setError('Authentication error. Please log in again.');
-            setLoading(false);
-            return;
-          }
-          throw new Error('Failed to fetch profile');
-        }
+        console.log("Profile response status:", response.status); // Debug log
 
-        const data = await response.json();
-        console.log('Profile data received:', data);
-        setUserProfile(data);
-        if (data.profile?.nutritional_needs) {
-          console.log("Nutritional needs:", data.profile.nutritional_needs); // Debug log
-          setNutritionalNeeds(data.profile.nutritional_needs);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Profile data:", data); // Debug log
+          setUserProfile(data);
+          if (data.profile?.nutritional_needs) {
+            console.log("Nutritional needs:", data.profile.nutritional_needs); // Debug log
+            setNutritionalNeeds(data.profile.nutritional_needs);
+          } else {
+            console.log("No nutritional needs found in profile data"); // Debug log
+          }
+          // Set priority micronutrients from profile
+          if (data.profile?.priority_micronutrients) {
+            setPriorityMicronutrients(data.profile.priority_micronutrients);
+          }
+        } else if (response.status === 401) {
+          console.log("Unauthorized - clearing token"); // Debug log
+          localStorage.removeItem("token");
+          navigate("/signup");
         } else {
-          console.log("No nutritional needs found in profile data"); // Debug log
-        }
-        // Set priority micronutrients from profile
-        if (data.profile?.priority_micronutrients) {
-          setPriorityMicronutrients(data.profile.priority_micronutrients);
+          throw new Error("Failed to fetch profile");
         }
       } catch (error) {
-        console.error('Error fetching profile:', error);
-        setError(`Failed to load profile: ${error.message}`);
+        console.error("Error fetching profile:", error);
+        localStorage.removeItem("token"); // Clear token on error
+        navigate("/signup");
       } finally {
         setLoading(false);
       }
@@ -260,232 +229,271 @@ export default function Dashboard() {
     fetchUserProfile();
   }, [navigate]);
 
-  const isFetchingRef = useRef(false);
-  
+  // Fetch meals when dashboard loads or date changes
   useEffect(() => {
-    const loadMeals = async () => {
-      const formattedDate = currentDate.toISOString().split('T')[0];
-      if (formattedDate === lastFetchedDate || isFetchingRef.current) return;
-  
-      isFetchingRef.current = true;
+    const fetchUserMeals = async () => {
       try {
-        await fetchMeals(currentDate);
-      } finally {
-        isFetchingRef.current = false;
+        console.log('Fetching meals for selected date:', currentDate);
+        
+        // Check if we need to fetch meals or if we already have them for this date
+        if (lastFetchedDate === currentDate.toISOString().split('T')[0]) {
+          console.log('Already have meals for this date, skipping fetch');
+          return;
+        }
+        
+        // Clear any existing selectedDashboardDate in localStorage after we've used it
+        if (localStorage.getItem('selectedDashboardDate')) {
+          console.log('Clearing selectedDashboardDate from localStorage after use');
+          localStorage.removeItem('selectedDashboardDate');
+        }
+        
+        // Check for refresh parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const refresh = urlParams.get('refresh');
+        
+        if (refresh) {
+          console.log('Refresh parameter detected, clearing URL parameter');
+          // Remove the refresh parameter from the URL
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          
+          // Check for lastAnalyzedMeal in localStorage
+          const lastAnalyzedMeal = localStorage.getItem('lastAnalyzedMeal');
+          if (lastAnalyzedMeal) {
+            console.log('Found lastAnalyzedMeal in localStorage, processing it');
+            try {
+              const parsedMeal = JSON.parse(lastAnalyzedMeal);
+              
+              // Format the meal data
+              const formattedMeal = {
+                id: parsedMeal.id || parsedMeal._id || `meal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                name: parsedMeal.meal_name || parsedMeal.name || "Unnamed Meal",
+                time: new Date(parsedMeal.timestamp || parsedMeal.date || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                image: parsedMeal.image_url || "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",
+                tags: processHealthTags(parsedMeal.health_tags) || [],
+                macros: {
+                  calories: parsedMeal.macronutrients?.calories || 0,
+                  protein: parsedMeal.macronutrients?.protein || 0,
+                  carbs: parsedMeal.macronutrients?.carbs || 0,
+                  fats: parsedMeal.macronutrients?.fats || 0,
+                  fiber: parsedMeal.macronutrients?.fiber || 0,
+                  sugar: parsedMeal.macronutrients?.sugar || 0,
+                  sodium: parsedMeal.macronutrients?.sodium || 0
+                },
+                healthScores: {
+                  glycemic: parsedMeal.scores?.glycemic_index || 0,
+                  inflammatory: parsedMeal.scores?.inflammatory || 0,
+                  heart: parsedMeal.scores?.heart_health || 0,
+                  digestive: parsedMeal.scores?.digestive || 0,
+                  balance: parsedMeal.scores?.meal_balance || 0
+                },
+                micronutrient_balance: {
+                  score: parsedMeal.micronutrient_balance?.score || 0,
+                  priority_nutrients: parsedMeal.micronutrient_balance?.priority_nutrients || []
+                }
+              };
+              
+              console.log('Formatted lastAnalyzedMeal:', formattedMeal);
+              
+              // Add this meal to the user's meals
+              setUserMeals(prevMeals => {
+                // Check if this meal already exists in the array
+                const exists = prevMeals.some(meal => 
+                  meal.id === formattedMeal.id || 
+                  (meal.name === formattedMeal.name && meal.time === formattedMeal.time)
+                );
+                
+                if (exists) {
+                  console.log('Meal already exists in user meals, not adding duplicate');
+                  return prevMeals;
+                }
+                
+                console.log('Adding new meal to user meals');
+                return [formattedMeal, ...prevMeals];
+              });
+              
+              // Clear the localStorage item to prevent duplication
+              localStorage.removeItem('lastAnalyzedMeal');
+            } catch (e) {
+              console.error('Error parsing lastAnalyzedMeal:', e);
+            }
+          }
+        }
+        
+        // Fetch meals from the backend
+        const data = await fetchMeals(currentDate);
+        console.log('Fetched meal data:', data);
+      } catch (error) {
+        console.error('Error fetching meals:', error);
+        setError('Failed to load meals. Please try again later.');
       }
     };
-  
-    loadMeals();
+
+    fetchUserMeals();
   }, [currentDate, lastFetchedDate]);
 
-  // Update the fetchMeals function with detailed logging
+  // Fetch meals for the selected date
   const fetchMeals = async (date) => {
-    const formattedDate = date.toISOString().split('T')[0];
-    setLastFetchedDate(formattedDate);
-    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        console.error('No authentication token found');
-        setError('Authentication error. Please log in again.');
-        return;
+        throw new Error('No authentication token found');
       }
 
-      // Remove Bearer prefix if it exists
-      const cleanToken = token.replace('Bearer ', '');
-
-      console.log('=== MEAL FETCHING PROCESS START ===');
-      console.log('Fetching meals for date:', formattedDate);
+      // Format the date as YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
+      console.log(`Fetching meals for date: ${formattedDate}`);
       
-      // Check if the date is today
+      // Check if the selected date is today
       const today = new Date();
-      const isToday = date.toDateString() === today.toDateString();
-      console.log('Is today?', isToday);
+      const isToday = formattedDate === today.toISOString().split('T')[0];
       
-      if (isToday) {
-        // For today, fetch actual meals from the backend
-        console.log(`Fetching meals for today: ${formattedDate}`);
-        const response = await fetch(`${API_BASE_URL}/api/nutrition/meals/${formattedDate}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+      // If not today, return placeholder meals with adjusted dates
+      if (!isToday) {
+        console.log('Showing placeholder meals for past/future date');
         
-        if (!response.ok) {
-          console.error(`Failed to fetch meals: ${response.status} ${response.statusText}`);
-          const errorData = await response.json().catch(() => ({}));
-          console.error('Error details:', errorData);
-          throw new Error(`Failed to fetch meals: ${errorData.detail || response.statusText}`);
-        }
+        // Create a copy of the placeholder meals with adjusted dates
+        const placeholderMeals = meals.map(meal => ({
+          ...meal,
+          // Add a suffix to the meal name to indicate it's a placeholder
+          name: `${meal.name} (${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`,
+          // Generate a unique ID for each placeholder meal based on the date
+          id: `${meal.id}-${formattedDate}`
+        }));
         
-        const data = await response.json();
-        console.log('=== RAW BACKEND RESPONSE ===');
-        console.log('Raw meals data:', JSON.stringify(data, null, 2));
-        
-        // Transform the meals data to match the expected format in the dashboard
-        if (data.meals && Array.isArray(data.meals) && data.meals.length > 0) {
-          console.log('=== MEAL TRANSFORMATION START ===');
-          console.log('Number of meals to transform:', data.meals.length);
-          
-          const formattedMeals = data.meals.map(meal => {
-            console.log('\n=== PROCESSING MEAL ===');
-            console.log('Original meal data:', JSON.stringify(meal, null, 2));
-            
-            // Skip meals with no nutritional data
-            if (!meal.macronutrients || Object.values(meal.macronutrients).every(val => val === 0)) {
-              console.log('Skipping meal with no nutritional data:', meal.id);
-              return null;
-            }
-            
-            // Ensure we have valid timestamp data and keep it in UTC
-            let timestamp;
-            try {
-              // Parse the timestamp and keep it in UTC
-              const date = new Date(meal.timestamp || meal.date);
-              timestamp = date.toISOString();
-              console.log('Parsed timestamp (UTC):', timestamp);
-              console.log('Original timestamp:', meal.timestamp || meal.date);
-            } catch (error) {
-              console.error('Failed to parse timestamp:', error);
-              timestamp = new Date().toISOString();
-            }
-            
-            const transformedMeal = {
-              id: meal.id,
-              meal_name: meal.meal_name || "Unnamed Meal",
-              timestamp: timestamp,
-              time: new Date(meal.timestamp || meal.date).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-              }),
-              image_url: meal.image_url || "",
-              health_tags: meal.health_tags || [],
-              macronutrients: {
-                calories: meal.macronutrients?.calories || 0,
-                protein: meal.macronutrients?.protein || 0,
-                carbs: meal.macronutrients?.carbs || 0,
-                fats: meal.macronutrients?.fats || 0,
-                fiber: meal.macronutrients?.fiber || 0,
-                sugar: meal.macronutrients?.sugar || 0,
-                sodium: meal.macronutrients?.sodium || 0
-              },
-              scores: {
-                glycemic_index: meal.scores?.glycemic_index || 0,
-                inflammatory: meal.scores?.inflammatory || 0,
-                heart_health: meal.scores?.heart_health || 0,
-                digestive: meal.scores?.digestive || 0,
-                meal_balance: meal.scores?.meal_balance || 0
-              },
-              micronutrient_balance: meal.micronutrient_balance || {
-                score: 0,
-                priority_nutrients: []
-              }
-            };
-            
-            console.log('Transformed meal:', JSON.stringify(transformedMeal, null, 2));
-            return transformedMeal;
-          }).filter(meal => meal !== null); // Filter out null meals
-          
-          console.log('\n=== DEDUPLICATION PROCESS ===');
-          console.log('Before deduplication - Number of meals:', formattedMeals.length);
-          
-          // Create a Map to track unique meals by name and timestamp
-          const uniqueMealsMap = new Map();
-          formattedMeals.forEach(meal => {
-            console.log(`Processing meal ID: ${meal.id}`);
-            
-            // Create a key combining meal name and timestamp (within 5 minutes)
-            const mealTime = new Date(meal.timestamp).getTime();
-            const key = `${meal.meal_name}-${Math.floor(mealTime / (5 * 60 * 1000))}`;
-            
-            if (!uniqueMealsMap.has(key)) {
-              uniqueMealsMap.set(key, meal);
-              console.log(`Added meal ${meal.id} to unique meals with key ${key}`);
-            } else {
-              const existingMeal = uniqueMealsMap.get(key);
-              console.log(`Duplicate meal found with key ${key}`);
-              console.log('Existing meal:', existingMeal);
-              console.log('Duplicate meal:', meal);
-              
-              // Keep the meal with more complete data
-              const existingDataScore = Object.values(existingMeal.macronutrients).reduce((sum, val) => sum + val, 0);
-              const newDataScore = Object.values(meal.macronutrients).reduce((sum, val) => sum + val, 0);
-              
-              if (newDataScore > existingDataScore) {
-                console.log(`Replacing existing meal with more complete data from meal ${meal.id}`);
-                uniqueMealsMap.set(key, meal);
-              }
-            }
-          });
-          
-          const uniqueMeals = Array.from(uniqueMealsMap.values());
-          console.log('After deduplication - Number of meals:', uniqueMeals.length);
-          console.log('Final unique meals:', JSON.stringify(uniqueMeals, null, 2));
-          
-          setUserMeals(uniqueMeals);
-        } else {
-          console.log('No meals found or invalid format');
-          setUserMeals([]);
-        }
-      } else {
-        // For non-today dates, show placeholder meals
-        console.log('Using placeholder meals for non-today date');
-        const placeholderMeals = meals.map(meal => {
-          // Parse the time string (e.g., '8:30 AM') to a Date object for the given date
-          let timeParts = meal.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
-          let hours = 12, minutes = 0;
-          if (timeParts) {
-            hours = parseInt(timeParts[1], 10);
-            minutes = parseInt(timeParts[2], 10);
-            if (/PM/i.test(timeParts[3]) && hours !== 12) hours += 12;
-            if (/AM/i.test(timeParts[3]) && hours === 12) hours = 0;
-          }
-          const dateObj = new Date(formattedDate);
-          dateObj.setHours(hours, minutes, 0, 0);
-          const isoTimestamp = dateObj.toISOString();
+        setUserMeals(placeholderMeals);
+        setLastFetchedDate(formattedDate);
+        return { meals: placeholderMeals };
+      }
+      
+      // For today, fetch actual meals from the backend
+      const response = await fetch(`${API_BASE_URL}/nutrition/meals/${formattedDate}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store' // Prevent caching
+      });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Backend error details:', errorData);
+        
+        // Handle specific error cases
+        if (response.status === 401) {
+          // Token expired or invalid
+          localStorage.removeItem('token');
+          window.location.href = '/signup';
+          return;
+        }
+        
+        if (response.status === 500 && errorData.detail?.includes('Database connection error')) {
+          // Database connection error - retry with exponential backoff
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+          return fetchMeals(date); // Retry once
+        }
+        
+        throw new Error(`Failed to fetch meals: ${response.status} - ${errorData.detail || 'Unknown error'}`);
+      }
+
+      const data = await response.json();
+      console.log('Fetched meals data:', data);
+      
+      // Transform the meals data to match the expected format in the dashboard
+      if (data.meals && Array.isArray(data.meals) && data.meals.length > 0) {
+        const formattedMeals = data.meals.map(meal => {
+          console.log('Processing meal:', meal);
           return {
-            id: `${meal.id}-${formattedDate}`,
-            meal_name: meal.name,
-            timestamp: isoTimestamp,
-            image_url: meal.image,
-            health_tags: meal.tags || [],
-            macronutrients: {
-              calories: meal.macros.calories || 0,
-              protein: meal.macros.protein || 0,
-              carbs: meal.macros.carbs || 0,
-              fats: meal.macros.fats || 0,
-              fiber: meal.macros.fiber || 0,
-              sugar: meal.macros.sugar || 0,
-              sodium: meal.macros.sodium || 0
+            id: meal.id || `meal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: meal.meal_name || meal.name || "Unnamed Meal",
+            time: new Date(meal.timestamp || meal.date || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            image: meal.image_url || "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",
+            tags: processHealthTags(meal.health_tags) || [],
+            macros: {
+              calories: meal.macronutrients?.calories || 0,
+              protein: meal.macronutrients?.protein || 0,
+              carbs: meal.macronutrients?.carbs || 0,
+              fats: meal.macronutrients?.fats || 0,
+              fiber: meal.macronutrients?.fiber || 0,
+              sugar: meal.macronutrients?.sugar || 0,
+              sodium: meal.macronutrients?.sodium || 0
             },
-            scores: {
-              glycemic_index: meal.healthScores?.glycemic ?? 55,
-              inflammatory: meal.healthScores?.inflammatory ?? 20,
-              heart_health: meal.healthScores?.heart ?? 85,
-              digestive: meal.healthScores?.digestive ?? 80,
-              meal_balance: meal.healthScores?.balance ?? 85
+            healthScores: {
+              glycemic: meal.scores?.glycemic_index || meal.scores?.glycemic || 0,
+              inflammatory: meal.scores?.inflammatory || 0,
+              heart: meal.scores?.heart_health || meal.scores?.heart || 0,
+              digestive: meal.scores?.digestive || 0,
+              balance: meal.scores?.meal_balance || meal.scores?.balance || 0
             },
-            micronutrient_balance: meal.micronutrient_balance || {
-              score: 80,
-              priority_nutrients: [
-                { name: "Iron", percentage: 75 },
-                { name: "Fiber", percentage: 90 },
-                { name: "B12", percentage: 60 }
-              ]
+            micronutrient_balance: {
+              score: meal.micronutrient_balance?.score || 0,
+              priority_nutrients: meal.micronutrient_balance?.priority_nutrients || []
             }
           };
         });
         
-        setUserMeals(placeholderMeals);
+        console.log('Formatted meals:', formattedMeals);
+        setUserMeals(formattedMeals);
+      } else {
+        console.log('No meals found or invalid format, checking localStorage for lastAnalyzedMeal');
+        
+        // Check if we have a lastAnalyzedMeal in localStorage
+        const lastAnalyzedMeal = localStorage.getItem('lastAnalyzedMeal');
+        if (lastAnalyzedMeal) {
+          try {
+            const parsedMeal = JSON.parse(lastAnalyzedMeal);
+            console.log('Found lastAnalyzedMeal in localStorage:', parsedMeal);
+            
+            // Format the meal data
+            const formattedMeal = {
+              id: parsedMeal.id || `meal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              name: parsedMeal.meal_name || parsedMeal.name || "Unnamed Meal",
+              time: new Date(parsedMeal.timestamp || parsedMeal.date || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              image: parsedMeal.image_url || "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80",
+              tags: processHealthTags(parsedMeal.health_tags) || [],
+              macros: {
+                calories: parsedMeal.macronutrients?.calories || 0,
+                protein: parsedMeal.macronutrients?.protein || 0,
+                carbs: parsedMeal.macronutrients?.carbs || 0,
+                fats: parsedMeal.macronutrients?.fats || 0,
+                fiber: parsedMeal.macronutrients?.fiber || 0,
+                sugar: parsedMeal.macronutrients?.sugar || 0,
+                sodium: parsedMeal.macronutrients?.sodium || 0
+              },
+              healthScores: {
+                glycemic: parsedMeal.scores?.glycemic_index || parsedMeal.scores?.glycemic || 0,
+                inflammatory: parsedMeal.scores?.inflammatory || 0,
+                heart: parsedMeal.scores?.heart_health || parsedMeal.scores?.heart || 0,
+                digestive: parsedMeal.scores?.digestive || 0,
+                balance: parsedMeal.scores?.meal_balance || parsedMeal.scores?.balance || 0
+              },
+              micronutrient_balance: {
+                score: parsedMeal.micronutrient_balance?.score || 0,
+                priority_nutrients: parsedMeal.micronutrient_balance?.priority_nutrients || []
+              }
+            };
+            
+            console.log('Formatted lastAnalyzedMeal:', formattedMeal);
+            setUserMeals([formattedMeal]);
+            
+            // Clear the localStorage item to prevent duplication
+            localStorage.removeItem('lastAnalyzedMeal');
+          } catch (e) {
+            console.error('Error parsing lastAnalyzedMeal:', e);
+            setUserMeals([]);
+          }
+        } else {
+          setUserMeals([]);
+        }
       }
+      
+      setLastFetchedDate(formattedDate);
+      return data;
     } catch (error) {
-      console.error('Error fetching meals:', error);
-      setError(`Failed to fetch meals: ${error.message}`);
-      setUserMeals([]);
-    } finally {
-      console.log('=== MEAL FETCHING PROCESS END ===\n');
+      console.error('Backend fetch error:', error);
+      // Show user-friendly error message
+      setError('Unable to load meals. Please try refreshing the page.');
+      return [];
     }
   };
 
@@ -508,9 +516,9 @@ export default function Dashboard() {
     }
 
     userMeals.forEach(meal => {
-      if (meal && meal.macronutrients) {  // Changed from meal.macros to meal.macronutrients
+      if (meal && meal.macros) {
         Object.keys(totals).forEach(key => {
-          const value = Number(meal.macronutrients[key]) || 0;  // Changed from meal.macros to meal.macronutrients
+          const value = Number(meal.macros[key]) || 0;
           totals[key] += value;
         });
       }
@@ -646,166 +654,15 @@ export default function Dashboard() {
       date.getFullYear() === today.getFullYear();
   };
 
-  const handleAddSupplement = async () => {
+  const handleAddSupplement = () => {
     if (newSupplementName && newSupplementDose) {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
-
-        const response = await fetch(`${API_BASE_URL}/api/supplements/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            name: newSupplementName,
-            dose: newSupplementDose
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || 'Failed to add supplement');
-        }
-
-        const data = await response.json();
-        // Use user_id as a fallback if _id is null
-        const newSupplement = {
-          ...data,
-          id: data._id || data.user_id
-        };
-        setUserSupplements(prev => [...prev, newSupplement]);
-        setNewSupplementName("");
-        setNewSupplementDose("");
-        setShowAddSupplement(false);
-      } catch (error) {
-        console.error('Error adding supplement:', error);
-        setError(`Failed to add supplement: ${error.message}`);
-      }
-    }
-  };
-
-  const handleDeleteSupplement = async (supplementId) => {
-    try {
-      console.log('Delete clicked for supplement:', supplementId);
-      console.log('Current supplements:', userSupplements);
-
-      if (!supplementId) {
-        console.error('No supplement ID provided');
-        throw new Error('Supplement ID is required');
-      }
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      // Find the supplement in the current supplements array
-      const supplementToDelete = userSupplements.find(s => s.id === supplementId);
-
-      if (!supplementToDelete) {
-        console.error('Supplement not found with ID:', supplementId);
-        console.error('Available supplements:', userSupplements.map(s => ({ id: s.id, name: s.name })));
-        throw new Error('Supplement not found in local state');
-      }
-
-      // Use _id for deletion if available, otherwise use the baseKey
-      const deleteId = supplementToDelete._id || supplementToDelete.baseKey;
-
-      console.log('Making delete request to:', `${API_BASE_URL}/api/supplements/${deleteId}`);
-      const response = await fetch(`${API_BASE_URL}/api/supplements/${deleteId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Delete response error:', errorData);
-        throw new Error(errorData.detail || 'Failed to delete supplement');
-      }
-
-      console.log('Successfully deleted supplement');
-      setUserSupplements(prevSupplements => 
-        prevSupplements.filter(s => s.id !== supplementId)
-      );
-    } catch (error) {
-      console.error('Error deleting supplement:', error);
-      setError(`Failed to delete supplement: ${error.message}`);
-    }
-  };
-
-  // Update the fetchSupplements function
-  useEffect(() => {
-    const fetchSupplements = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
-
-        const formattedDate = currentDate.toISOString().split('T')[0];
-        const response = await fetch(`${API_BASE_URL}/api/supplements?date=${formattedDate}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include'
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || 'Failed to fetch supplements');
-        }
-
-        const data = await response.json();
-        
-        // Generate unique IDs for supplements
-        const supplementCounts = new Map();
-        const supplementsWithIds = data.map(supplement => {
-          const baseKey = `${supplement.user_id}-${supplement.name}-${supplement.dose}`;
-          const count = (supplementCounts.get(baseKey) || 0) + 1;
-          supplementCounts.set(baseKey, count);
-          const supplementId = `${baseKey}-${count}`;
-          
-          return {
-            ...supplement,
-            id: supplementId,
-            baseKey: baseKey
-          };
-        });
-        
-        console.log('Fetched supplements with IDs:', supplementsWithIds);
-        setUserSupplements(supplementsWithIds);
-      } catch (error) {
-        console.error('Error fetching supplements:', error);
-        setError(`Failed to load supplements: ${error.message}`);
-      }
-    };
-
-    fetchSupplements();
-  }, [currentDate]);
-
-  const displaySupplements = () => {
-    const today = new Date();
-    const isToday = currentDate.toDateString() === today.toDateString();
-    
-    if (isToday) {
-      return userSupplements;
-    } else {
-      // For non-today dates, don't allow deletion of placeholder supplements
-      return supplements.map((supplement, index) => ({
-        ...supplement,
-        id: null // Set id to null for placeholders
-      }));
+      setUserSupplements([
+        ...userSupplements,
+        { name: newSupplementName, dose: newSupplementDose }
+      ]);
+      setNewSupplementName("");
+      setNewSupplementDose("");
+      setShowAddSupplement(false);
     }
   };
 
@@ -820,7 +677,7 @@ export default function Dashboard() {
           throw new Error('No authentication token found');
         }
         
-        const response = await fetch(`${API_BASE_URL}/api/nutrition/meals/${mealId}`, {
+        const response = await fetch(`${API_BASE_URL}/nutrition/meals/${mealId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -861,14 +718,19 @@ export default function Dashboard() {
     return 15; // Return 15 for other days
   };
 
+  // Update the supplements display for today
+  const displaySupplements = () => {
+    const today = new Date();
+    const isToday = currentDate.toDateString() === today.toDateString();
+    return isToday ? [] : userSupplements; // Return empty array for today, normal supplements for other days
+  };
+
   const handleToggleMeal = (mealId) => {
     setExpandedMealId(expandedMealId === mealId ? null : mealId);
   };
 
-  const handleToggleFavorite = (recipe) => {
-    // Since we're on the dashboard, we should only allow removing recipes
-    console.log(`Removing recipe ${recipe.recipe_id} from favorites`);
-    removeFavoriteRecipe(recipe.recipe_id);
+  const handleToggleFavorite = (recipeTitle) => {
+    removeFavoriteRecipe(recipeTitle);
   };
 
   // Update the HealthScoreBar component to handle empty state
@@ -994,61 +856,61 @@ export default function Dashboard() {
     return processedTags;
   };
 
-  // Corrected getHealthScores function
+  // Update the getHealthScores function to calculate scores from meals
   const getHealthScores = () => {
     const today = new Date();
     const isToday = currentDate.toDateString() === today.toDateString();
+    
+    if (isToday && userMeals.length > 0) {
+      // Calculate average scores from today's meals
+      const scores = userMeals.reduce((acc, meal) => {
+        if (meal.healthScores) {
+          acc.glycemic += meal.healthScores.glycemic || 0;
+          acc.inflammatory += meal.healthScores.inflammatory || 0;
+          acc.heart += meal.healthScores.heart || 0;
+          acc.digestive += meal.healthScores.digestive || 0;
+          acc.balance += meal.healthScores.balance || 0;
+        }
+        return acc;
+      }, { glycemic: 0, inflammatory: 0, heart: 0, digestive: 0, balance: 0 });
 
-    if (isToday) {
-      if (userMeals.length > 0) {
-        // Calculate average scores from today's meals
-        const scores = userMeals.reduce((acc, meal) => {
-          if (meal.scores) {
-            acc.glycemic_index += meal.scores.glycemic_index || 0;
-            acc.inflammatory += meal.scores.inflammatory || 0;
-            acc.heart_health += meal.scores.heart_health || 0;
-            acc.digestive += meal.scores.digestive || 0;
-            acc.meal_balance += meal.scores.meal_balance || 0;
-          }
-          return acc;
-        }, { glycemic_index: 0, inflammatory: 0, heart_health: 0, digestive: 0, meal_balance: 0 });
-        const mealCount = userMeals.length;
-        return [
-          { score: Math.round(scores.glycemic_index / mealCount), label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
-          { score: Math.round(scores.inflammatory / mealCount), label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
-          { score: Math.round(scores.heart_health / mealCount), label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
-          { score: Math.round(scores.digestive / mealCount), label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
-          { score: Math.round(scores.meal_balance / mealCount), label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" }
-        ];
-      } else {
-        // No meals today, show zeros
-        return [
-          { score: 0, label: "Glycemic Index", info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", colorScale: "lowGood" },
-          { score: 0, label: "Inflammatory Score", info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", colorScale: "lowGood" },
-          { score: 0, label: "Heart Health Score", info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", colorScale: "highGood" },
-          { score: 0, label: "Digestive Score", info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", colorScale: "highGood" },
-          { score: 0, label: "Meal Balance Score", info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", colorScale: "highGood" }
-        ];
-      }
+      // Calculate averages
+      const mealCount = userMeals.length;
+      return [
+        { 
+          score: Math.round(scores.glycemic / mealCount), 
+          label: "Glycemic Index", 
+          info: "Measures how quickly foods raise blood sugar levels. Lower scores are better for stable energy.", 
+          colorScale: "lowGood" 
+        },
+        { 
+          score: Math.round(scores.inflammatory / mealCount), 
+          label: "Inflammatory Score", 
+          info: "Indicates how likely foods are to cause inflammation. Lower scores mean less inflammatory.", 
+          colorScale: "lowGood" 
+        },
+        { 
+          score: Math.round(scores.heart / mealCount), 
+          label: "Heart Health Score", 
+          info: "Evaluates food impact on cardiovascular health. Higher scores are better for heart health.", 
+          colorScale: "highGood" 
+        },
+        { 
+          score: Math.round(scores.digestive / mealCount), 
+          label: "Digestive Score", 
+          info: "Rates how easy foods are to digest and their effect on gut health. Higher scores indicate better digestive support.", 
+          colorScale: "highGood" 
+        },
+        { 
+          score: Math.round(scores.balance / mealCount), 
+          label: "Meal Balance Score", 
+          info: "Measures overall nutritional balance across all food groups. Higher scores indicate better balanced meals.", 
+          colorScale: "highGood" 
+        }
+      ];
     }
-    // For non-today dates, show default placeholder health scores
+    
     return defaultHealthScores;
-  };
-
-  // Helper for micronutrient balance placeholder for non-today dates
-  const getMicronutrientBalanceValue = (nutrient) => {
-    const today = new Date();
-    const isToday = currentDate.toDateString() === today.toDateString();
-    if (isToday) {
-      // For today, use actual value if available, else 0
-      if (userMeals.length > 0) {
-        return Math.round(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length);
-      }
-      return 0;
-    } else {
-      // For non-today, use placeholder value
-      return 80;
-    }
   };
 
   // Add loading state display
@@ -1326,18 +1188,18 @@ export default function Dashboard() {
                         </div>
                         <div className="dashboard-micronutrient-balance-item-value">
                           <span>{userMeals.length > 0 ? 
-                            `${Math.round(getMicronutrientBalanceValue(nutrient))}%` 
+                            `${Math.round(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length)}%` 
                             : '0%'}</span>
                           <div className="dashboard-micronutrient-balance-item-bar">
                             <div 
                               className={`dashboard-micronutrient-balance-item-progress ${
                                 userMeals.length > 0 && 
-                                (getMicronutrientBalanceValue(nutrient) >= 70 ? 'good' :
-                                getMicronutrientBalanceValue(nutrient) >= 40 ? 'warning' : 'poor')
+                                (userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 70 ? 'good' :
+                                userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length >= 40 ? 'warning' : 'poor')
                               }`}
                               style={{ 
                                 width: `${userMeals.length > 0 ? 
-                                  Math.min(getMicronutrientBalanceValue(nutrient), 100) : 0}%` 
+                                  Math.min(userMeals.reduce((acc, meal) => acc + (meal.micronutrient_balance?.priority_nutrients?.find(n => n.name === nutrient)?.percentage || 0), 0) / userMeals.length, 100) : 0}%` 
                               }}
                             />
                           </div>
@@ -1430,23 +1292,11 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                {displaySupplements().map((supplement) => (
-                  <div key={supplement.id} className="flex items-center justify-between bg-black/30 rounded-lg p-3 border border-zinc-700">
-                    <div className="flex items-center">
-                      <Pill className="h-4 w-4 text-zinc-400" />
-                      <span className="ml-3 text-zinc-300">{supplement.name}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm text-zinc-500 mr-2">{supplement.dose}</span>
-                      {isToday(currentDate) && supplement.id && (
-                        <button
-                          onClick={() => handleDeleteSupplement(supplement.id)}
-                          className="text-zinc-400 hover:text-red-500"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+                {displaySupplements().map((supplement, index) => (
+                  <div key={index} className="flex items-center bg-black/30 rounded-lg p-3 border border-zinc-700">
+                    <Pill className="h-4 w-4 text-zinc-400" />
+                    <span className="ml-3 text-zinc-300">{supplement.name}</span>
+                    <span className="ml-auto text-sm text-zinc-500">{supplement.dose}</span>
                   </div>
                 ))}
               </div>
@@ -1487,11 +1337,10 @@ export default function Dashboard() {
                   <div className="saved-recipes-grid">
                     {favoriteRecipes.map((recipe) => (
                       <RecipeCard
-                        key={recipe.recipe_id}
+                        key={recipe.title}
                         {...recipe}
                         isFavorite={true}
-                        onFavoriteToggle={() => handleToggleFavorite(recipe)}
-                        location="dashboard"
+                        onFavoriteToggle={() => handleToggleFavorite(recipe.title)}
                       />
                     ))}
                   </div>
