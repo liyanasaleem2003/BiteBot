@@ -141,34 +141,205 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle, priorityM
 
   // Function to get image URL
   const getImageUrl = (url: string): string => {
-    if (!url) return "/placeholder-meal.jpg";
+    console.log('=== Image URL Debug ===');
+    console.log('Original image URL:', url);
+    console.log('API_BASE_URL:', API_BASE_URL);
     
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      return url;
+    if (!url) {
+      console.log('No URL provided, using default image');
+      return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
     }
     
-    if (url.startsWith("data:image")) {
-      return url;
+    try {
+      // If it's a data URL, return it as is
+      if (url.startsWith("data:image")) {
+        console.log('Using data URL');
+        return url;
+      }
+
+      // Extract the image ID from the URL
+      let imageId: string | null = null;
+      
+      // Handle both old and new URL formats
+      if (url.includes('/images/')) {
+        const parts = url.split('/images/');
+        imageId = parts[1];
+        console.log('Extracted image ID:', imageId);
+      } else if (url.includes('/api/nutrition/images/')) {
+        const parts = url.split('/api/nutrition/images/');
+        imageId = parts[1];
+        console.log('Extracted image ID from API URL:', imageId);
+      }
+      
+      if (!imageId) {
+        console.error('Failed to extract image ID from URL');
+        return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
+      }
+
+      // Return the default image initially - we'll load the actual image in useEffect
+      return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
+      
+    } catch (error) {
+      console.error('Error processing image URL:', error);
+      return "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=800&dpr=2&q=80";
     }
-    
-    return `${API_BASE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
   };
+
+  // State to track if we've already tried loading the image
+  const [hasAttemptedLoad, setHasAttemptedLoad] = React.useState(false);
+  const [imageBlobUrl, setImageBlobUrl] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Load and compress the image when the component mounts
+  React.useEffect(() => {
+    const loadImage = async () => {
+      if (!meal.image_url) return;
+
+      try {
+        setIsLoading(true);
+        // Extract the image ID from the URL
+        let imageId: string | null = null;
+        if (meal.image_url.includes('/images/')) {
+          const parts = meal.image_url.split('/images/');
+          imageId = parts[1];
+        } else if (meal.image_url.includes('/api/nutrition/images/')) {
+          const parts = meal.image_url.split('/api/nutrition/images/');
+          imageId = parts[1];
+        }
+
+        if (!imageId) {
+          console.error('Failed to extract image ID from URL');
+          setHasAttemptedLoad(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No authentication token found');
+          setHasAttemptedLoad(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // Always use the correct API path for fetching images
+        const imageUrl = `${API_BASE_URL}/api/nutrition/images/${imageId}`;
+        console.log('Fetching image from:', imageUrl);
+
+        // Fetch the image with authentication
+        const response = await fetch(imageUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load image: ${response.status}`);
+        }
+
+        // Create a blob from the response
+        const blob = await response.blob();
+        
+        // Compress the image if it's larger than 600KB
+        let compressedBlob = blob;
+        if (blob.size > 600 * 1024) { // 600KB in bytes
+          const img = new Image();
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Create a promise to handle image loading
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = URL.createObjectURL(blob);
+          });
+
+          // Calculate new dimensions while maintaining aspect ratio
+          const maxDimension = 800; // Max width or height
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height && width > maxDimension) {
+            height = (height * maxDimension) / width;
+            width = maxDimension;
+          } else if (height > maxDimension) {
+            width = (width * maxDimension) / height;
+            height = maxDimension;
+          }
+
+          // Set canvas dimensions
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw and compress image
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Convert to blob with compression
+          compressedBlob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+              resolve(blob!);
+            }, 'image/jpeg', 0.8); // 80% quality
+          });
+
+          // Clean up
+          URL.revokeObjectURL(img.src);
+        }
+
+        const blobUrl = URL.createObjectURL(compressedBlob);
+        setImageBlobUrl(blobUrl);
+        console.log('Successfully loaded and compressed image:', {
+          originalSize: blob.size,
+          compressedSize: compressedBlob.size,
+          originalUrl: meal.image_url,
+          blobUrl
+        });
+      } catch (error) {
+        console.error('Error loading image:', error);
+        setHasAttemptedLoad(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadImage();
+
+    // Cleanup function to revoke the blob URL when component unmounts
+    return () => {
+      if (imageBlobUrl) {
+        URL.revokeObjectURL(imageBlobUrl);
+      }
+    };
+  }, [meal.image_url]);
 
   return (
     <div className="meal-card">
       <div className="meal-card-header">
         <div className="meal-card-content">
           <div className="meal-card-image">
-            <img 
-              src={getImageUrl(meal.image_url)}
-              alt={meal.meal_name}
-              className="w-full h-full object-cover rounded-lg"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "/placeholder-meal.jpg";
-                console.error("Failed to load image:", meal.image_url);
-              }}
-            />
+            <div className="relative w-full h-full">
+              <img 
+                src={imageBlobUrl || getImageUrl(meal.image_url)}
+                alt={meal.meal_name}
+                className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                onError={(e) => {
+                  if (!hasAttemptedLoad) {
+                    console.error("Failed to load image:", {
+                      originalUrl: meal.image_url,
+                      attemptedUrl: (e.target as HTMLImageElement).src,
+                      error: e
+                    });
+                    setHasAttemptedLoad(true);
+                  }
+                }}
+                crossOrigin="anonymous"
+                referrerPolicy="no-referrer"
+              />
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/50 rounded-lg">
+                  <div className="w-8 h-8 border-4 border-zinc-600 border-t-zinc-200 rounded-full animate-spin"></div>
+                </div>
+              )}
+            </div>
           </div>
           <div className="meal-card-info">
             <div className="meal-card-header-row">
@@ -270,7 +441,7 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle, priorityM
                   className="meal-card-balance-fats"
                   style={{ 
                     left: `${proteinPercentage + carbsPercentage}%`,
-                    width: `${fatsPercentage}%` 
+                    width: `${fatsPercentage}%`
                   }}
                 />
               </div>
@@ -398,4 +569,4 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle, priorityM
       </div>
     </div>
   );
-} 
+}

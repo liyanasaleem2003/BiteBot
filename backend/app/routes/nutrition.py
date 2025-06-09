@@ -19,10 +19,71 @@ from ..routes.database import with_retry
 import logging
 from ..config import settings
 import traceback
+from PIL import Image
+import base64
 
 router = APIRouter()
 nutrition_service = NutritionService()
 logger = logging.getLogger(__name__)
+
+def compress_image(image_content: bytes, max_size_mb: float = 0.6) -> bytes:
+    """
+    Compress an image to be under 600KB while maintaining quality.
+    Returns the compressed image as bytes.
+    """
+    try:
+        # Convert bytes to PIL Image
+        image = Image.open(io.BytesIO(image_content))
+        
+        # Convert to RGB if necessary (for PNG with transparency)
+        if image.mode in ('RGBA', 'P'):
+            image = image.convert('RGB')
+        
+        # Calculate target size in bytes (600KB)
+        max_size_bytes = max_size_mb * 1024 * 1024
+        
+        # Start with high quality
+        quality = 85  # Start with slightly lower quality for faster compression
+        output = io.BytesIO()
+        
+        # Compress with decreasing quality until size is under max_size_bytes
+        while quality > 5:
+            output.seek(0)
+            output.truncate()
+            image.save(output, format='JPEG', quality=quality, optimize=True)
+            if output.tell() <= max_size_bytes:
+                break
+            quality -= 10  # Decrease quality more aggressively
+        
+        # If still too large, resize the image
+        if output.tell() > max_size_bytes:
+            # Calculate new dimensions while maintaining aspect ratio
+            ratio = (max_size_bytes / output.tell()) ** 0.5
+            new_width = int(image.width * ratio)
+            new_height = int(image.height * ratio)
+            
+            # Resize image
+            image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Save with optimized settings
+            output.seek(0)
+            output.truncate()
+            image.save(output, format='JPEG', quality=85, optimize=True)
+            
+            # If still too large, try one more time with lower quality
+            if output.tell() > max_size_bytes:
+                output.seek(0)
+                output.truncate()
+                image.save(output, format='JPEG', quality=75, optimize=True)
+        
+        compressed_size = output.tell()
+        print(f"Compressed image to {compressed_size/1024:.1f}KB with quality {quality}")
+        return output.getvalue()
+        
+    except Exception as e:
+        logger.error(f"Error compressing image: {str(e)}")
+        # If compression fails, return original image
+        return image_content
 
 @router.post("/calculate-needs")
 async def calculate_nutritional_needs(
@@ -57,6 +118,7 @@ async def analyze_meal_photo(
     try:
         print("\n=== Starting Meal Photo Analysis ===")
         print(f"Received file: {file.filename}, content_type: {file.content_type}")
+        print(f"API_BASE_URL: {settings.API_BASE_URL}")
         
         # Validate file type
         if not file.content_type.startswith('image/'):
@@ -76,25 +138,32 @@ async def analyze_meal_photo(
                 detail="File size too large. Maximum size is 5MB."
             )
         
-        # Store the image in the database
+        # Compress the image before storing
+        compressed_image = compress_image(image_content)
+        print(f"Compressed image from {len(image_content)} to {len(compressed_image)} bytes")
+        
+        # Store the compressed image in the database
         image_id = await db.images.insert_one({
             "user_id": ObjectId(current_user.id),
             "filename": file.filename,
-            "content_type": file.content_type,
-            "data": image_content,
+            "content_type": "image/jpeg",  # Always store as JPEG after compression
+            "data": compressed_image,
             "uploaded_at": datetime.utcnow()
         })
         
         # Generate the image URL with the full path
-        image_url = f"{settings.API_BASE_URL}/images/{str(image_id.inserted_id)}"
-        
+        image_url = f"{settings.API_BASE_URL}/api/nutrition/images/{str(image_id.inserted_id)}"
+        print(f"Generated image URL: {image_url}")
+        print(f"Image ID: {str(image_id.inserted_id)}")
+
         # Analyze the image using GPT-4 Vision
         print("Calling analyze_meal_image...")
-        analysis = await analyze_meal_image(image_content)
+        analysis = await analyze_meal_image(image_content)  # Use original image for analysis
         print("Successfully analyzed meal image")
         
         # Add the image URL to the analysis
         analysis["image_url"] = image_url
+        print(f"Final analysis with image URL: {analysis}")
         
         return {
             "status": "success",
@@ -107,6 +176,7 @@ async def analyze_meal_photo(
         print(f"Error in analyze_meal_photo endpoint: {str(e)}")
         print(f"Error type: {type(e).__name__}")
         print(f"Error details: {str(e)}")
+        print(f"Stack trace: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
             detail=f"Failed to analyze meal photo: {str(e)}"
@@ -329,30 +399,45 @@ async def get_image(
     """
     try:
         print(f"\n=== Getting Image {image_id} ===")
+        print(f"User ID: {current_user.id}")
+        print(f"Database connection: {db is not None}")
         
         # Find the image in the database
+        print(f"Searching for image with ID: {image_id}")
         image = await db.images.find_one({"_id": ObjectId(image_id)})
+        
         if not image:
-            print(f"Image not found: {image_id}")
+            print(f"Image not found in database: {image_id}")
             raise HTTPException(status_code=404, detail="Image not found")
             
+        print(f"Found image document: {image.keys()}")
+        
         # Check if the image belongs to the current user
         if str(image["user_id"]) != current_user.id:
             print(f"User {current_user.id} not authorized to access image {image_id}")
+            print(f"Image belongs to user: {image['user_id']}")
             raise HTTPException(status_code=403, detail="Not authorized to access this image")
             
         print(f"Found image: {image['filename']}, content_type: {image['content_type']}")
+        print(f"Image size: {len(image['data'])} bytes")
         
         # Create a streaming response with the image data
-        return StreamingResponse(
+        response = StreamingResponse(
             io.BytesIO(image["data"]),
             media_type=image["content_type"],
             headers={
-                "Content-Disposition": f"inline; filename={image['filename']}"
+                "Content-Disposition": f"inline; filename={image['filename']}",
+                "Cache-Control": "public, max-age=31536000"
             }
         )
+        print("Created streaming response")
+        return response
+        
     except Exception as e:
         print(f"Error serving image: {str(e)}")
+        print(f"Error type: {type(e).__name__}")
+        print(f"Error details: {str(e)}")
+        print(f"Stack trace: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/meals")
@@ -520,107 +605,236 @@ async def delete_meal(
 
 @router.post("/recipe-recommendations")
 async def get_recipe_recommendations(
-    data: Dict[str, Any],
+    request: Dict[str, Any] = Body(...),
     current_user: UserProfile = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """
-    Get recipe recommendations based on meal analysis.
+    Get recipe recommendations based on user's profile preferences (health goals, dietary restrictions).
     """
     try:
-        meal_analysis = data.get("meal_analysis", {})
+        logger.info("=== Starting Recipe Recommendations Request ===")
+        logger.info(f"Current user: {current_user}")
+        logger.info(f"Request body: {request}")
+        
+        # Get user profile and meal analysis from request body
+        user_profile = request.get("user_profile", {})
+        meal_analysis = request.get("meal_analysis", {})
+        
+        logger.info(f"User profile from request: {user_profile}")
+        logger.info(f"Meal analysis from request: {meal_analysis}")
+        
+        # Validate required data
         if not meal_analysis:
+            logger.error("Meal analysis data is missing")
             raise HTTPException(status_code=400, detail="Meal analysis data is required")
-
-        # Get health tags from meal analysis and normalize them
-        health_tags = meal_analysis.get("health_tags", [])
-        normalized_tags = []
         
-        # Mapping of common variations to standardized format
-        tag_mapping = {
-            "Heart healthy": "Heart-Healthy",
-            "Energy enhancing": "High-Protein",
-            "Gut friendly": "Digestive Health",
-            "Low sugar": "Low-Sugar",
-            "High protein": "High-Protein",
-            "Immunity boosting": "Immunity Boosting",
-            "Skin health": "Skin & Joint Health",
-            "Iron rich": "Iron & Folate Rich"
-        }
+        # Extract user preferences and health goals
+        profile_data = user_profile.get('profile', {})
+        dietary_preferences = profile_data.get('dietary_preferences', [])
+        health_goals = profile_data.get('health_goals', [])
+        cultural_preferences = profile_data.get('cultural_preferences', [])
         
-        # Normalize each tag
-        for tag in health_tags:
-            normalized_tag = tag_mapping.get(tag, tag)
-            # Convert to proper format if not in mapping
-            if normalized_tag == tag:
-                # Convert to title case and replace spaces with hyphens
-                normalized_tag = "-".join(word.capitalize() for word in tag.split())
-            normalized_tags.append(normalized_tag)
+        # Extract meal analysis data
+        meal_macros = meal_analysis.get('macronutrients', {})
+        meal_health_tags = meal_analysis.get('health_tags', [])
+        meal_scores = meal_analysis.get('scores', {})
         
-        logger.info(f"Normalized health tags: {normalized_tags}")
-        
-        # Query recipes collection for recommendations
-        recipes_cursor = db.recipes.find(
-            {
-                "tags.health_goal": {
-                    "$elemMatch": {
-                        "main": {"$in": normalized_tags}
+        # Try to get recipes from MongoDB first
+        try:
+            recipes_cursor = db.recipes.find({})
+            all_recipes = await recipes_cursor.to_list(length=100)
+            
+            if not all_recipes:
+                logger.warning("No recipes found in database, using hardcoded recipes")
+                raise Exception("No recipes found in database")
+                
+        except Exception as e:
+            logger.error(f"Error fetching recipes from database: {str(e)}")
+            logger.info("Falling back to hardcoded recipes")
+            # Fallback to hardcoded recipes
+            all_recipes = [
+                {
+                    "name": "Quinoa Buddha Bowl",
+                    "description": "A nourishing bowl packed with protein-rich quinoa, roasted vegetables, and a tahini dressing. Perfect for a healthy lunch or dinner.",
+                    "ingredients": [
+                        "1 cup quinoa",
+                        "2 cups mixed vegetables (sweet potato, broccoli, bell peppers)",
+                        "1 can chickpeas",
+                        "2 tbsp tahini",
+                        "1 lemon",
+                        "2 tbsp olive oil",
+                        "Salt and pepper to taste"
+                    ],
+                    "benefits": [
+                        "High in plant-based protein",
+                        "Rich in fiber",
+                        "Supports digestive health",
+                        "Anti-inflammatory properties"
+                    ],
+                    "tags": {
+                        "dietary_preferences": ["Vegetarian", "Vegan", "Gluten-Free"],
+                        "health_goal": [
+                            {"main": "High-Protein", "sub": ["Plant-Based"]},
+                            {"main": "Digestive Health", "sub": ["High-Fiber"]}
+                        ],
+                        "cultural": {"main": "Fusion", "sub": "Modern"}
+                    },
+                    "nutritional_info": {
+                        "calories": 450,
+                        "protein": 15,
+                        "carbs": 60,
+                        "fats": 18,
+                        "fiber": 12
+                    }
+                },
+                {
+                    "name": "Mediterranean Salmon",
+                    "description": "Grilled salmon with Mediterranean herbs, served with a fresh Greek salad and whole grain couscous.",
+                    "ingredients": [
+                        "2 salmon fillets",
+                        "2 tbsp olive oil",
+                        "1 lemon",
+                        "Fresh herbs (oregano, thyme)",
+                        "1 cup whole grain couscous",
+                        "Mixed salad greens",
+                        "Cherry tomatoes",
+                        "Cucumber",
+                        "Feta cheese"
+                    ],
+                    "benefits": [
+                        "Rich in omega-3 fatty acids",
+                        "Supports heart health",
+                        "High in protein",
+                        "Anti-inflammatory properties"
+                    ],
+                    "tags": {
+                        "dietary_preferences": ["Non-Vegetarian", "Pescatarian"],
+                        "health_goal": [
+                            {"main": "Heart-Healthy", "sub": ["Omega-3 Rich"]},
+                            {"main": "High-Protein", "sub": ["Muscle-Building"]}
+                        ],
+                        "cultural": {"main": "Authentic", "sub": "Mediterranean"}
+                    },
+                    "nutritional_info": {
+                        "calories": 550,
+                        "protein": 35,
+                        "carbs": 45,
+                        "fats": 25,
+                        "fiber": 8
+                    }
+                },
+                {
+                    "name": "Green Smoothie Bowl",
+                    "description": "A nutrient-dense smoothie bowl topped with fresh fruits, nuts, and seeds. Perfect for a healthy breakfast or post-workout meal.",
+                    "ingredients": [
+                        "2 cups spinach",
+                        "1 frozen banana",
+                        "1 cup almond milk",
+                        "1 tbsp chia seeds",
+                        "1 tbsp almond butter",
+                        "Toppings: berries, granola, coconut flakes"
+                    ],
+                    "benefits": [
+                        "Rich in antioxidants",
+                        "Supports immune system",
+                        "High in fiber",
+                        "Natural energy booster"
+                    ],
+                    "tags": {
+                        "dietary_preferences": ["Vegan", "Vegetarian", "Gluten-Free"],
+                        "health_goal": [
+                            {"main": "Immunity Boosting", "sub": ["Antioxidant-Rich"]},
+                            {"main": "Digestive Health", "sub": ["High-Fiber"]}
+                        ],
+                        "cultural": {"main": "Fusion", "sub": "Modern"}
+                    },
+                    "nutritional_info": {
+                        "calories": 350,
+                        "protein": 12,
+                        "carbs": 45,
+                        "fats": 15,
+                        "fiber": 10
                     }
                 }
-            },
-            {"_id": 0}
-        ).limit(3)  # Limit to 3 recommendations
+            ]
         
-        recipes = await recipes_cursor.to_list(length=None)
-        logger.info(f"Found {len(recipes)} matching recipes")
+        # Score each recipe based on user preferences and meal analysis
+        scored_recipes = []
+        for recipe in all_recipes:
+            score = 0
+            recipe_tags = recipe.get('tags', {})
+            
+            # Score based on dietary preferences
+            recipe_dietary = recipe_tags.get('dietary_preferences', [])
+            for pref in dietary_preferences:
+                if pref in recipe_dietary:
+                    score += 2
+            
+            # Score based on health goals
+            recipe_health_goals = recipe_tags.get('health_goal', [])
+            for goal in health_goals:
+                if any(goal in health_goal.get('main', '') for health_goal in recipe_health_goals):
+                    score += 2
+            
+            # Score based on cultural preferences
+            recipe_cultural = recipe_tags.get('cultural', {})
+            if cultural_preferences and recipe_cultural.get('sub') in cultural_preferences:
+                score += 1
+            
+            # Score based on meal analysis
+            recipe_nutrition = recipe.get('nutritional_info', {})
+            
+            # If meal is high in carbs, prefer lower carb recipes
+            if meal_macros.get('carbs', 0) > 50:
+                if recipe_nutrition.get('carbs', 0) < 30:
+                    score += 1
+            
+            # If meal is low in protein, prefer high protein recipes
+            if meal_macros.get('protein', 0) < 20:
+                if recipe_nutrition.get('protein', 0) > 20:
+                    score += 1
+            
+            # If meal has low fiber, prefer high fiber recipes
+            if meal_macros.get('fiber', 0) < 5:
+                if recipe_nutrition.get('fiber', 0) > 5:
+                    score += 1
+            
+            # Add recipe with its score
+            scored_recipes.append({
+                'recipe': recipe,
+                'score': score
+            })
+        
+        # Sort recipes by score and get top 3
+        scored_recipes.sort(key=lambda x: x['score'], reverse=True)
+        top_recipes = [item['recipe'] for item in scored_recipes[:3]]
         
         # Format recipes for response
         formatted_recipes = []
-        for recipe in recipes:
+        for recipe in top_recipes:
+            # Ensure benefits is a list
+            benefits = recipe.get('benefits', [])
+            if isinstance(benefits, str):
+                benefits = [benefits]
+            elif not isinstance(benefits, list):
+                benefits = []
+                
             formatted_recipe = {
-                "name": recipe["name"],
-                "description": recipe.get("introduction", ""),
-                "ingredients": [ing["name"] for ing in recipe.get("ingredients", [])],
-                "benefits": ", ".join([
-                    sub for goal in recipe.get("tags", {}).get("health_goal", [])
-                    for sub in goal.get("sub", [])
-                ])
+                'name': recipe.get('name', ''),
+                'description': recipe.get('description', ''),
+                'ingredients': recipe.get('ingredients', []),
+                'benefits': benefits
             }
             formatted_recipes.append(formatted_recipe)
         
-        # If no recipes found, try a more lenient search
-        if not formatted_recipes:
-            logger.info("No exact matches found, trying more lenient search")
-            recipes_cursor = db.recipes.find(
-                {
-                    "tags.health_goal": {
-                        "$elemMatch": {
-                            "main": {"$regex": "|".join(normalized_tags), "$options": "i"}
-                        }
-                    }
-                },
-                {"_id": 0}
-            ).limit(3)
-            
-            recipes = await recipes_cursor.to_list(length=None)
-            logger.info(f"Found {len(recipes)} recipes in lenient search")
-            
-            for recipe in recipes:
-                formatted_recipe = {
-                    "name": recipe["name"],
-                    "description": recipe.get("introduction", ""),
-                    "ingredients": [ing["name"] for ing in recipe.get("ingredients", [])],
-                    "benefits": ", ".join([
-                        sub for goal in recipe.get("tags", {}).get("health_goal", [])
-                        for sub in goal.get("sub", [])
-                    ])
-                }
-                formatted_recipes.append(formatted_recipe)
-        
+        logger.info(f"Returning {len(formatted_recipes)} personalized recipes")
         return {"recipes": formatted_recipes}
-        
+
     except Exception as e:
         logger.error(f"Error in get_recipe_recommendations: {str(e)}")
+        logger.error(f"Error type: {type(e).__name__}")
+        logger.error(f"Error traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/analyze-profile")

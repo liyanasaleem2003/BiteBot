@@ -14,6 +14,7 @@ debugpy==1.8.8
 decorator==5.1.1
 distro==1.9.0
 dnspython==2.7.0
+email-validator==2.1.0.post1
 environs==9.5.0
 executing==2.1.0
 fastapi==0.115.5
@@ -47,6 +48,7 @@ packaging==24.2
 pandas==2.2.3
 parso==0.8.4
 pexpect==4.9.0
+Pillow==10.2.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.48
 propcache==0.2.0
@@ -88,7 +90,6 @@ werkzeug==3.0.1
 passlib==1.7.4
 pytest==7.4.2
 gunicorn==21.2.0
-email-validator>=2.0
 bcrypt==4.2.1
 motor==3.3.2
 python-jose

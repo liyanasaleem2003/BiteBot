@@ -1,0 +1,64 @@
+services:
+  # GitLab Deployment Services
+  - type: web
+    name: bitebot-gitlab-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npx serve -s build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://bitebot-gitlab-frontend.onrender.com
+    staticPublishPath: frontend/build
+    routes:
+      - type: rewrite
+        source: /(.*)
+        destination: /index.html
+
+  - type: web
+    name: bitebot-gitlab-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGODB_URL
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: BiteBotDB
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: API_BASE_URL
+        value: https://bitebot-gitlab-backend.onrender.com
+
+  # GitHub Deployment Services
+  - type: web
+    name: bitebot-github-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npx serve -s build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://bitebot-github-backend.onrender.com
+    staticPublishPath: frontend/build
+    routes:
+      - type: rewrite
+        source: /(.*)
+        destination: /index.html
+
+  - type: web
+    name: bitebot-github-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGODB_URL
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: BiteBotDB
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: API_BASE_URL
+        value: https://bitebot-github-backend.onrender.com 

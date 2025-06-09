@@ -278,7 +278,7 @@ export default function Dashboard() {
     loadMeals();
   }, [currentDate, lastFetchedDate]);
 
-  // Update the fetchMeals function with detailed logging
+  // Fetch meals for the selected date
   const fetchMeals = async (date) => {
     const formattedDate = date.toISOString().split('T')[0];
     setLastFetchedDate(formattedDate);
@@ -294,13 +294,11 @@ export default function Dashboard() {
       // Remove Bearer prefix if it exists
       const cleanToken = token.replace('Bearer ', '');
 
-      console.log('=== MEAL FETCHING PROCESS START ===');
       console.log('Fetching meals for date:', formattedDate);
       
       // Check if the date is today
       const today = new Date();
       const isToday = date.toDateString() === today.toDateString();
-      console.log('Is today?', isToday);
       
       if (isToday) {
         // For today, fetch actual meals from the backend
@@ -319,46 +317,29 @@ export default function Dashboard() {
         }
         
         const data = await response.json();
-        console.log('=== RAW BACKEND RESPONSE ===');
-        console.log('Raw meals data:', JSON.stringify(data, null, 2));
+        console.log('Fetched meals:', data);
         
         // Transform the meals data to match the expected format in the dashboard
         if (data.meals && Array.isArray(data.meals) && data.meals.length > 0) {
-          console.log('=== MEAL TRANSFORMATION START ===');
-          console.log('Number of meals to transform:', data.meals.length);
-          
           const formattedMeals = data.meals.map(meal => {
-            console.log('\n=== PROCESSING MEAL ===');
-            console.log('Original meal data:', JSON.stringify(meal, null, 2));
-            
-            // Skip meals with no nutritional data
-            if (!meal.macronutrients || Object.values(meal.macronutrients).every(val => val === 0)) {
-              console.log('Skipping meal with no nutritional data:', meal.id);
-              return null;
-            }
+            console.log('Processing meal:', meal);
             
             // Ensure we have valid timestamp data and keep it in UTC
             let timestamp;
             try {
               // Parse the timestamp and keep it in UTC
-              const date = new Date(meal.timestamp || meal.date);
-              timestamp = date.toISOString();
+              timestamp = new Date(meal.timestamp || meal.date).toISOString();
               console.log('Parsed timestamp (UTC):', timestamp);
-              console.log('Original timestamp:', meal.timestamp || meal.date);
             } catch (error) {
               console.error('Failed to parse timestamp:', error);
               timestamp = new Date().toISOString();
             }
             
-            const transformedMeal = {
+            return {
               id: meal.id,
               meal_name: meal.meal_name || "Unnamed Meal",
               timestamp: timestamp,
-              time: new Date(meal.timestamp || meal.date).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-              }),
+              time: new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }),
               image_url: meal.image_url || "",
               health_tags: meal.health_tags || [],
               macronutrients: {
@@ -382,47 +363,13 @@ export default function Dashboard() {
                 priority_nutrients: []
               }
             };
-            
-            console.log('Transformed meal:', JSON.stringify(transformedMeal, null, 2));
-            return transformedMeal;
-          }).filter(meal => meal !== null); // Filter out null meals
-          
-          console.log('\n=== DEDUPLICATION PROCESS ===');
-          console.log('Before deduplication - Number of meals:', formattedMeals.length);
-          
-          // Create a Map to track unique meals by name and timestamp
-          const uniqueMealsMap = new Map();
-          formattedMeals.forEach(meal => {
-            console.log(`Processing meal ID: ${meal.id}`);
-            
-            // Create a key combining meal name and timestamp (within 5 minutes)
-            const mealTime = new Date(meal.timestamp).getTime();
-            const key = `${meal.meal_name}-${Math.floor(mealTime / (5 * 60 * 1000))}`;
-            
-            if (!uniqueMealsMap.has(key)) {
-              uniqueMealsMap.set(key, meal);
-              console.log(`Added meal ${meal.id} to unique meals with key ${key}`);
-            } else {
-              const existingMeal = uniqueMealsMap.get(key);
-              console.log(`Duplicate meal found with key ${key}`);
-              console.log('Existing meal:', existingMeal);
-              console.log('Duplicate meal:', meal);
-              
-              // Keep the meal with more complete data
-              const existingDataScore = Object.values(existingMeal.macronutrients).reduce((sum, val) => sum + val, 0);
-              const newDataScore = Object.values(meal.macronutrients).reduce((sum, val) => sum + val, 0);
-              
-              if (newDataScore > existingDataScore) {
-                console.log(`Replacing existing meal with more complete data from meal ${meal.id}`);
-                uniqueMealsMap.set(key, meal);
-              }
-            }
           });
           
-          const uniqueMeals = Array.from(uniqueMealsMap.values());
-          console.log('After deduplication - Number of meals:', uniqueMeals.length);
-          console.log('Final unique meals:', JSON.stringify(uniqueMeals, null, 2));
+          const uniqueMeals = Array.from(
+            new Map(formattedMeals.map(meal => [meal.id, meal])).values()
+          );
           
+          console.log('Transformed meals:', formattedMeals);
           setUserMeals(uniqueMeals);
         } else {
           console.log('No meals found or invalid format');
@@ -484,8 +431,6 @@ export default function Dashboard() {
       console.error('Error fetching meals:', error);
       setError(`Failed to fetch meals: ${error.message}`);
       setUserMeals([]);
-    } finally {
-      console.log('=== MEAL FETCHING PROCESS END ===\n');
     }
   };
 

@@ -13,6 +13,7 @@ import { useFavoriteRecipes } from "../context/FavoriteRecipesContext";
 const LogMyMeal = () => {
   const navigate = useNavigate();
   const { isFavorite, addFavoriteRecipe, removeFavoriteRecipe } = useFavoriteRecipes();
+  const fileInputRef = useRef(null);
   const [messages, setMessages] = useState([
     {
       id: "bot-1",
@@ -32,7 +33,6 @@ const LogMyMeal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '', show: false });
   const messagesEndRef = useRef(null);
-  const fileInputRef = useRef(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -636,6 +636,138 @@ const LogMyMeal = () => {
     await saveChatToBackend(activeChat, updatedMessages, mealAnalysis);
 
     try {
+      // Check if this is a response to the recipe recommendations question
+      const lastBotMessage = messages[messages.length - 1];
+      if (lastBotMessage?.type === "bot" && 
+          lastBotMessage.content.includes("Would you like to see recommended recipes")) {
+        
+        // If user says yes, show recipe recommendations
+        if (message.toLowerCase().trim() === "yes") {
+          // Add loading message
+          const loadingMessage = {
+            id: generateUniqueId(),
+            type: "bot",
+            content: "Fetching recipe recommendations...",
+            isLoading: true,
+            timestamp: new Date().toISOString(),
+          };
+          setMessages(prev => [...prev, loadingMessage]);
+
+          try {
+            // Use hardcoded recipes directly
+            const recipes = [
+              {
+                name: "Tomato & Herb Chicken Pasta",
+                description: "A delicious pasta dish with tender chicken, fresh tomatoes, and aromatic herbs. Perfect for a quick and healthy dinner.",
+                ingredients: [
+                  "200g whole wheat pasta",
+                  "2 chicken breasts",
+                  "4 ripe tomatoes",
+                  "Fresh basil and oregano",
+                  "2 cloves garlic",
+                  "2 tbsp olive oil",
+                  "Salt and pepper to taste"
+                ],
+                benefits: [
+                  "High in protein",
+                  "Rich in antioxidants",
+                  "Supports heart health",
+                  "Balanced macronutrients"
+                ]
+              },
+              {
+                name: "Manipuri Eromba",
+                description: "A traditional Manipuri dish made with vegetables and fermented fish, rich in probiotics and essential nutrients.",
+                ingredients: [
+                  "Mixed vegetables (pumpkin, potato, beans)",
+                  "Fermented fish (ngari)",
+                  "Green chilies",
+                  "Fresh herbs",
+                  "Bamboo shoot",
+                  "Salt to taste"
+                ],
+                benefits: [
+                  "Rich in probiotics",
+                  "High in fiber",
+                  "Supports gut health",
+                  "Traditional preparation"
+                ]
+              },
+              {
+                name: "Peshawari Chapli Kebab",
+                description: "A flavorful minced meat kebab from Peshawar, packed with aromatic spices and herbs.",
+                ingredients: [
+                  "500g minced meat",
+                  "Onion and tomatoes",
+                  "Fresh coriander",
+                  "Pomegranate seeds",
+                  "Spices (cumin, coriander, chili)",
+                  "Egg for binding"
+                ],
+                benefits: [
+                  "High in protein",
+                  "Rich in iron",
+                  "Low carb option",
+                  "Traditional preparation"
+                ]
+              }
+            ];
+
+            // Remove loading message
+            setMessages(prev => prev.filter(msg => !msg.isLoading));
+            
+            // Create a single message with all recipes
+            const recipeMessage = {
+              id: generateUniqueId(),
+              type: "bot",
+              content: generateRecipeRecommendations(recipes),
+              timestamp: new Date().toISOString(),
+              isHtml: true
+            };
+            
+            // Update messages with recipe recommendations
+            const updatedMessagesWithRecipes = [...updatedMessages, recipeMessage];
+            setMessages(updatedMessagesWithRecipes);
+            
+            // Save the updated messages with recipes to the backend
+            await saveChatToBackend(activeChat, updatedMessagesWithRecipes, mealAnalysis);
+          } catch (error) {
+            // Remove loading message
+            setMessages(prev => prev.filter(msg => !msg.isLoading));
+            
+            // Add error message
+            const errorMessage = {
+              id: generateUniqueId(),
+              type: "bot",
+              content: `Sorry, I encountered an error while preparing recipe recommendations: ${error.message}. Please try again.`,
+              timestamp: new Date().toISOString(),
+            };
+            
+            const updatedMessagesWithError = [...updatedMessages, errorMessage];
+            setMessages(updatedMessagesWithError);
+            
+            // Save the updated messages to the backend
+            await saveChatToBackend(activeChat, updatedMessagesWithError, mealAnalysis);
+          }
+          return;
+        } else {
+          // If user says anything other than yes, end the chat
+          const endChatMessage = {
+            id: generateUniqueId(),
+            type: "bot",
+            content: "Thank you for using BiteBot! Feel free to start a new chat when you want to analyze another meal.",
+            timestamp: new Date().toISOString(),
+          };
+          
+          const updatedMessagesWithEndChat = [...updatedMessages, endChatMessage];
+          setMessages(updatedMessagesWithEndChat);
+          
+          // Save the updated messages to the backend
+          await saveChatToBackend(activeChat, updatedMessagesWithEndChat, mealAnalysis);
+          return;
+        }
+      }
+
       if (currentQuestion) {
         // Validate user response
         if (!validateUserResponse(currentQuestion.question, message)) {
@@ -788,8 +920,12 @@ const LogMyMeal = () => {
       // Set the analysis results in state
       setMealAnalysis(data);
       
+      // Get the meal data from the correct location in the response
+      const mealData = data.data || data;
+      console.log("Extracted meal data:", mealData);
+      
       // Get the meal name from the data
-      const mealName = data.meal_name || data.data?.meal_name || "Analyzed Meal";
+      const mealName = mealData.meal_name || "Analyzed Meal";
       console.log("Meal name extracted:", mealName);
       
       // Check for duplicate prevention
@@ -819,11 +955,11 @@ const LogMyMeal = () => {
       
       // Save to localStorage
       console.log("Saving to localStorage...");
-      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(data));
+      localStorage.setItem('lastAnalyzedMeal', JSON.stringify(mealData));
       localStorage.setItem('lastAnalyzedMealName', mealName);
       
       // Get image URL
-      const imageUrl = lastUploadedImageUrl || '';
+      const imageUrl = lastUploadedImageUrl || mealData.image_url || '';
       console.log("Image URL for meal:", imageUrl);
 
       // Generate timestamps
@@ -832,44 +968,51 @@ const LogMyMeal = () => {
       const formattedTimestamp = saveTimestamp.toISOString();
       console.log("Generated timestamps:", { formattedDate, formattedTimestamp });
 
-      // Prepare meal data
+      // Prepare meal data with proper fallbacks
       console.log("Preparing meal data for database...");
-      const mealData = {
+      const formattedMealData = {
         meal_name: mealName,
         date: formattedDate,
         timestamp: formattedTimestamp,
         image_url: imageUrl,
-        ingredients: data.ingredients || [],
-        cooking_method: data.cooking_method || '',
-        serving_size: data.serving_size || '',
+        ingredients: mealData.ingredients || [],
+        cooking_method: mealData.cooking_method || '',
+        serving_size: mealData.serving_size || '',
         macronutrients: {
-          calories: data.macronutrients?.calories || 0,
-          protein: data.macronutrients?.protein || 0,
-          carbs: data.macronutrients?.carbs || 0,
-          fats: data.macronutrients?.fats || 0,
-          fiber: data.macronutrients?.fiber || 0,
-          sugar: data.macronutrients?.sugar || 0,
-          sodium: data.macronutrients?.sodium || 0
+          calories: Math.round(mealData.macronutrients?.calories || 0),
+          protein: Math.round(mealData.macronutrients?.protein || 0),
+          carbs: Math.round(mealData.macronutrients?.carbs || 0),
+          fats: Math.round(mealData.macronutrients?.fats || 0),
+          fiber: Math.round(mealData.macronutrients?.fiber || 0),
+          sugar: Math.round(mealData.macronutrients?.sugar || 0),
+          sodium: Math.round(mealData.macronutrients?.sodium || 0)
         },
         scores: {
-          glycemic_index: data.scores?.glycemic_index || 0,
-          inflammatory: data.scores?.inflammatory || 0,
-          heart_health: data.scores?.heart_health || 0,
-          digestive: data.scores?.digestive || 0,
-          meal_balance: data.scores?.meal_balance || 0
+          glycemic_index: Math.round(mealData.scores?.glycemic_index || 0),
+          inflammatory: Math.round(mealData.scores?.inflammatory || 0),
+          heart_health: Math.round(mealData.scores?.heart_health || 0),
+          digestive: Math.round(mealData.scores?.digestive || 0),
+          meal_balance: Math.round(mealData.scores?.meal_balance || 0)
         },
-        health_tags: data.health_tags || [],
-        health_benefits: data.health_benefits || [],
-        potential_concerns: data.potential_concerns || [],
-        suggestions: data.suggestions || [],
-        recommended_recipes: data.recommended_recipes || [],
-        micronutrient_balance: data.micronutrient_balance || {
-          score: 0,
-          priority_nutrients: []
+        health_tags: mealData.health_tags || [],
+        health_benefits: mealData.health_benefits || [],
+        potential_concerns: mealData.potential_concerns || [],
+        suggestions: mealData.suggestions || [],
+        // Convert recipe objects to strings
+        recommended_recipes: (mealData.recommended_recipes || []).map(recipe => 
+          typeof recipe === 'string' ? recipe : recipe.name
+        ),
+        micronutrient_balance: {
+          score: Math.round(mealData.micronutrient_balance?.score || 0),
+          priority_nutrients: (mealData.micronutrient_balance?.priority_nutrients || []).map(nutrient => ({
+            name: nutrient.name || '',
+            percentage: Math.round(nutrient.percentage || 0),
+            description: nutrient.description || ''
+          }))
         }
       };
       
-      console.log("Prepared meal data:", mealData);
+      console.log("Prepared meal data:", formattedMealData);
       console.log("Sending POST request to /api/nutrition/meals...");
 
       // Save meal to database
@@ -879,7 +1022,7 @@ const LogMyMeal = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(mealData)
+        body: JSON.stringify(formattedMealData)
       });
 
       console.log("Meal save response status:", mealResponse.status);
@@ -917,7 +1060,7 @@ const LogMyMeal = () => {
       const analysisMessage = {
         id: analysisMessageId,
         type: "bot",
-        content: generateAnalysisContent(data),
+        content: generateAnalysisContent(mealData),
         timestamp: new Date().toISOString(),
         isAnalysis: true,
       };
@@ -957,7 +1100,8 @@ const LogMyMeal = () => {
           messages: updatedMessages,
           image_url: imageUrl,
           meal_id: savedMealId,
-          timestamp: formattedTimestamp
+          timestamp: formattedTimestamp,
+          meal_analysis: formattedMealData
         })
       });
 
@@ -1039,47 +1183,70 @@ const LogMyMeal = () => {
 
   const generateRecipeRecommendations = (recipes) => {
     if (!recipes || recipes.length === 0) {
-      return "Sorry, I don't have any recipe recommendations for this meal at the moment.";
+      return '<div class="recipe-recommendations"><p>No recipe recommendations available at this time.</p></div>';
     }
 
-    let content = `<div class="recipe-recommendations">
-      <h3 class="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>`;
-    
-    recipes.forEach(recipe => {
-      const isCurrentlyFavorite = isFavorite(recipe.recipe_id);
-      content += `
-        <div class="recipe-card mb-4 p-3 border border-gray-600 rounded bg-black/20 relative">
-          <button 
-            class="favorite-button absolute top-2 right-2 bg-transparent border-none cursor-pointer z-10"
-            onclick="window.handleToggleFavorite('${recipe.recipe_id}')"
-            title="${isCurrentlyFavorite ? "Remove from saved recipes" : "Add to saved recipes"}"
-          >
-            <svg class="heart ${isCurrentlyFavorite ? "filled" : ""}" width="30" height="30" viewBox="0 0 24 24" fill="${isCurrentlyFavorite ? "#ff3b30" : "transparent"}" stroke="${isCurrentlyFavorite ? "#ff3b30" : "white"}" stroke-width="1.5">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-          </button>
-          <h4 class="font-bold text-green-300">${recipe.name}</h4>
-          <p class="mb-2">${recipe.description}</p>
-          <div class="mb-2">
-            <span class="font-medium text-green-300">Ingredients:</span> 
-            ${recipe.ingredients.join(', ')}
-          </div>
-          <div class="mb-2">
-            <span class="font-medium text-green-300">Benefits:</span> 
-            ${recipe.benefits}
-          </div>
-        </div>`;
-    });
-    
-    // Add Browse More Recipes button
-    content += `
-      <div class="flex justify-center mt-4 mb-2">
-        <a href="/recipes" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
-          Browse More Recipes
-        </a>
+    const content = `
+      <div class="recipe-recommendations">
+        <h3 class="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>
+        ${recipes.map((recipe, index) => {
+          // Ensure benefits is an array
+          const benefits = Array.isArray(recipe.benefits) ? recipe.benefits : 
+                          (typeof recipe.benefits === 'string' ? [recipe.benefits] : []);
+          
+          return `
+            <div class="recipe-card mb-4 p-4 border border-gray-600 rounded bg-black/20">
+              <h4 class="font-bold text-green-300 mb-2">${recipe.name}</h4>
+              <p class="mb-3">${recipe.description}</p>
+              <div class="mb-3">
+                <span class="font-medium text-green-300">Ingredients:</span> 
+                <span>${Array.isArray(recipe.ingredients) ? recipe.ingredients.join(', ') : ''}</span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3">
+                ${benefits.map(benefit => 
+                  `<span class="px-2 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">${benefit}</span>`
+                ).join('')}
+              </div>
+              <div class="recipe-details">
+                <button 
+                  onclick="document.getElementById('preparation-${index}').classList.toggle('expanded')"
+                  class="flex items-center text-green-300 hover:text-green-400 transition-colors w-full justify-between"
+                >
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    Preparation Steps
+                  </span>
+                  <span class="text-sm text-gray-400">Click to expand</span>
+                </button>
+                <div id="preparation-${index}" class="preparation-steps max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                  <div class="mt-3 pl-6 border-l-2 border-green-300">
+                    <ol class="list-decimal space-y-2">
+                      ${recipe.preparation_steps ? recipe.preparation_steps.map(step => 
+                        `<li class="text-gray-200">${step}</li>`
+                      ).join('') : `
+                        <li class="text-gray-200">Cook pasta according to package instructions.</li>
+                        <li class="text-gray-200">Season chicken with salt and pepper, then cook until golden.</li>
+                        <li class="text-gray-200">Sauté garlic and tomatoes until softened.</li>
+                        <li class="text-gray-200">Combine all ingredients and toss with fresh herbs.</li>
+                        <li class="text-gray-200">Serve hot and enjoy!</li>
+                      `}
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+        <div class="flex justify-center mt-4 mb-2">
+          <a href="/recipes" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
+            Explore More Recipes
+          </a>
+        </div>
       </div>
-    </div>`;
-    
+    `;
+
     return content;
   };
 
