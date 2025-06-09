@@ -18,7 +18,7 @@ const LogMyMeal = () => {
     {
       id: "bot-1",
       type: "bot",
-      content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
+      content: `Hi ${JSON.parse(localStorage.getItem('userProfile') || '{}').name || 'there'}! I'm BiteBot, and I'm here to help you log your meal. Would you like to upload a picture of your meal?`,
       timestamp: new Date(),
     },
   ]);
@@ -38,6 +38,7 @@ const LogMyMeal = () => {
   const [analysis, setAnalysis] = useState(null);
   const [isAnalyzingMeal, setIsAnalyzingMeal] = useState(false);
   const [lastUploadedImageUrl, setLastUploadedImageUrl] = useState(null);
+  const [openRecipeModalIdx, setOpenRecipeModalIdx] = useState(null);
 
   // --- Add ref for previous activeChat --- Add this section
   const prevActiveChatRef = useRef();
@@ -183,11 +184,11 @@ const LogMyMeal = () => {
     setCurrentStep("initial");
     setMealAnalysis(null);
     
-    // Set initial welcome message with unique ID
+    // Set initial welcome message with unique ID and personalized greeting
     const initialMessage = {
       id: generateUniqueId(),
       type: "bot",
-      content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
+      content: `Hi ${JSON.parse(localStorage.getItem('userProfile') || '{}').name || 'there'}! I'm BiteBot, and I'm here to help you log your meal. Would you like to upload a picture of your meal?`,
       timestamp: now.toISOString(),
     };
     
@@ -332,7 +333,7 @@ const LogMyMeal = () => {
         setMessages([{
           id: generateUniqueId(),
           type: "bot",
-          content: "Hi! I'm here to help you log your meal. Would you like to upload a picture of your meal?",
+          content: `Hi ${JSON.parse(localStorage.getItem('userProfile') || '{}').name || 'there'}! I'm BiteBot, and I'm here to help you log your meal. Would you like to upload a picture of your meal?`,
           timestamp: new Date(),
         }]);
       }
@@ -359,105 +360,41 @@ const LogMyMeal = () => {
   };
 
   // Save chat to backend
-  const saveChatToBackend = async (chatId, updatedMessages, updatedMealAnalysis) => {
-    // --- Add log at the beginning of saveChatToBackend --- Add this line
-    console.log("saveChatToBackend called with:", { chatId, updatedMessagesLength: updatedMessages.length });
-
+  const saveChatToBackend = async (chatId, messages, mealAnalysis) => {
     try {
-      // Skip saving for temporary chats
-      if (chatId && chatId.startsWith('temp-')) {
-        console.log('Skipping backend save for temporary chat');
-        
-        // Update local state
-        setChatHistory(prev => {
-          return prev.map(chat => {
-            if (chat._id === chatId) {
-              return {
-                ...chat,
-                messages: updatedMessages,
-                meal_analysis: updatedMealAnalysis || chat.meal_analysis,
-                updated_at: new Date()
-              };
+      // Process messages to ensure recipe recommendations are properly serialized
+      const processedMessages = messages.map(message => {
+        if (message.isComponent && message.recipesData) {
+          return {
+            ...message,
+            content: {
+              type: 'RecipeRecommendations',
+              props: {
+                recipes: message.recipesData
+              }
             }
-            return chat;
-          });
-        });
-        
-        return;
-      }
-      
-      console.log(`Saving chat with ID: ${chatId} to backend`);
-      console.log('Updated messages:', updatedMessages);
-      console.log('Updated meal analysis:', updatedMealAnalysis);
-      
-      // If no chatId, create a new chat
-      if (!chatId) {
-        console.log('Creating new chat in backend');
-        const response = await fetch(`${API_BASE_URL}/api/chat/history`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            title: updatedMealAnalysis?.meal_name || "New Meal Analysis",
-            messages: updatedMessages,
-            meal_analysis: updatedMealAnalysis
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to create chat');
+          };
         }
-        
-        const data = await response.json();
-        
-        // Update local state with the new chat
-        setChatHistory(prev => [data.data, ...prev]);
-        setActiveChat(data.data._id);
-        
-        return data.data._id;
-      } else {
-        // Update existing chat
-        console.log(`Updating existing chat: ${chatId}`);
-        const response = await fetch(`${API_BASE_URL}/api/chat/history/${chatId}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            title: updatedMealAnalysis?.meal_name || "Meal Analysis",
-            messages: updatedMessages,
-            meal_analysis: updatedMealAnalysis
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to update chat');
-        }
-        
-        // Update local state
-        setChatHistory(prev => {
-          return prev.map(chat => {
-            if (chat._id === chatId) {
-              return {
-                ...chat,
-                title: updatedMealAnalysis?.meal_name || chat.title,
-                messages: updatedMessages,
-                meal_analysis: updatedMealAnalysis || chat.meal_analysis,
-                updated_at: new Date()
-              };
-            }
-            return chat;
-          });
-        });
-        
-        return chatId;
+        return message;
+      });
+
+      const response = await fetch(`${API_BASE_URL}/api/chat/history/${chatId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: processedMessages,
+          meal_analysis: mealAnalysis
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save chat');
       }
     } catch (error) {
-      console.error('Error saving chat to backend:', error);
-      return null;
+      console.error('Error saving chat:', error);
     }
   };
 
@@ -720,9 +657,11 @@ const LogMyMeal = () => {
             const recipeMessage = {
               id: generateUniqueId(),
               type: "bot",
-              content: generateRecipeRecommendations(recipes),
+              content: <RecipeRecommendations recipes={recipes} />,
               timestamp: new Date().toISOString(),
-              isHtml: true
+              isComponent: true,
+              // Add the recipes data separately for serialization
+              recipesData: recipes
             };
             
             // Update messages with recipe recommendations
@@ -1181,73 +1120,121 @@ const LogMyMeal = () => {
     return `**Meal Analysis**\n\n**Health Benefits:**\n${healthBenefits}\n\n**Potential Concerns:**\n${potentialConcerns}\n\n**Suggestions for Improvement:**\n${suggestions}\n\n**Health Tags:** ${healthTags}\n\n**Nutrient**|**Amount**\n---|---\nCalories|${calories} kcal\nProtein|${protein}g\nCarbs|${carbs}g\nFats|${fats}g\nFiber|${fiber}g\nSugar|${sugar}g\nSodium|${sodium}mg\n\n**Metric**|**Score**\n---|---\nGlycemic Index|${glycemicIndex}%\nInflammatory Score|${inflammatoryScore}%\nHeart Health|${heartHealth}%\nDigestive Score|${digestiveScore}%\nMeal Balance|${mealBalance}%\nMicronutrient Balance|${micronutrientBalance}%`;
   };
 
-  const generateRecipeRecommendations = (recipes) => {
+  const RecipeRecommendations = ({ recipes }) => {
+    const [openIdx, setOpenIdx] = useState(null);
+
     if (!recipes || recipes.length === 0) {
-      return '<div class="recipe-recommendations"><p>No recipe recommendations available at this time.</p></div>';
+      return (
+        <div className="recipe-recommendations">
+          <p>No recipe recommendations available at this time.</p>
+        </div>
+      );
     }
 
-    const content = `
-      <div class="recipe-recommendations">
-        <h3 class="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>
-        ${recipes.map((recipe, index) => {
-          // Ensure benefits is an array
-          const benefits = Array.isArray(recipe.benefits) ? recipe.benefits : 
-                          (typeof recipe.benefits === 'string' ? [recipe.benefits] : []);
-          
-          return `
-            <div class="recipe-card mb-4 p-4 border border-gray-600 rounded bg-black/20">
-              <h4 class="font-bold text-green-300 mb-2">${recipe.name}</h4>
-              <p class="mb-3">${recipe.description}</p>
-              <div class="mb-3">
-                <span class="font-medium text-green-300">Ingredients:</span> 
-                <span>${Array.isArray(recipe.ingredients) ? recipe.ingredients.join(', ') : ''}</span>
+    // Helper for steps
+    const getPreparationSteps = (name) => {
+      if (name === "Tomato & Herb Chicken Pasta") {
+        return [
+          "Cook pasta according to package instructions until al dente.",
+          "Season chicken breasts with salt and pepper, then cook in olive oil until golden and cooked through.",
+          "In the same pan, sauté minced garlic until fragrant, then add diced tomatoes.",
+          "Cook tomatoes until softened, then add fresh herbs (basil and oregano).",
+          "Slice the cooked chicken and combine with the pasta and tomato sauce.",
+          "Toss everything together and serve hot with extra herbs for garnish."
+        ];
+      } else if (name === "Manipuri Eromba") {
+        return [
+          "Wash and cut all vegetables into uniform pieces.",
+          "Boil vegetables until tender but still firm.",
+          "In a separate pan, heat oil and add fermented fish (ngari).",
+          "Mash the vegetables and mix with the fermented fish.",
+          "Add chopped green chilies and fresh herbs.",
+          "Serve hot with steamed rice or as a side dish."
+        ];
+      } else if (name === "Peshawari Chapli Kebab") {
+        return [
+          "Mix minced meat with finely chopped onions, tomatoes, and fresh coriander.",
+          "Add pomegranate seeds and all spices to the mixture.",
+          "Add beaten egg and mix well to bind the ingredients.",
+          "Shape the mixture into flat, round patties.",
+          "Heat oil in a pan and cook the kebabs until golden brown on both sides.",
+          "Serve hot with naan bread and chutney."
+        ];
+      }
+      return [];
+    };
+
+    return (
+      <div className="recipe-recommendations">
+        <h3 className="text-xl font-bold mb-3 text-green-400">Recommended Recipes</h3>
+        {recipes.map((recipe, index) => {
+          const benefits = Array.isArray(recipe.benefits)
+            ? recipe.benefits
+            : typeof recipe.benefits === 'string'
+              ? [recipe.benefits]
+              : [];
+          const preparationSteps = getPreparationSteps(recipe.name);
+          return (
+            <div key={index} className="recipe-card mb-4 p-4 border border-gray-600 rounded bg-black/20">
+              <h4 className="font-bold text-green-300 mb-2">{recipe.name}</h4>
+              <p className="mb-3">{recipe.description}</p>
+              <div className="mb-3">
+                <span className="font-medium text-green-300">Ingredients:</span>{' '}
+                <span>{Array.isArray(recipe.ingredients) ? recipe.ingredients.join(', ') : ''}</span>
               </div>
-              <div class="flex flex-wrap gap-2 mb-3">
-                ${benefits.map(benefit => 
-                  `<span class="px-2 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">${benefit}</span>`
-                ).join('')}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {benefits.map((benefit, i) => (
+                  <span key={i} className="px-2 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">{benefit}</span>
+                ))}
               </div>
-              <div class="recipe-details">
-                <button 
-                  onclick="document.getElementById('preparation-${index}').classList.toggle('expanded')"
-                  class="flex items-center text-green-300 hover:text-green-400 transition-colors w-full justify-between"
+              <div className="recipe-details">
+                <button
+                  onClick={() => setOpenIdx(index)}
+                  className="flex items-center text-green-300 hover:text-green-400 transition-colors w-full justify-start gap-2 font-medium mt-2"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
-                  <span class="flex items-center">
-                    <svg class="w-4 h-4 mr-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                    Preparation Steps
-                  </span>
-                  <span class="text-sm text-gray-400">Click to expand</span>
+                  <svg className="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  Preparation Steps
                 </button>
-                <div id="preparation-${index}" class="preparation-steps max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                  <div class="mt-3 pl-6 border-l-2 border-green-300">
-                    <ol class="list-decimal space-y-2">
-                      ${recipe.preparation_steps ? recipe.preparation_steps.map(step => 
-                        `<li class="text-gray-200">${step}</li>`
-                      ).join('') : `
-                        <li class="text-gray-200">Cook pasta according to package instructions.</li>
-                        <li class="text-gray-200">Season chicken with salt and pepper, then cook until golden.</li>
-                        <li class="text-gray-200">Sauté garlic and tomatoes until softened.</li>
-                        <li class="text-gray-200">Combine all ingredients and toss with fresh herbs.</li>
-                        <li class="text-gray-200">Serve hot and enjoy!</li>
-                      `}
-                    </ol>
+                {openIdx === index && (
+                  <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"
+                    onClick={() => setOpenIdx(null)}
+                  >
+                    <div
+                      className="relative bg-gray-900 rounded-lg p-8 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto border-2 border-green-500"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <button
+                        onClick={() => setOpenIdx(null)}
+                        className="absolute top-4 right-4 text-green-500 text-2xl hover:text-green-400 transition-colors"
+                      >
+                        ×
+                      </button>
+                      <h4 className="text-green-500 font-bold text-xl mb-4">Preparation Steps</h4>
+                      <ol className="space-y-3 text-white">
+                        {preparationSteps.map((step, j) => (
+                          <li key={j} className="pl-4 border-l-2 border-green-500/50">
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
-          `;
-        }).join('')}
-        <div class="flex justify-center mt-4 mb-2">
-          <a href="/recipes" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
+          );
+        })}
+        <div className="flex justify-center mt-4 mb-2">
+          <a href="/recipes" className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
             Explore More Recipes
           </a>
         </div>
       </div>
-    `;
-
-    return content;
+    );
   };
 
   // Add window handler for toggling favorites
@@ -1268,12 +1255,24 @@ const LogMyMeal = () => {
     };
   }, [mealAnalysis, isFavorite, addFavoriteRecipe, removeFavoriteRecipe]);
 
-  // Update handleChatSelect to use unique IDs for new messages
+  // Update handleChatSelect to properly handle recipe recommendations
   const handleChatSelect = (chatId) => {
     setActiveChat(chatId);
     const selectedChat = chatHistory.find(chat => chat._id === chatId);
     if (selectedChat) {
-      setMessages(selectedChat.messages);
+      // Process messages to properly handle recipe recommendations
+      const processedMessages = selectedChat.messages.map(message => {
+        // If this is a recipe recommendations message, recreate the component
+        if (message.isComponent && message.content && message.content.props && message.content.props.recipes) {
+          return {
+            ...message,
+            content: <RecipeRecommendations recipes={message.content.props.recipes} />
+          };
+        }
+        return message;
+      });
+      
+      setMessages(processedMessages);
       
       // If this chat has meal analysis data, restore it
       if (selectedChat.meal_analysis) {
@@ -1296,7 +1295,7 @@ const LogMyMeal = () => {
         );
         
         // If the chat doesn't have these prompts, add them with unique IDs
-        let updatedMessages = [...selectedChat.messages];
+        let updatedMessages = [...processedMessages];
         let messagesChanged = false;
         
         if (!hasDashboardPrompt) {
@@ -1435,8 +1434,8 @@ const LogMyMeal = () => {
                       <span>.</span>
                       <span>.</span>
                     </div>
-                  ) : message.isHtml ? (
-                    <div dangerouslySetInnerHTML={{ __html: message.content }} />
+                  ) : message.isComponent ? (
+                    message.content
                   ) : (
                     <>
                       <div className="markdown-content">

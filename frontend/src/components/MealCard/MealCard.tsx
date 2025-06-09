@@ -157,7 +157,13 @@ export function MealCard({ meal, onDelete, expanded = false, onToggle, priorityM
         return url;
       }
 
-      // Extract the image ID from the URL
+      // If it's a direct web URL (starts with http), return it as is
+      if (url.startsWith('http')) {
+        console.log('Using direct web URL');
+        return url;
+      }
+
+      // Extract the image ID from the URL for backend-served images
       let imageId: string | null = null;
       
       // Handle both old and new URL formats

@@ -64,18 +64,113 @@
     height: 18px;
 }
 
+/* Hamburger Icon */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    z-index: 101;
+}
+.hamburger span {
+    height: 5px;
+    width: 100%;
+    background: #fff;
+    margin: 5px 0;
+    border-radius: 3px;
+    transition: 0.3s;
+    display: block;
+}
+.hamburger.open span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+/* Mobile Nav Overlay */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Close menu button */
+.close-menu {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-menu:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
-        padding: 8px 20px;
+        padding: 8px 10px;
+    }
+
+    .hamburger {
+        display: flex;
     }
 
     .nav-links {
-        gap: 30px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 70vw;
+        max-width: 320px;
+        background: rgba(0,0,0,0.97);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 80px 24px 24px 24px;
+        gap: 24px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 102;
+        box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+    }
+
+    .nav-links.show {
+        transform: translateX(0);
     }
 
     .nav-links li a {
         font-size: 14px;
+    }
+
+    .close-menu {
+        display: block;
     }
 }
   
