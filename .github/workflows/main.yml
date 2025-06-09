@@ -10,6 +10,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/bitebot
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   test-backend:
     runs-on: ubuntu-latest
